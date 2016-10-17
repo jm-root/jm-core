@@ -28,6 +28,7 @@ gulp.task('js', function () {
       'lib/root.js',
       'lib/err.js',
       'lib/logger.js',
+      'lib/utils.js',
       'lib/aop.js',
       'lib/class.js',
       'lib/object.js',

@@ -4,35 +4,38 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 (function(){
-    console.info('******** jm.Event *********');
+    var logger = jm.getLogger('jm-core:test:event');
+    logger.info('******** jm.Event *********');
 
-    console.info(jm.EventEmitter.prototype);
+    logger.info(jm.EventEmitter.prototype);
 
-    var eventHandle = function(opts){
+    var eventHandle = function(opts, intro){
         var self = this;
-        console.info('1. ' + self.className + ' '  + opts);
+        logger.info('1. %s %j %j', self.className, opts, intro);
     };
-    var eventHandle2 = function(opts){
+    var eventHandle2 = function(opts, intro){
         var self = this;
-        console.info('2. ' + self.className + ' '  + opts);
+        logger.info('2. %s %j %j', self.className, opts, intro);
     };
 
     var bindEvent = function(o){
         o.on('addTag', eventHandle);
         o.addListener('addTag', eventHandle2);
-        o.emit('addTag', 'tag1');
+        o.once('addTag', function(opts, intro){
+            logger.info('once addTag %j %j', opts, intro);
+        });
+        logger.info(JSON.stringify(o));
+        o.emit('addTag', 'tag1', 'tag1 intro');
+        o.emit('addTag', 'tag2');
+        logger.info(JSON.stringify(o));
     };
 
     var o = {};
     jm.enableEvent(o);
     bindEvent(o);
-    console.info(JSON.stringify(o));
-
 
     o = jm.eventEmitter();
     bindEvent(o);
-    console.info(JSON.stringify(o));
-
 
 })();
 

@@ -8,6 +8,7 @@ if (typeof module !== 'undefined' && module.exports) {
     var registries = {};
     root.registries = registries;
     jm.root = root;
+
 })();
 
 
@@ -58,6 +59,11 @@ if (typeof module !== 'undefined' && module.exports) {
         FA_ABORT: {
             err: 7,
             msg: 'Abort'
+        },
+
+        FA_NOTREADY: {
+            err: 8,
+            msg: 'Not Ready'
         },
 
         OK: {
@@ -119,6 +125,29 @@ if (typeof module !== 'undefined' && module.exports) {
     jm.logger = jm.getLogger();
 })();
 
+var jm = jm || {};
+if (typeof module !== 'undefined' && module.exports) {
+    jm = require('./root.js');
+}
+
+(function () {
+    jm.utils = {
+
+        //高效slice
+        slice: function (a, start, end) {
+            start = start || 0;
+            end = end || a.length;
+            if (start < 0) start += a.length;
+            if (end < 0) end += a.length;
+            var r = new Array(end - start);
+            for (var i = start; i < end; i++) {
+                r[i - start] = a[i];
+            }
+            return r;
+        }
+
+    };
+})();
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
@@ -307,8 +336,7 @@ if (typeof module !== 'undefined' && module.exports) {
         //min<=result<=max
         randomInt : function(min, max)
         {
-            if (arguments.length === 1)
-            {
+            if(max === undefined) {
                 max = min;
                 min = 0;
             }
@@ -319,8 +347,7 @@ if (typeof module !== 'undefined' && module.exports) {
         //min<=result<=max
         randomDouble : function(min, max)
         {
-            if (arguments.length === 1)
-            {
+            if(max === undefined) {
                 max = min;
                 min = 0.0;
             }
@@ -400,9 +427,9 @@ if (typeof module !== 'undefined' && module.exports) {
             var self = this;
             var listener = this.__createListener(fn, caller);
 
-            function on () {
+            function on (arg1, arg2, arg3, arg4, arg5) {
                 self.removeListener(name, on);
-                fn.apply(listener.caller, arguments);
+                fn.call(listener.caller, arg1, arg2, arg3, arg4, arg5);
             };
 
             on.listener = listener;
@@ -491,32 +518,29 @@ if (typeof module !== 'undefined' && module.exports) {
         /**
          * Emits an event.
          *
+         * tip: use arg1...arg5 instead of arguments for performance consider.
+         *
          * @api public
          */
 
-        emit: function (name) {
+        emit: function (name, arg1, arg2, arg3, arg4, arg5) {
             var handler = this._events[name];
-
-            if (!handler) {
-                return false;
-            }
-
-            var args = Array.prototype.slice.call(arguments, 1);
+            if (!handler) return this;
 
             if(typeof handler === 'object' && !Array.isArray(handler)){
-                handler.fn.apply(handler.caller || this, args);
+                handler.fn.call(handler.caller || this, arg1, arg2, arg3, arg4, arg5);
             } else if (Array.isArray(handler)) {
-                var listeners = handler.slice();
+                var listeners = new Array(handler.length);
+                for (var i = 0; i < handler.length; i++) {
+                    listeners[i] = handler[i];
+                }
 
                 for (var i = 0, l = listeners.length; i < l; i++) {
                     var h = listeners[i];
-                    if(h.fn.apply(h.caller || this, args) === false) break;
+                    h.fn.call(h.caller || this, arg1, arg2, arg3, arg4, arg5);
                 }
-            } else {
-                return false;
             }
-
-            return true;
+            return this;
         }
     });
 
@@ -544,12 +568,14 @@ if (typeof module !== 'undefined' && module.exports) {
             obj[key] = em[key];
         }
         obj._events = {};
+        return this;
     };
 
     jm.disableEvent = function(obj) {
         for(var key in em){
             delete obj[key];
         }
+        return this;
     };
 
 })();
