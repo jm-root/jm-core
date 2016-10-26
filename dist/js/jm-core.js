@@ -537,7 +537,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
                 for (var i = 0, l = listeners.length; i < l; i++) {
                     var h = listeners[i];
-                    h.fn.call(h.caller || this, arg1, arg2, arg3, arg4, arg5);
+                    if(h.fn.call(h.caller || this, arg1, arg2, arg3, arg4, arg5) === false) break;
                 }
             }
             return this;
