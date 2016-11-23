@@ -4,6 +4,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 (function(){
+    if(jm.root) return;
     var root = {};
     var registries = {};
     root.registries = registries;
@@ -11,15 +12,13 @@ if (typeof module !== 'undefined' && module.exports) {
 
 })();
 
-
-
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
 }
 
 (function(){
-
+    if(jm.ERR) return;
     jm.ERR = {
         SUCCESS: {
             err: 0,
@@ -111,6 +110,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 (function(){
+    if(jm.getLogger) return;
     if (typeof module !== 'undefined' && module.exports) {
         var log4js = require('log4js');
         jm.getLogger = function(loggerCategoryName) {
@@ -131,8 +131,8 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 (function () {
+    if(jm.utils) return;
     jm.utils = {
-
         //高效slice
         slice: function (a, start, end) {
             start = start || 0;
@@ -144,16 +144,21 @@ if (typeof module !== 'undefined' && module.exports) {
                 r[i - start] = a[i];
             }
             return r;
-        }
+        },
 
+        formatJSON: function(obj){
+            return JSON.stringify(obj, null, 2);
+        }
     };
 })();
+
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
 }
 
 (function(){
+    if(jm.aop) return;
     jm.aop = {
         _Arguments: function (args) {
             //convert arguments object to array
@@ -187,12 +192,14 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 
 })();
+
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
 }
 
 (function(){
+    if(jm.Class) return;
     var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 
     // The base Class implementation (does nothing)
@@ -271,13 +278,13 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 })();
 
-
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
 }
 
 (function(){
+    if(jm.Object) return;
     jm.Object = jm.Class.extend({
         _className: 'object',
 
@@ -303,6 +310,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 (function(){
+    if(jm.Random) return;
     var iRandomMax = 200000000000;    //最大随机整数范围 0 <= randomValue <= iRandomMax;
 
     jm.Random = jm.Class.extend({
@@ -372,13 +380,13 @@ if (typeof module !== 'undefined' && module.exports) {
 
 })();
 
-
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
 }
 
 (function(){
+    if(jm.EventEmitter) return;
     jm.EventEmitter = jm.Object.extend({
         _className: 'eventEmitter',
 
@@ -579,12 +587,14 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 
 })();
+
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
 }
 
 (function(){
+    if(jm.TagObject) return;
     jm.TagObject = jm.EventEmitter.extend({
         _className: 'tagObject',
 
@@ -699,6 +709,3 @@ if (typeof module !== 'undefined' && module.exports) {
         jm.disableEvent(obj);
     };
 })();
-
-
-
