@@ -1,10 +1,10 @@
 {
   "name": "jm-core",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "core lib for jm-* projects",
   "main": "./lib/index",
   "scripts": {
-    "test": "node ./test.js"
+    "test": "node test"
   },
   "repository": {
     "type": "git",
@@ -26,19 +26,15 @@
 	"lodash": "*",
     "log4js": "*"
   },
-    "devDependencies": {
-        "jshint": "*",
-        "gulp": ">=3.5.6",
-        "gulp-clean": ">=0.3.1",
-        "gulp-concat": ">=2.2.0",
-        "gulp-jshint": ">=1.5.1",
-        "gulp-rename": ">=1.2.0",
-        "gulp-sequence": ">=0.3.0",
-        "gulp-uglify": ">=0.3.1",
-        "gulp-util": ">=2.2.14"
-    },
-  "readme": "jm-core\r\n=========\r\n\r\ncore lib for jm-* projects\r\n",
-  "readmeFilename": "README.md",
-  "_id": "jm-core@0.0.1",
-  "_from": "jm-core@*"
+  "devDependencies": {
+      "jshint": "*",
+      "gulp": ">=3.5.6",
+      "gulp-clean": ">=0.3.1",
+      "gulp-concat": ">=2.2.0",
+      "gulp-jshint": ">=1.5.1",
+      "gulp-rename": ">=1.2.0",
+      "gulp-sequence": ">=0.3.0",
+      "gulp-uglify": ">=0.3.1",
+      "gulp-util": ">=2.2.14"
+  }
 }

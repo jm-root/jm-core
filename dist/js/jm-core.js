@@ -4,13 +4,13 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 (function(){
+    if(jm.root) return;
     var root = {};
     var registries = {};
     root.registries = registries;
     jm.root = root;
+
 })();
-
-
 
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
@@ -18,7 +18,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 (function(){
-
+    if(jm.ERR) return;
     jm.ERR = {
         SUCCESS: {
             err: 0,
@@ -58,6 +58,11 @@ if (typeof module !== 'undefined' && module.exports) {
         FA_ABORT: {
             err: 7,
             msg: 'Abort'
+        },
+
+        FA_NOTREADY: {
+            err: 8,
+            msg: 'Not Ready'
         },
 
         OK: {
@@ -105,6 +110,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 (function(){
+    if(jm.getLogger) return;
     if (typeof module !== 'undefined' && module.exports) {
         var log4js = require('log4js');
         jm.getLogger = function(loggerCategoryName) {
@@ -124,7 +130,35 @@ if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
 }
 
+(function () {
+    if(jm.utils) return;
+    jm.utils = {
+        //高效slice
+        slice: function (a, start, end) {
+            start = start || 0;
+            end = end || a.length;
+            if (start < 0) start += a.length;
+            if (end < 0) end += a.length;
+            var r = new Array(end - start);
+            for (var i = start; i < end; i++) {
+                r[i - start] = a[i];
+            }
+            return r;
+        },
+
+        formatJSON: function(obj){
+            return JSON.stringify(obj, null, 2);
+        }
+    };
+})();
+
+var jm = jm || {};
+if (typeof module !== 'undefined' && module.exports) {
+    jm = require('./root.js');
+}
+
 (function(){
+    if(jm.aop) return;
     jm.aop = {
         _Arguments: function (args) {
             //convert arguments object to array
@@ -158,12 +192,14 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 
 })();
+
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
 }
 
 (function(){
+    if(jm.Class) return;
     var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 
     // The base Class implementation (does nothing)
@@ -242,13 +278,13 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 })();
 
-
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
 }
 
 (function(){
+    if(jm.Object) return;
     jm.Object = jm.Class.extend({
         _className: 'object',
 
@@ -274,6 +310,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 (function(){
+    if(jm.Random) return;
     var iRandomMax = 200000000000;    //最大随机整数范围 0 <= randomValue <= iRandomMax;
 
     jm.Random = jm.Class.extend({
@@ -307,8 +344,7 @@ if (typeof module !== 'undefined' && module.exports) {
         //min<=result<=max
         randomInt : function(min, max)
         {
-            if (arguments.length === 1)
-            {
+            if(max === undefined) {
                 max = min;
                 min = 0;
             }
@@ -319,8 +355,7 @@ if (typeof module !== 'undefined' && module.exports) {
         //min<=result<=max
         randomDouble : function(min, max)
         {
-            if (arguments.length === 1)
-            {
+            if(max === undefined) {
                 max = min;
                 min = 0.0;
             }
@@ -345,13 +380,13 @@ if (typeof module !== 'undefined' && module.exports) {
 
 })();
 
-
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
 }
 
 (function(){
+    if(jm.EventEmitter) return;
     jm.EventEmitter = jm.Object.extend({
         _className: 'eventEmitter',
 
@@ -400,9 +435,9 @@ if (typeof module !== 'undefined' && module.exports) {
             var self = this;
             var listener = this.__createListener(fn, caller);
 
-            function on () {
+            function on (arg1, arg2, arg3, arg4, arg5) {
                 self.removeListener(name, on);
-                fn.apply(listener.caller, arguments);
+                fn.call(listener.caller, arg1, arg2, arg3, arg4, arg5);
             };
 
             on.listener = listener;
@@ -491,32 +526,29 @@ if (typeof module !== 'undefined' && module.exports) {
         /**
          * Emits an event.
          *
+         * tip: use arg1...arg5 instead of arguments for performance consider.
+         *
          * @api public
          */
 
-        emit: function (name) {
+        emit: function (name, arg1, arg2, arg3, arg4, arg5) {
             var handler = this._events[name];
-
-            if (!handler) {
-                return false;
-            }
-
-            var args = Array.prototype.slice.call(arguments, 1);
+            if (!handler) return this;
 
             if(typeof handler === 'object' && !Array.isArray(handler)){
-                handler.fn.apply(handler.caller || this, args);
+                handler.fn.call(handler.caller || this, arg1, arg2, arg3, arg4, arg5);
             } else if (Array.isArray(handler)) {
-                var listeners = handler.slice();
+                var listeners = new Array(handler.length);
+                for (var i = 0; i < handler.length; i++) {
+                    listeners[i] = handler[i];
+                }
 
                 for (var i = 0, l = listeners.length; i < l; i++) {
                     var h = listeners[i];
-                    if(h.fn.apply(h.caller || this, args) === false) break;
+                    if(h.fn.call(h.caller || this, arg1, arg2, arg3, arg4, arg5) === false) break;
                 }
-            } else {
-                return false;
             }
-
-            return true;
+            return this;
         }
     });
 
@@ -544,21 +576,25 @@ if (typeof module !== 'undefined' && module.exports) {
             obj[key] = em[key];
         }
         obj._events = {};
+        return this;
     };
 
     jm.disableEvent = function(obj) {
         for(var key in em){
             delete obj[key];
         }
+        return this;
     };
 
 })();
+
 var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
     jm = require('./root.js');
 }
 
 (function(){
+    if(jm.TagObject) return;
     jm.TagObject = jm.EventEmitter.extend({
         _className: 'tagObject',
 
@@ -673,6 +709,3 @@ if (typeof module !== 'undefined' && module.exports) {
         jm.disableEvent(obj);
     };
 })();
-
-
-
