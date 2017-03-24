@@ -8,4 +8,3 @@ if (typeof module !== 'undefined' && module.exports) {
     console.info(jm.Object.prototype);
     console.info(jm.object());
 })();
-

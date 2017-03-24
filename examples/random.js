@@ -14,4 +14,3 @@ if (typeof module !== 'undefined' && module.exports) {
     logger.info(random.randomDouble(1, 2));
 
 })();
-

@@ -1,212 +1,58 @@
-var jm = jm || {};
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = jm;
-}
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
 
-(function(){
-    if(jm.root) return;
-    var root = {};
-    var registries = {};
-    root.registries = registries;
-    jm.root = root;
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-})();
-
-var jm = jm || {};
-if (typeof module !== 'undefined' && module.exports) {
-    jm = require('./root.js');
-}
-
-(function(){
-    if(jm.ERR) return;
-    jm.ERR = {
-        SUCCESS: {
-            err: 0,
-            msg: 'Success'
-        },
-
-        FAIL: {
-            err: 1,
-            msg: 'Fail'
-        },
-
-        FA_SYS: {
-            err: 2,
-            msg: 'System Error'
-        },
-
-        FA_NETWORK: {
-            err: 3,
-            msg: 'Network Error'
-        },
-
-        FA_PARAMS: {
-            err: 4,
-            msg: 'Parameter Error'
-        },
-
-        FA_BUSY: {
-            err: 5,
-            msg: 'Busy'
-        },
-
-        FA_TIMEOUT: {
-            err: 6,
-            msg: 'Time Out'
-        },
-
-        FA_ABORT: {
-            err: 7,
-            msg: 'Abort'
-        },
-
-        FA_NOTREADY: {
-            err: 8,
-            msg: 'Not Ready'
-        },
-
-        OK: {
-            err: 200,
-            msg: 'OK'
-        },
-
-        FA_BADREQUEST: {
-            err: 400,
-            msg: 'Bad Request'
-        },
-
-        FA_NOAUTH: {
-            err: 401,
-            msg: 'Unauthorized'
-        },
-
-        FA_NOPERMISSION: {
-            err: 403,
-            msg: 'Forbidden'
-        },
-
-        FA_NOTFOUND: {
-            err: 404,
-            msg: 'Not Found'
-        },
-
-        FA_INTERNALERROR: {
-            err: 500,
-            msg: 'Internal Server Error'
-        },
-
-        FA_UNAVAILABLE: {
-            err: 503,
-            msg: 'Service Unavailable'
-        }
-
-    };
-
-})();
-
-var jm = jm || {};
-if (typeof module !== 'undefined' && module.exports) {
-    jm = require('./root.js');
-}
-
-(function(){
-    if(jm.getLogger) return;
-    if (typeof module !== 'undefined' && module.exports) {
-        var log4js = require('log4js');
-        jm.getLogger = function(loggerCategoryName) {
-            return log4js.getLogger(loggerCategoryName);
-        };
-    }else{
-        jm.getLogger = function(loggerCategoryName) {
-            console.debug = console.debug || console.log;
-            return console;
-        };
-    }
-    jm.logger = jm.getLogger();
-})();
-
-var jm = jm || {};
-if (typeof module !== 'undefined' && module.exports) {
-    jm = require('./root.js');
-}
-
-(function () {
-    if(jm.utils) return;
-    jm.utils = {
-        //高效slice
-        slice: function (a, start, end) {
-            start = start || 0;
-            end = end || a.length;
-            if (start < 0) start += a.length;
-            if (end < 0) end += a.length;
-            var r = new Array(end - start);
-            for (var i = start; i < end; i++) {
-                r[i - start] = a[i];
-            }
-            return r;
-        },
-
-        formatJSON: function(obj){
-            return JSON.stringify(obj, null, 2);
-        }
-    };
-})();
-
-var jm = jm || {};
-if (typeof module !== 'undefined' && module.exports) {
-    jm = require('./root.js');
-}
-
-(function(){
-    if(jm.aop) return;
+exports.default = function (jm) {
     jm.aop = {
-        _Arguments: function (args) {
+        _Arguments: function _Arguments(args) {
             //convert arguments object to array
             this.value = [].slice.call(args);
         },
 
-        arguments: function () {
+        arguments: function _arguments() {
             //convert arguments object to array
             return new this._Arguments(arguments);
         },
 
-        inject: function( aOrgFunc, aBeforeExec, aAtferExec ) {
+        inject: function inject(aOrgFunc, aBeforeExec, aAtferExec) {
             var self = this;
-            return function() {
-                var Result, isDenied=false, args=[].slice.call(arguments);
-                if (typeof(aBeforeExec) == 'function') {
+            return function () {
+                var Result,
+                    isDenied = false,
+                    args = [].slice.call(arguments);
+                if (typeof aBeforeExec == 'function') {
                     Result = aBeforeExec.apply(this, args);
                     if (Result instanceof self._Arguments) //(Result.constructor === _Arguments)
-                        args = Result.value;
-                    else if (isDenied = Result !== undefined)
-                        args.push(Result);
+                        args = Result.value;else if (isDenied = Result !== undefined) args.push(Result);
                 }
                 !isDenied && args.push(aOrgFunc.apply(this, args)); //if (!isDenied) args.push(aOrgFunc.apply(this, args));
-                if (typeof(aAtferExec) == 'function')
-                    Result = aAtferExec.apply(this, args.concat(isDenied));
-                else
-                    Result = undefined;
-                return (Result !== undefined ? Result : args.pop());
-            }
+                if (typeof aAtferExec == 'function') Result = aAtferExec.apply(this, args.concat(isDenied));else Result = undefined;
+                return Result !== undefined ? Result : args.pop();
+            };
         }
     };
+};
 
-})();
+module.exports = exports['default'];
+},{}],2:[function(require,module,exports){
+"use strict";
 
-var jm = jm || {};
-if (typeof module !== 'undefined' && module.exports) {
-    jm = require('./root.js');
-}
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var fnTest = /xyz/.test(function () {
+    xyz;
+}) ? /\b_super\b/ : /.*/;
 
-(function(){
-    if(jm.Class) return;
-    var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
-
+exports.default = function (jm) {
     // The base Class implementation (does nothing)
-    jm.Class = function(){};
+    jm.Class = function () {};
 
     // Create a new Class that inherits from this class
-    jm.Class.extend = function(prop) {
+    jm.Class.extend = function (prop) {
         var _super = this.prototype;
 
         // Instantiate a base class (but only create the instance,
@@ -215,39 +61,36 @@ if (typeof module !== 'undefined' && module.exports) {
 
         // Copy the properties over onto the new prototype
         for (var name in prop) {
-            if(name == 'properties'){
+            if (name == 'properties') {
                 continue;
             }
             // Check if we're overwriting an existing function
-            prototype[name] = typeof prop[name] == "function" &&
-                typeof _super[name] == "function" && fnTest.test(prop[name]) ?
-                (function(name, fn){
-                    return function() {
-                        var tmp = this._super;
+            prototype[name] = typeof prop[name] == "function" && typeof _super[name] == "function" && fnTest.test(prop[name]) ? function (name, fn) {
+                return function () {
+                    var tmp = this._super;
 
-                        // Add a new ._super() method that is the same method
-                        // but on the super-class
-                        this._super = _super[name];
+                    // Add a new ._super() method that is the same method
+                    // but on the super-class
+                    this._super = _super[name];
 
-                        // The method only need to be bound temporarily, so we
-                        // remove it when we're done executing
-                        var ret = fn.apply(this, arguments);
-                        this._super = tmp;
+                    // The method only need to be bound temporarily, so we
+                    // remove it when we're done executing
+                    var ret = fn.apply(this, arguments);
+                    this._super = tmp;
 
-                        return ret;
-                    };
-                })(name, prop[name]) :
-                prop[name];
+                    return ret;
+                };
+            }(name, prop[name]) : prop[name];
         }
 
         {
             var properties = prop['properties'];
-            for(var key in properties){
+            for (var key in properties) {
                 var desc = properties[key];
-                if(desc.get && typeof desc.get == "string"){
+                if (desc.get && typeof desc.get == "string") {
                     desc.get = prototype[desc.get];
                 }
-                if(desc.set && typeof desc.set == "string"){
+                if (desc.set && typeof desc.set == "string") {
                     desc.set = prototype[desc.set];
                 }
                 Object.defineProperty(prototype, key, desc);
@@ -256,13 +99,12 @@ if (typeof module !== 'undefined' && module.exports) {
 
         // The dummy class constructor
         function Class() {
-            if(this._className){
+            if (this._className) {
                 Object.defineProperty(this, "className", { value: this._className, writable: false });
             }
 
             // All construction is actually done in the init method
-            if ( this.ctor )
-                this.ctor.apply(this, arguments);
+            if (this.ctor) this.ctor.apply(this, arguments);
         }
 
         // Populate our constructed prototype object
@@ -276,126 +118,121 @@ if (typeof module !== 'undefined' && module.exports) {
 
         return Class;
     };
-})();
+};
 
-var jm = jm || {};
-if (typeof module !== 'undefined' && module.exports) {
-    jm = require('./root.js');
-}
+module.exports = exports["default"];
+},{}],3:[function(require,module,exports){
+'use strict';
 
-(function(){
-    if(jm.Object) return;
-    jm.Object = jm.Class.extend({
-        _className: 'object',
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var ERR = {
+    SUCCESS: {
+        err: 0,
+        msg: 'Success'
+    },
 
-        attr: function (attrs) {
-            for (var key in attrs) {
-                if(key === 'className'){
-                    continue;
-                }
+    FAIL: {
+        err: 1,
+        msg: 'Fail'
+    },
 
-                this[key] = attrs[key];
-            }
-        }
-    });
+    FA_SYS: {
+        err: 2,
+        msg: 'System Error'
+    },
 
-    jm.object = function(){
-        return new jm.Object();
-    };
-})();
+    FA_NETWORK: {
+        err: 3,
+        msg: 'Network Error'
+    },
 
-var jm = jm || {};
-if (typeof module !== 'undefined' && module.exports) {
-    jm = require('./root.js');
-}
+    FA_PARAMS: {
+        err: 4,
+        msg: 'Parameter Error'
+    },
 
-(function(){
-    if(jm.Random) return;
-    var iRandomMax = 200000000000;    //最大随机整数范围 0 <= randomValue <= iRandomMax;
+    FA_BUSY: {
+        err: 5,
+        msg: 'Busy'
+    },
 
-    jm.Random = jm.Class.extend({
-        _className: 'random',
+    FA_TIMEOUT: {
+        err: 6,
+        msg: 'Time Out'
+    },
 
-        properties: {
-            seed: { get: 'getSeed', set: 'setSeed' }
-        },
+    FA_ABORT: {
+        err: 7,
+        msg: 'Abort'
+    },
 
-        ctor: function(opts){
-            opts = opts || {};
-            this.g_seed = 0;
-            this.randomMax =  opts.randomMax || iRandomMax;            
-        },
+    FA_NOTREADY: {
+        err: 8,
+        msg: 'Not Ready'
+    },
 
-        setSeed : function(seed)
-        {
-            this.g_seed = seed;
-        },
+    OK: {
+        err: 200,
+        msg: 'OK'
+    },
 
-        getSeed : function()
-        {
-            return this.g_seed;
-        },
+    FA_BADREQUEST: {
+        err: 400,
+        msg: 'Bad Request'
+    },
 
-        random : function(){
-            this.g_seed = ( this.g_seed * 9301 + 49297 ) % 233280;
-            return this.g_seed / ( 233280.0 );
-        },
+    FA_NOAUTH: {
+        err: 401,
+        msg: 'Unauthorized'
+    },
 
-        //min<=result<=max
-        randomInt : function(min, max)
-        {
-            if(max === undefined) {
-                max = min;
-                min = 0;
-            }
-            var range = min + (this.random()*(max - min));
-            return Math.round(range);
-        },
+    FA_NOPERMISSION: {
+        err: 403,
+        msg: 'Forbidden'
+    },
 
-        //min<=result<=max
-        randomDouble : function(min, max)
-        {
-            if(max === undefined) {
-                max = min;
-                min = 0.0;
-            }
+    FA_NOTFOUND: {
+        err: 404,
+        msg: 'Not Found'
+    },
 
-            var range = min + (this.random()*(max - min));
-            return range;
-        },
+    FA_INTERNALERROR: {
+        err: 500,
+        msg: 'Internal Server Error'
+    },
 
-        randomRange : function(range){
-            return this.randomInt(0,this.randomMax) % range;
-        },
+    FA_UNAVAILABLE: {
+        err: 503,
+        msg: 'Service Unavailable'
+    }
+};
 
-        randomOdds : function(range, odds){
-            if(this.randomRange(range) < odds) return 1;
-            return 0;
-        }
-    });
+exports.default = function (jm) {
+    jm.ERR = ERR;
+};
 
-    jm.random = function(opts){
-        return new jm.Random(opts);
-    };
+module.exports = exports['default'];
+},{}],4:[function(require,module,exports){
+'use strict';
 
-})();
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-var jm = jm || {};
-if (typeof module !== 'undefined' && module.exports) {
-    jm = require('./root.js');
-}
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-(function(){
-    if(jm.EventEmitter) return;
+exports.default = function (jm) {
     jm.EventEmitter = jm.Object.extend({
         _className: 'eventEmitter',
 
-        ctor: function () {
+        ctor: function ctor() {
             this._events = {};
             this.addListener = this.on;
         },
 
-        __createListener: function(fn, caller) {
+        __createListener: function __createListener(fn, caller) {
             caller = caller;
             return {
                 fn: fn,
@@ -403,7 +240,7 @@ if (typeof module !== 'undefined' && module.exports) {
             };
         },
 
-        __equalsListener: function (listener1, listener2) {
+        __equalsListener: function __equalsListener(listener1, listener2) {
             return listener1.fn === listener2.fn && listener1.caller === listener2.caller;
         },
 
@@ -413,7 +250,7 @@ if (typeof module !== 'undefined' && module.exports) {
          * @api public
          */
 
-        on: function (name, fn, caller) {
+        on: function on(name, fn, caller) {
             var listener = this.__createListener(fn, caller);
             if (!this._events[name]) {
                 this._events[name] = listener;
@@ -431,11 +268,11 @@ if (typeof module !== 'undefined' && module.exports) {
          * @api public
          */
 
-        once: function (name, fn, caller) {
+        once: function once(name, fn, caller) {
             var self = this;
             var listener = this.__createListener(fn, caller);
 
-            function on (arg1, arg2, arg3, arg4, arg5) {
+            function on(arg1, arg2, arg3, arg4, arg5) {
                 self.removeListener(name, on);
                 fn.call(listener.caller, arg1, arg2, arg3, arg4, arg5);
             };
@@ -446,14 +283,13 @@ if (typeof module !== 'undefined' && module.exports) {
             return this;
         },
 
-
         /**
          * Removes a listener.
          *
          * @api public
          */
 
-        removeListener: function (name, fn, caller) {
+        removeListener: function removeListener(name, fn, caller) {
             var listener = this.__createListener(fn, caller);
             if (this._events && this._events[name]) {
                 var list = this._events[name];
@@ -463,7 +299,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
                     for (var i = 0, l = list.length; i < l; i++) {
                         var o = list[i];
-                        if (this.__equalsListener(o, listener) || (o.listener && this.__equalsListener(o.listener, listener))) {
+                        if (this.__equalsListener(o, listener) || o.listener && this.__equalsListener(o.listener, listener)) {
                             pos = i;
                             break;
                         }
@@ -478,7 +314,7 @@ if (typeof module !== 'undefined' && module.exports) {
                     if (!list.length) {
                         delete this._events[name];
                     }
-                } else if (this.__equalsListener(list, listener) || (list.listener && this.__equalsListener(list.listener, listener))) {
+                } else if (this.__equalsListener(list, listener) || list.listener && this.__equalsListener(list.listener, listener)) {
                     delete this._events[name];
                 }
             }
@@ -492,7 +328,7 @@ if (typeof module !== 'undefined' && module.exports) {
          * @api public
          */
 
-        removeAllListeners: function (name) {
+        removeAllListeners: function removeAllListeners(name) {
             if (name === undefined) {
                 this._events = {};
                 return this;
@@ -511,7 +347,7 @@ if (typeof module !== 'undefined' && module.exports) {
          * @api publci
          */
 
-        listeners: function (name) {
+        listeners: function listeners(name) {
             if (!this._events[name]) {
                 this._events[name] = [];
             }
@@ -531,11 +367,11 @@ if (typeof module !== 'undefined' && module.exports) {
          * @api public
          */
 
-        emit: function (name, arg1, arg2, arg3, arg4, arg5) {
+        emit: function emit(name, arg1, arg2, arg3, arg4, arg5) {
             var handler = this._events[name];
             if (!handler) return this;
 
-            if(typeof handler === 'object' && !Array.isArray(handler)){
+            if ((typeof handler === 'undefined' ? 'undefined' : _typeof(handler)) === 'object' && !Array.isArray(handler)) {
                 handler.fn.call(handler.caller || this, arg1, arg2, arg3, arg4, arg5);
             } else if (Array.isArray(handler)) {
                 var listeners = new Array(handler.length);
@@ -545,14 +381,16 @@ if (typeof module !== 'undefined' && module.exports) {
 
                 for (var i = 0, l = listeners.length; i < l; i++) {
                     var h = listeners[i];
-                    if(h.fn.call(h.caller || this, arg1, arg2, arg3, arg4, arg5) === false) break;
+                    if (h.fn.call(h.caller || this, arg1, arg2, arg3, arg4, arg5) === false) break;
                 }
             }
             return this;
         }
     });
 
-    jm.eventEmitter = function(){ return new jm.EventEmitter();}
+    jm.eventEmitter = function () {
+        return new jm.EventEmitter();
+    };
 
     var prototype = jm.EventEmitter.prototype;
     var EventEmitter = {
@@ -570,67 +408,272 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 
     var em = EventEmitter;
-    jm.enableEvent = function(obj) {
-        if(obj._events!==undefined) return;
-        for(var key in em){
+    jm.enableEvent = function (obj) {
+        if (obj._events !== undefined) return;
+        for (var key in em) {
             obj[key] = em[key];
         }
         obj._events = {};
         return this;
     };
 
-    jm.disableEvent = function(obj) {
-        for(var key in em){
+    jm.disableEvent = function (obj) {
+        for (var key in em) {
             delete obj[key];
         }
         return this;
     };
+};
 
-})();
+module.exports = exports['default'];
+},{}],5:[function(require,module,exports){
+(function (global){
+'use strict';
 
-var jm = jm || {};
-if (typeof module !== 'undefined' && module.exports) {
-    jm = require('./root.js');
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _root = require('./root');
+
+var _root2 = _interopRequireDefault(_root);
+
+var _err = require('./err');
+
+var _err2 = _interopRequireDefault(_err);
+
+var _logger = require('./logger');
+
+var _logger2 = _interopRequireDefault(_logger);
+
+var _aop = require('./aop');
+
+var _aop2 = _interopRequireDefault(_aop);
+
+var _utils = require('./utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _class = require('./class');
+
+var _class2 = _interopRequireDefault(_class);
+
+var _object = require('./object');
+
+var _object2 = _interopRequireDefault(_object);
+
+var _random = require('./random');
+
+var _random2 = _interopRequireDefault(_random);
+
+var _event = require('./event');
+
+var _event2 = _interopRequireDefault(_event);
+
+var _tag = require('./tag');
+
+var _tag2 = _interopRequireDefault(_tag);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var jm = function jm() {
+    var o = {
+        use: function use(m) {
+            m(this);
+            return this;
+        }
+    };
+    o.use(_root2.default).use(_err2.default).use(_logger2.default).use(_aop2.default).use(_utils2.default).use(_class2.default).use(_object2.default).use(_random2.default).use(_event2.default).use(_tag2.default);
+    return o;
+};
+
+if (typeof global !== 'undefined' && global) {
+    global.jm = jm();
 }
 
-(function(){
-    if(jm.TagObject) return;
+exports.default = jm;
+module.exports = exports['default'];
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./aop":1,"./class":2,"./err":3,"./event":4,"./logger":6,"./object":7,"./random":8,"./root":9,"./tag":10,"./utils":11}],6:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var getLogger = function getLogger(loggerCategoryName) {
+    console.debug = console.debug || console.log;
+    return console;
+};
+
+var logger = getLogger();
+
+exports.default = function (jm) {
+    jm.getLogger = getLogger;
+    jm.logger = logger;
+};
+
+module.exports = exports["default"];
+},{}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (jm) {
+    jm.Object = jm.Class.extend({
+        _className: 'object',
+
+        attr: function attr(attrs) {
+            for (var key in attrs) {
+                if (key === 'className') {
+                    continue;
+                }
+
+                this[key] = attrs[key];
+            }
+        }
+    });
+
+    jm.object = function () {
+        return new jm.Object();
+    };
+};
+
+module.exports = exports['default'];
+},{}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var iRandomMax = 200000000000; //最大随机整数范围 0 <= randomValue <= iRandomMax;
+
+exports.default = function (jm) {
+
+    jm.Random = jm.Class.extend({
+        _className: 'random',
+
+        properties: {
+            seed: { get: 'getSeed', set: 'setSeed' }
+        },
+
+        ctor: function ctor(opts) {
+            opts = opts || {};
+            this.g_seed = 0;
+            this.randomMax = opts.randomMax || iRandomMax;
+        },
+
+        setSeed: function setSeed(seed) {
+            this.g_seed = seed;
+        },
+
+        getSeed: function getSeed() {
+            return this.g_seed;
+        },
+
+        random: function random() {
+            this.g_seed = (this.g_seed * 9301 + 49297) % 233280;
+            return this.g_seed / 233280.0;
+        },
+
+        //min<=result<=max
+        randomInt: function randomInt(min, max) {
+            if (max === undefined) {
+                max = min;
+                min = 0;
+            }
+            var range = min + this.random() * (max - min);
+            return Math.round(range);
+        },
+
+        //min<=result<=max
+        randomDouble: function randomDouble(min, max) {
+            if (max === undefined) {
+                max = min;
+                min = 0.0;
+            }
+
+            var range = min + this.random() * (max - min);
+            return range;
+        },
+
+        randomRange: function randomRange(range) {
+            return this.randomInt(0, this.randomMax) % range;
+        },
+
+        randomOdds: function randomOdds(range, odds) {
+            if (this.randomRange(range) < odds) return 1;
+            return 0;
+        }
+    });
+
+    jm.random = function (opts) {
+        return new jm.Random(opts);
+    };
+};
+
+module.exports = exports['default'];
+},{}],9:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var root = {
+    registries: {}
+};
+
+exports.default = function (jm) {
+    jm.root = root;
+    return jm;
+};
+
+module.exports = exports["default"];
+},{}],10:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (jm) {
     jm.TagObject = jm.EventEmitter.extend({
         _className: 'tagObject',
 
-        ctor: function(){
+        ctor: function ctor() {
             this._super();
             this._tags = [];
             Object.defineProperty(this, "tags", { value: this._tags, writable: false });
         },
 
-        destroy: function(){
+        destroy: function destroy() {
             this.emit('destroy', this);
             this.removeAllTags();
         },
 
-        hasTag: function(tag){
+        hasTag: function hasTag(tag) {
             var tags = this._tags;
             return tags.indexOf(tag) != -1;
         },
 
-        hasTagAny: function(tags){
-            for(var i in tags){
+        hasTagAny: function hasTagAny(tags) {
+            for (var i in tags) {
                 var t = tags[i];
-                if(this.hasTag(t)) return true;
+                if (this.hasTag(t)) return true;
             }
             return false;
         },
 
-        hasTagAll: function(tags){
-            for(var i in tags){
+        hasTagAll: function hasTagAll(tags) {
+            for (var i in tags) {
                 var t = tags[i];
-                if(!this.hasTag(t)) return false;
+                if (!this.hasTag(t)) return false;
             }
             return true;
         },
 
-        addTag: function(tag){
+        addTag: function addTag(tag) {
             var tags = this._tags;
             if (this.hasTag(tag)) return this;
             tags.push(tag);
@@ -638,35 +681,35 @@ if (typeof module !== 'undefined' && module.exports) {
             return this;
         },
 
-        addTags: function(tags){
-            for(var i in tags){
+        addTags: function addTags(tags) {
+            for (var i in tags) {
                 var t = tags[i];
                 this.addTag(t);
             }
             return this;
         },
 
-        removeTag: function(tag){
+        removeTag: function removeTag(tag) {
             var tags = this._tags;
             var idx = tags.indexOf(tag);
-            if(idx>=0){
+            if (idx >= 0) {
                 tags.splice(idx, 1);
             }
             this.emit('removeTag', tag);
             return this;
         },
 
-        removeTags: function(tags){
-            for(var i in tags){
+        removeTags: function removeTags(tags) {
+            for (var i in tags) {
                 var t = tags[i];
                 this.removeTag(t);
             }
             return this;
         },
 
-        removeAllTags: function () {
+        removeAllTags: function removeAllTags() {
             var v = this._tags;
-            for(i in v){
+            for (i in v) {
                 this.emit('removeTag', v[i]);
             }
             this._tags = [];
@@ -676,7 +719,9 @@ if (typeof module !== 'undefined' && module.exports) {
 
     });
 
-    jm.tagObject = function(){return new jm.TagObject();}
+    jm.tagObject = function () {
+        return new jm.TagObject();
+    };
 
     var prototype = jm.TagObject.prototype;
     var Tag = {
@@ -692,9 +737,9 @@ if (typeof module !== 'undefined' && module.exports) {
         removeAllTags: prototype.removeAllTags
     };
 
-    jm.enableTag = function(obj) {
-        if(obj._tags!=undefined) return;
-        for(key in Tag){
+    jm.enableTag = function (obj) {
+        if (obj._tags != undefined) return;
+        for (key in Tag) {
             obj[key] = Tag[key];
         }
         obj._tags = [];
@@ -702,10 +747,42 @@ if (typeof module !== 'undefined' && module.exports) {
         jm.enableEvent(obj);
     };
 
-    jm.disableTag = function(obj) {
-        for(key in Tag){
+    jm.disableTag = function (obj) {
+        for (key in Tag) {
             delete obj[key];
         }
         jm.disableEvent(obj);
     };
-})();
+};
+
+module.exports = exports['default'];
+},{}],11:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (jm) {
+    jm.utils = {
+        //高效slice
+        slice: function slice(a, start, end) {
+            start = start || 0;
+            end = end || a.length;
+            if (start < 0) start += a.length;
+            if (end < 0) end += a.length;
+            var r = new Array(end - start);
+            for (var i = start; i < end; i++) {
+                r[i - start] = a[i];
+            }
+            return r;
+        },
+
+        formatJSON: function formatJSON(obj) {
+            return JSON.stringify(obj, null, 2);
+        }
+    };
+};
+
+module.exports = exports["default"];
+},{}]},{},[5])

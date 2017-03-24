@@ -1,13 +1,7 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-exports.default = function (jm) {
+export default jm => {
     jm.utils = {
         //高效slice
-        slice: function slice(a, start, end) {
+        slice: function (a, start, end) {
             start = start || 0;
             end = end || a.length;
             if (start < 0) start += a.length;
@@ -19,10 +13,8 @@ exports.default = function (jm) {
             return r;
         },
 
-        formatJSON: function formatJSON(obj) {
+        formatJSON: function(obj){
             return JSON.stringify(obj, null, 2);
         }
     };
 };
-
-module.exports = exports["default"];

@@ -1,21 +1,13 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.default = function (jm) {
+export default jm => {
     jm.EventEmitter = jm.Object.extend({
         _className: 'eventEmitter',
 
-        ctor: function ctor() {
+        ctor: function () {
             this._events = {};
             this.addListener = this.on;
         },
 
-        __createListener: function __createListener(fn, caller) {
+        __createListener: function (fn, caller) {
             caller = caller;
             return {
                 fn: fn,
@@ -23,7 +15,7 @@ exports.default = function (jm) {
             };
         },
 
-        __equalsListener: function __equalsListener(listener1, listener2) {
+        __equalsListener: function (listener1, listener2) {
             return listener1.fn === listener2.fn && listener1.caller === listener2.caller;
         },
 
@@ -33,7 +25,7 @@ exports.default = function (jm) {
          * @api public
          */
 
-        on: function on(name, fn, caller) {
+        on: function (name, fn, caller) {
             var listener = this.__createListener(fn, caller);
             if (!this._events[name]) {
                 this._events[name] = listener;
@@ -51,7 +43,7 @@ exports.default = function (jm) {
          * @api public
          */
 
-        once: function once(name, fn, caller) {
+        once: function (name, fn, caller) {
             var self = this;
             var listener = this.__createListener(fn, caller);
 
@@ -66,13 +58,14 @@ exports.default = function (jm) {
             return this;
         },
 
+
         /**
          * Removes a listener.
          *
          * @api public
          */
 
-        removeListener: function removeListener(name, fn, caller) {
+        removeListener: function (name, fn, caller) {
             var listener = this.__createListener(fn, caller);
             if (this._events && this._events[name]) {
                 var list = this._events[name];
@@ -82,7 +75,7 @@ exports.default = function (jm) {
 
                     for (var i = 0, l = list.length; i < l; i++) {
                         var o = list[i];
-                        if (this.__equalsListener(o, listener) || o.listener && this.__equalsListener(o.listener, listener)) {
+                        if (this.__equalsListener(o, listener) || (o.listener && this.__equalsListener(o.listener, listener))) {
                             pos = i;
                             break;
                         }
@@ -97,7 +90,7 @@ exports.default = function (jm) {
                     if (!list.length) {
                         delete this._events[name];
                     }
-                } else if (this.__equalsListener(list, listener) || list.listener && this.__equalsListener(list.listener, listener)) {
+                } else if (this.__equalsListener(list, listener) || (list.listener && this.__equalsListener(list.listener, listener))) {
                     delete this._events[name];
                 }
             }
@@ -111,7 +104,7 @@ exports.default = function (jm) {
          * @api public
          */
 
-        removeAllListeners: function removeAllListeners(name) {
+        removeAllListeners: function (name) {
             if (name === undefined) {
                 this._events = {};
                 return this;
@@ -130,7 +123,7 @@ exports.default = function (jm) {
          * @api publci
          */
 
-        listeners: function listeners(name) {
+        listeners: function (name) {
             if (!this._events[name]) {
                 this._events[name] = [];
             }
@@ -150,11 +143,11 @@ exports.default = function (jm) {
          * @api public
          */
 
-        emit: function emit(name, arg1, arg2, arg3, arg4, arg5) {
+        emit: function (name, arg1, arg2, arg3, arg4, arg5) {
             var handler = this._events[name];
             if (!handler) return this;
 
-            if ((typeof handler === 'undefined' ? 'undefined' : _typeof(handler)) === 'object' && !Array.isArray(handler)) {
+            if (typeof handler === 'object' && !Array.isArray(handler)) {
                 handler.fn.call(handler.caller || this, arg1, arg2, arg3, arg4, arg5);
             } else if (Array.isArray(handler)) {
                 var listeners = new Array(handler.length);
@@ -173,7 +166,7 @@ exports.default = function (jm) {
 
     jm.eventEmitter = function () {
         return new jm.EventEmitter();
-    };
+    }
 
     var prototype = jm.EventEmitter.prototype;
     var EventEmitter = {
@@ -206,6 +199,5 @@ exports.default = function (jm) {
         }
         return this;
     };
-};
 
-module.exports = exports['default'];
+}

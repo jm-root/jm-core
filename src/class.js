@@ -1,17 +1,13 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var fnTest = /xyz/.test(function () {
+let fnTest = /xyz/.test(function () {
     xyz;
 }) ? /\b_super\b/ : /.*/;
 
-exports.default = function (jm) {
-    // The base Class implementation (does nothing)
-    jm.Class = function () {};
+export default jm => {
+// The base Class implementation (does nothing)
+    jm.Class = function () {
+    };
 
-    // Create a new Class that inherits from this class
+// Create a new Class that inherits from this class
     jm.Class.extend = function (prop) {
         var _super = this.prototype;
 
@@ -25,22 +21,25 @@ exports.default = function (jm) {
                 continue;
             }
             // Check if we're overwriting an existing function
-            prototype[name] = typeof prop[name] == "function" && typeof _super[name] == "function" && fnTest.test(prop[name]) ? function (name, fn) {
-                return function () {
-                    var tmp = this._super;
+            prototype[name] = typeof prop[name] == "function" &&
+            typeof _super[name] == "function" && fnTest.test(prop[name]) ?
+                (function (name, fn) {
+                    return function () {
+                        var tmp = this._super;
 
-                    // Add a new ._super() method that is the same method
-                    // but on the super-class
-                    this._super = _super[name];
+                        // Add a new ._super() method that is the same method
+                        // but on the super-class
+                        this._super = _super[name];
 
-                    // The method only need to be bound temporarily, so we
-                    // remove it when we're done executing
-                    var ret = fn.apply(this, arguments);
-                    this._super = tmp;
+                        // The method only need to be bound temporarily, so we
+                        // remove it when we're done executing
+                        var ret = fn.apply(this, arguments);
+                        this._super = tmp;
 
-                    return ret;
-                };
-            }(name, prop[name]) : prop[name];
+                        return ret;
+                    };
+                })(name, prop[name]) :
+                prop[name];
         }
 
         {
@@ -60,11 +59,12 @@ exports.default = function (jm) {
         // The dummy class constructor
         function Class() {
             if (this._className) {
-                Object.defineProperty(this, "className", { value: this._className, writable: false });
+                Object.defineProperty(this, "className", {value: this._className, writable: false});
             }
 
             // All construction is actually done in the init method
-            if (this.ctor) this.ctor.apply(this, arguments);
+            if (this.ctor)
+                this.ctor.apply(this, arguments);
         }
 
         // Populate our constructed prototype object
@@ -79,5 +79,3 @@ exports.default = function (jm) {
         return Class;
     };
 };
-
-module.exports = exports["default"];

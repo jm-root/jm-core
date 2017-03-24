@@ -1,46 +1,40 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-exports.default = function (jm) {
+export default jm => {
     jm.TagObject = jm.EventEmitter.extend({
         _className: 'tagObject',
 
-        ctor: function ctor() {
+        ctor: function(){
             this._super();
             this._tags = [];
             Object.defineProperty(this, "tags", { value: this._tags, writable: false });
         },
 
-        destroy: function destroy() {
+        destroy: function(){
             this.emit('destroy', this);
             this.removeAllTags();
         },
 
-        hasTag: function hasTag(tag) {
+        hasTag: function(tag){
             var tags = this._tags;
             return tags.indexOf(tag) != -1;
         },
 
-        hasTagAny: function hasTagAny(tags) {
-            for (var i in tags) {
+        hasTagAny: function(tags){
+            for(var i in tags){
                 var t = tags[i];
-                if (this.hasTag(t)) return true;
+                if(this.hasTag(t)) return true;
             }
             return false;
         },
 
-        hasTagAll: function hasTagAll(tags) {
-            for (var i in tags) {
+        hasTagAll: function(tags){
+            for(var i in tags){
                 var t = tags[i];
-                if (!this.hasTag(t)) return false;
+                if(!this.hasTag(t)) return false;
             }
             return true;
         },
 
-        addTag: function addTag(tag) {
+        addTag: function(tag){
             var tags = this._tags;
             if (this.hasTag(tag)) return this;
             tags.push(tag);
@@ -48,35 +42,35 @@ exports.default = function (jm) {
             return this;
         },
 
-        addTags: function addTags(tags) {
-            for (var i in tags) {
+        addTags: function(tags){
+            for(var i in tags){
                 var t = tags[i];
                 this.addTag(t);
             }
             return this;
         },
 
-        removeTag: function removeTag(tag) {
+        removeTag: function(tag){
             var tags = this._tags;
             var idx = tags.indexOf(tag);
-            if (idx >= 0) {
+            if(idx>=0){
                 tags.splice(idx, 1);
             }
             this.emit('removeTag', tag);
             return this;
         },
 
-        removeTags: function removeTags(tags) {
-            for (var i in tags) {
+        removeTags: function(tags){
+            for(var i in tags){
                 var t = tags[i];
                 this.removeTag(t);
             }
             return this;
         },
 
-        removeAllTags: function removeAllTags() {
+        removeAllTags: function () {
             var v = this._tags;
-            for (i in v) {
+            for(i in v){
                 this.emit('removeTag', v[i]);
             }
             this._tags = [];
@@ -86,9 +80,7 @@ exports.default = function (jm) {
 
     });
 
-    jm.tagObject = function () {
-        return new jm.TagObject();
-    };
+    jm.tagObject = function(){return new jm.TagObject();}
 
     var prototype = jm.TagObject.prototype;
     var Tag = {
@@ -104,9 +96,9 @@ exports.default = function (jm) {
         removeAllTags: prototype.removeAllTags
     };
 
-    jm.enableTag = function (obj) {
-        if (obj._tags != undefined) return;
-        for (key in Tag) {
+    jm.enableTag = function(obj) {
+        if(obj._tags!=undefined) return;
+        for(key in Tag){
             obj[key] = Tag[key];
         }
         obj._tags = [];
@@ -114,12 +106,10 @@ exports.default = function (jm) {
         jm.enableEvent(obj);
     };
 
-    jm.disableTag = function (obj) {
-        for (key in Tag) {
+    jm.disableTag = function(obj) {
+        for(key in Tag){
             delete obj[key];
         }
         jm.disableEvent(obj);
     };
 };
-
-module.exports = exports['default'];

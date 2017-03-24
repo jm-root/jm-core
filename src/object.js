@@ -1,16 +1,10 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-exports.default = function (jm) {
+export default jm => {
     jm.Object = jm.Class.extend({
         _className: 'object',
 
-        attr: function attr(attrs) {
+        attr: function (attrs) {
             for (var key in attrs) {
-                if (key === 'className') {
+                if(key === 'className'){
                     continue;
                 }
 
@@ -19,9 +13,7 @@ exports.default = function (jm) {
         }
     });
 
-    jm.object = function () {
+    jm.object = function(){
         return new jm.Object();
     };
 };
-
-module.exports = exports['default'];

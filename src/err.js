@@ -1,9 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var ERR = {
+let ERR = {
     SUCCESS: {
         err: 0,
         msg: 'Success'
@@ -85,8 +80,6 @@ var ERR = {
     }
 };
 
-exports.default = function (jm) {
+export default jm => {
     jm.ERR = ERR;
 };
-
-module.exports = exports['default'];
