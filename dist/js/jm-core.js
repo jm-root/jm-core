@@ -48,15 +48,38 @@ exports.default = function ($) {
 
         {
             var properties = prop['properties'];
-            for (var key in properties) {
-                var desc = properties[key];
-                if (desc.get && typeof desc.get == 'string') {
-                    desc.get = prototype[desc.get];
+            if (properties) {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = Object.keys(properties)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var key = _step.value;
+
+                        var desc = properties[key];
+                        if (desc.get && typeof desc.get == 'string') {
+                            desc.get = prototype[desc.get];
+                        }
+                        if (desc.set && typeof desc.set == 'string') {
+                            desc.set = prototype[desc.set];
+                        }
+                        Object.defineProperty(prototype, key, desc);
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
                 }
-                if (desc.set && typeof desc.set == 'string') {
-                    desc.set = prototype[desc.set];
-                }
-                Object.defineProperty(prototype, key, desc);
             }
         }
 
@@ -378,7 +401,6 @@ exports.default = function ($) {
     var prototype = $.EventEmitter.prototype;
     var EventEmitter = {
         _events: {},
-
         __createListener: prototype.__createListener,
         __equalsListener: prototype.__equalsListener,
         on: prototype.on,
@@ -393,17 +415,61 @@ exports.default = function ($) {
     var em = EventEmitter;
     $.enableEvent = function (obj) {
         if (obj._events !== undefined) return;
-        for (var key in em) {
-            obj[key] = em[key];
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = Object.keys(em)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var key = _step.value;
+
+                obj[key] = em[key];
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
         }
+
         obj._events = {};
         return this;
     };
 
     $.disableEvent = function (obj) {
-        for (var key in em) {
-            delete obj[key];
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+            for (var _iterator2 = Object.keys(em)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                var key = _step2.value;
+
+                delete obj[key];
+            }
+        } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                    _iterator2.return();
+                }
+            } finally {
+                if (_didIteratorError2) {
+                    throw _iteratorError2;
+                }
+            }
         }
+
         return this;
     };
 
@@ -888,7 +954,6 @@ exports.default = function ($) {
     var prototype = $.TagObject.prototype;
     var Tag = {
         _tags: [],
-
         hasTag: prototype.hasTag,
         hasTagAny: prototype.hasTagAny,
         hasTagAll: prototype.hasTagAll,
@@ -901,9 +966,31 @@ exports.default = function ($) {
 
     $.enableTag = function (obj) {
         if (obj._tags != undefined) return;
-        for (var key in Tag) {
-            obj[key] = Tag[key];
+        var _iteratorNormalCompletion6 = true;
+        var _didIteratorError6 = false;
+        var _iteratorError6 = undefined;
+
+        try {
+            for (var _iterator6 = Object.keys(Tag)[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                var key = _step6.value;
+
+                obj[key] = Tag[key];
+            }
+        } catch (err) {
+            _didIteratorError6 = true;
+            _iteratorError6 = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                    _iterator6.return();
+                }
+            } finally {
+                if (_didIteratorError6) {
+                    throw _iteratorError6;
+                }
+            }
         }
+
         obj._tags = [];
         Object.defineProperty(obj, 'tags', {
             value: obj._tags,
@@ -913,9 +1000,31 @@ exports.default = function ($) {
     };
 
     $.disableTag = function (obj) {
-        for (var key in Tag) {
-            delete obj[key];
+        var _iteratorNormalCompletion7 = true;
+        var _didIteratorError7 = false;
+        var _iteratorError7 = undefined;
+
+        try {
+            for (var _iterator7 = Object.keys(Tag)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                var key = _step7.value;
+
+                delete obj[key];
+            }
+        } catch (err) {
+            _didIteratorError7 = true;
+            _iteratorError7 = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                    _iterator7.return();
+                }
+            } finally {
+                if (_didIteratorError7) {
+                    throw _iteratorError7;
+                }
+            }
         }
+
         $.disableEvent(obj);
     };
 

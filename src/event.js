@@ -178,7 +178,6 @@ export default ($, name = 'eventr') => {
     let prototype = $.EventEmitter.prototype;
     let EventEmitter = {
         _events: {},
-
         __createListener: prototype.__createListener,
         __equalsListener: prototype.__equalsListener,
         on: prototype.on,
@@ -193,7 +192,7 @@ export default ($, name = 'eventr') => {
     let em = EventEmitter;
     $.enableEvent = function (obj) {
         if (obj._events !== undefined) return;
-        for (let key in em) {
+        for (let key of Object.keys(em)) {
             obj[key] = em[key];
         }
         obj._events = {};
@@ -201,7 +200,7 @@ export default ($, name = 'eventr') => {
     };
 
     $.disableEvent = function (obj) {
-        for (let key in em) {
+        for (let key of Object.keys(em)) {
             delete obj[key];
         }
         return this;

@@ -86,7 +86,6 @@ export default ($, name = 'tag') => {
     let prototype = $.TagObject.prototype;
     let Tag = {
         _tags: [],
-
         hasTag: prototype.hasTag,
         hasTagAny: prototype.hasTagAny,
         hasTagAll: prototype.hasTagAll,
@@ -99,7 +98,7 @@ export default ($, name = 'tag') => {
 
     $.enableTag = function (obj) {
         if (obj._tags != undefined) return;
-        for (let key in Tag) {
+        for (let key of Object.keys(Tag)) {
             obj[key] = Tag[key];
         }
         obj._tags = [];
@@ -111,7 +110,7 @@ export default ($, name = 'tag') => {
     };
 
     $.disableTag = function (obj) {
-        for (let key in Tag) {
+        for (let key of Object.keys(Tag)) {
             delete obj[key];
         }
         $.disableEvent(obj);

@@ -44,15 +44,17 @@ export default ($, name = 'Class') => {
 
         {
             let properties = prop['properties'];
-            for (let key in properties) {
-                let desc = properties[key];
-                if (desc.get && typeof desc.get == 'string') {
-                    desc.get = prototype[desc.get];
+            if (properties) {
+                for (let key of Object.keys(properties)) {
+                    let desc = properties[key];
+                    if (desc.get && typeof desc.get == 'string') {
+                        desc.get = prototype[desc.get];
+                    }
+                    if (desc.set && typeof desc.set == 'string') {
+                        desc.set = prototype[desc.set];
+                    }
+                    Object.defineProperty(prototype, key, desc);
                 }
-                if (desc.set && typeof desc.set == 'string') {
-                    desc.set = prototype[desc.set];
-                }
-                Object.defineProperty(prototype, key, desc);
             }
         }
 
