@@ -36,7 +36,7 @@ gulp.task('eslint', function () {
         ;
 });
 
-gulp.task('es6to5', function() {
+gulp.task('es6to5', ['eslint'], function() {
     return gulp.src('./src/**/*.js')
         .pipe(babel())
         .pipe(gulp.dest('./lib/'));
@@ -53,5 +53,5 @@ gulp.task('pack', ['es6to5'], function() {
         );
 });
 
-gulp.task('default', gulpSequence('clean', 'jshint', ['pack']));
+gulp.task('default', gulpSequence('clean', ['pack']));
 

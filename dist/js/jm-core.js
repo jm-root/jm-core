@@ -127,90 +127,89 @@ module.exports = exports["default"];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var ERR = {
-    SUCCESS: {
-        err: 0,
-        msg: 'Success'
-    },
-
-    FAIL: {
-        err: 1,
-        msg: 'Fail'
-    },
-
-    FA_SYS: {
-        err: 2,
-        msg: 'System Error'
-    },
-
-    FA_NETWORK: {
-        err: 3,
-        msg: 'Network Error'
-    },
-
-    FA_PARAMS: {
-        err: 4,
-        msg: 'Parameter Error'
-    },
-
-    FA_BUSY: {
-        err: 5,
-        msg: 'Busy'
-    },
-
-    FA_TIMEOUT: {
-        err: 6,
-        msg: 'Time Out'
-    },
-
-    FA_ABORT: {
-        err: 7,
-        msg: 'Abort'
-    },
-
-    FA_NOTREADY: {
-        err: 8,
-        msg: 'Not Ready'
-    },
-
-    OK: {
-        err: 200,
-        msg: 'OK'
-    },
-
-    FA_BADREQUEST: {
-        err: 400,
-        msg: 'Bad Request'
-    },
-
-    FA_NOAUTH: {
-        err: 401,
-        msg: 'Unauthorized'
-    },
-
-    FA_NOPERMISSION: {
-        err: 403,
-        msg: 'Forbidden'
-    },
-
-    FA_NOTFOUND: {
-        err: 404,
-        msg: 'Not Found'
-    },
-
-    FA_INTERNALERROR: {
-        err: 500,
-        msg: 'Internal Server Error'
-    },
-
-    FA_UNAVAILABLE: {
-        err: 503,
-        msg: 'Service Unavailable'
-    }
-};
 
 exports.default = function (jm) {
-    jm.ERR = ERR;
+    jm.ERR = {
+        SUCCESS: {
+            err: 0,
+            msg: 'Success'
+        },
+
+        FAIL: {
+            err: 1,
+            msg: 'Fail'
+        },
+
+        FA_SYS: {
+            err: 2,
+            msg: 'System Error'
+        },
+
+        FA_NETWORK: {
+            err: 3,
+            msg: 'Network Error'
+        },
+
+        FA_PARAMS: {
+            err: 4,
+            msg: 'Parameter Error'
+        },
+
+        FA_BUSY: {
+            err: 5,
+            msg: 'Busy'
+        },
+
+        FA_TIMEOUT: {
+            err: 6,
+            msg: 'Time Out'
+        },
+
+        FA_ABORT: {
+            err: 7,
+            msg: 'Abort'
+        },
+
+        FA_NOTREADY: {
+            err: 8,
+            msg: 'Not Ready'
+        },
+
+        OK: {
+            err: 200,
+            msg: 'OK'
+        },
+
+        FA_BADREQUEST: {
+            err: 400,
+            msg: 'Bad Request'
+        },
+
+        FA_NOAUTH: {
+            err: 401,
+            msg: 'Unauthorized'
+        },
+
+        FA_NOPERMISSION: {
+            err: 403,
+            msg: 'Forbidden'
+        },
+
+        FA_NOTFOUND: {
+            err: 404,
+            msg: 'Not Found'
+        },
+
+        FA_INTERNALERROR: {
+            err: 500,
+            msg: 'Internal Server Error'
+        },
+
+        FA_UNAVAILABLE: {
+            err: 503,
+            msg: 'Service Unavailable'
+        }
+    };
 };
 
 module.exports = exports['default'];
@@ -240,8 +239,8 @@ exports.default = function (jm) {
             };
         },
 
-        __equalsListener: function __equalsListener(listener1, listener2) {
-            return listener1.fn === listener2.fn && listener1.caller === listener2.caller;
+        __equalsListener: function __equalsListener(l1, l2) {
+            return l1.fn === l2.fn && l1.caller === l2.caller;
         },
 
         /**
@@ -269,11 +268,12 @@ exports.default = function (jm) {
          */
 
         once: function once(name, fn, caller) {
-            var self = this;
+            var _this = this;
+
             var listener = this.__createListener(fn, caller);
 
-            function on(arg1, arg2, arg3, arg4, arg5) {
-                self.removeListener(name, on);
+            var on = function on(arg1, arg2, arg3, arg4, arg5) {
+                _this.removeListener(name, on);
                 fn.call(listener.caller, arg1, arg2, arg3, arg4, arg5);
             };
 
@@ -379,8 +379,8 @@ exports.default = function (jm) {
                     listeners[i] = handler[i];
                 }
 
-                for (var i = 0, l = listeners.length; i < l; i++) {
-                    var h = listeners[i];
+                for (var _i = 0, l = listeners.length; _i < l; _i++) {
+                    var h = listeners[_i];
                     if (h.fn.call(h.caller || this, arg1, arg2, arg3, arg4, arg5) === false) break;
                 }
             }
@@ -479,8 +479,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var jm = function jm() {
     var o = {
         use: function use(m) {
-            m(this);
-            return this;
+            m(o);
+            return o;
         }
     };
     o.use(_root2.default).use(_err2.default).use(_logger2.default).use(_aop2.default).use(_utils2.default).use(_class2.default).use(_object2.default).use(_random2.default).use(_event2.default).use(_tag2.default);
@@ -501,15 +501,13 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 var getLogger = function getLogger(loggerCategoryName) {
-    console.debug = console.debug || console.log;
+    console.debug || (console.debug = console.log);
     return console;
 };
 
-var logger = getLogger();
-
 exports.default = function (jm) {
     jm.getLogger = getLogger;
-    jm.logger = logger;
+    jm.logger = getLogger();
 };
 
 module.exports = exports["default"];
@@ -547,10 +545,9 @@ module.exports = exports['default'];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var iRandomMax = 200000000000; //最大随机整数范围 0 <= randomValue <= iRandomMax;
+var iRandomMax = 200000000000; // 最大随机整数范围 0 <= randomValue <= iRandomMax;
 
 exports.default = function (jm) {
-
     jm.Random = jm.Class.extend({
         _className: 'random',
 
@@ -577,7 +574,7 @@ exports.default = function (jm) {
             return this.g_seed / 233280.0;
         },
 
-        //min<=result<=max
+        // min<=result<=max
         randomInt: function randomInt(min, max) {
             if (max === undefined) {
                 max = min;
@@ -587,7 +584,7 @@ exports.default = function (jm) {
             return Math.round(range);
         },
 
-        //min<=result<=max
+        // min<=result<=max
         randomDouble: function randomDouble(min, max) {
             if (max === undefined) {
                 max = min;
@@ -620,12 +617,11 @@ module.exports = exports['default'];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var root = {
-    registries: {}
-};
 
 exports.default = function (jm) {
-    jm.root = root;
+    jm.root = {
+        registries: {}
+    };
     return jm;
 };
 
@@ -644,7 +640,10 @@ exports.default = function (jm) {
         ctor: function ctor() {
             this._super();
             this._tags = [];
-            Object.defineProperty(this, "tags", { value: this._tags, writable: false });
+            Object.defineProperty(this, 'tags', {
+                value: this._tags,
+                writable: false
+            });
         },
 
         destroy: function destroy() {
@@ -658,18 +657,60 @@ exports.default = function (jm) {
         },
 
         hasTagAny: function hasTagAny(tags) {
-            for (var i in tags) {
-                var t = tags[i];
-                if (this.hasTag(t)) return true;
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var t = _step.value;
+
+                    if (this.hasTag(t)) return true;
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
             }
+
             return false;
         },
 
         hasTagAll: function hasTagAll(tags) {
-            for (var i in tags) {
-                var t = tags[i];
-                if (!this.hasTag(t)) return false;
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = tags[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var t = _step2.value;
+
+                    if (!this.hasTag(t)) return false;
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
             }
+
             return true;
         },
 
@@ -682,10 +723,31 @@ exports.default = function (jm) {
         },
 
         addTags: function addTags(tags) {
-            for (var i in tags) {
-                var t = tags[i];
-                this.addTag(t);
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = tags[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var t = _step3.value;
+
+                    this.addTag(t);
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
             }
+
             return this;
         },
 
@@ -700,18 +762,61 @@ exports.default = function (jm) {
         },
 
         removeTags: function removeTags(tags) {
-            for (var i in tags) {
-                var t = tags[i];
-                this.removeTag(t);
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
+
+            try {
+                for (var _iterator4 = tags[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var t = _step4.value;
+
+                    this.removeTag(t);
+                }
+            } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
+                    }
+                } finally {
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
+                    }
+                }
             }
+
             return this;
         },
 
         removeAllTags: function removeAllTags() {
             var v = this._tags;
-            for (i in v) {
-                this.emit('removeTag', v[i]);
+            var _iteratorNormalCompletion5 = true;
+            var _didIteratorError5 = false;
+            var _iteratorError5 = undefined;
+
+            try {
+                for (var _iterator5 = v[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                    var t = _step5.value;
+
+                    this.emit('removeTag', t);
+                }
+            } catch (err) {
+                _didIteratorError5 = true;
+                _iteratorError5 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                        _iterator5.return();
+                    }
+                } finally {
+                    if (_didIteratorError5) {
+                        throw _iteratorError5;
+                    }
+                }
             }
+
             this._tags = [];
             this.emit('removeAllTags');
             return this;
@@ -739,16 +844,19 @@ exports.default = function (jm) {
 
     jm.enableTag = function (obj) {
         if (obj._tags != undefined) return;
-        for (key in Tag) {
+        for (var key in Tag) {
             obj[key] = Tag[key];
         }
         obj._tags = [];
-        Object.defineProperty(obj, "tags", { value: obj._tags, writable: false });
+        Object.defineProperty(obj, 'tags', {
+            value: obj._tags,
+            writable: false
+        });
         jm.enableEvent(obj);
     };
 
     jm.disableTag = function (obj) {
-        for (key in Tag) {
+        for (var key in Tag) {
             delete obj[key];
         }
         jm.disableEvent(obj);
@@ -765,7 +873,7 @@ Object.defineProperty(exports, "__esModule", {
 
 exports.default = function (jm) {
     jm.utils = {
-        //高效slice
+        // 高效slice
         slice: function slice(a, start, end) {
             start = start || 0;
             end = end || a.length;
