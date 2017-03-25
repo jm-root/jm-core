@@ -13,7 +13,7 @@ gulp.task('clean', function () {
 
 gulp.task('api', function () {
 	return gulp.src([
-		'../lib/**/*.js',
+		'../src/**/*.js',
 	]).pipe(jsdoc('api', {
 		path: 'node_modules/jaguarjs-jsdoc',
 		anyTemplateSpecificParameter: 'whatever'

@@ -7,7 +7,6 @@ describe('root', function () {
     it('jm.root', function () {
         expect(jm.global).to.be.an('object');
         expect(jm.modules).to.be.an('object');
-        expect(jm.registries).to.be.an('object');
     });
     it('unuse', function () {
         jm.unuse('ERR');
@@ -25,7 +24,6 @@ describe('global', function () {
     it('jm.root', function () {
         expect(jm.global).to.be.an('object');
         expect(jm.modules).to.be.an('object');
-        expect(jm.registries).to.be.an('object');
     });
     it('unuse', function () {
         jm.unuse('ERR');

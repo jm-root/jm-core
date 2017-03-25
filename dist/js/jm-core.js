@@ -4,54 +4,6 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-exports.default = function (jm) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'aop';
-
-    jm[name] = {
-        _Arguments: function _Arguments(args) {
-            //convert arguments object to array
-            this.value = [].slice.call(args);
-        },
-
-        arguments: function _arguments() {
-            //convert arguments object to array
-            return new this._Arguments(arguments);
-        },
-
-        inject: function inject(aOrgFunc, aBeforeExec, aAtferExec) {
-            var self = this;
-            return function () {
-                var Result,
-                    isDenied = false,
-                    args = [].slice.call(arguments);
-                if (typeof aBeforeExec == 'function') {
-                    Result = aBeforeExec.apply(this, args);
-                    if (Result instanceof self._Arguments) //(Result.constructor === _Arguments)
-                        args = Result.value;else if (isDenied = Result !== undefined) args.push(Result);
-                }
-                !isDenied && args.push(aOrgFunc.apply(this, args)); //if (!isDenied) args.push(aOrgFunc.apply(this, args));
-                if (typeof aAtferExec == 'function') Result = aAtferExec.apply(this, args.concat(isDenied));else Result = undefined;
-                return Result !== undefined ? Result : args.pop();
-            };
-        }
-    };
-
-    return {
-        name: name,
-        unuse: function unuse(jm) {
-            delete jm[name];
-        }
-    };
-};
-
-module.exports = exports['default'];
-},{}],2:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 var fnTest = /xyz/.test(function () {
     xyz;
 }) ? /\b_super\b/ : /.*/;
@@ -139,7 +91,7 @@ exports.default = function (jm) {
 };
 
 module.exports = exports['default'];
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -239,7 +191,7 @@ exports.default = function (jm) {
 };
 
 module.exports = exports['default'];
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -464,7 +416,7 @@ exports.default = function (jm) {
 };
 
 module.exports = exports['default'];
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -483,10 +435,6 @@ var _logger2 = _interopRequireDefault(_logger);
 var _err = require('./err');
 
 var _err2 = _interopRequireDefault(_err);
-
-var _aop = require('./aop');
-
-var _aop2 = _interopRequireDefault(_aop);
 
 var _utils = require('./utils');
 
@@ -515,7 +463,11 @@ var _tag2 = _interopRequireDefault(_tag);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var jm = function jm() {
-    var o = (0, _root2.default)().use(_logger2.default).use(_err2.default).use(_aop2.default).use(_utils2.default).use(_class2.default).use(_object2.default).use(_random2.default).use(_event2.default).use(_tag2.default);
+    var o = {
+        global: {}
+    };
+    (0, _root2.default)(o);
+    o.use(_logger2.default).use(_err2.default).use(_utils2.default).use(_class2.default).use(_object2.default).use(_random2.default).use(_event2.default).use(_tag2.default);
     o.enableEvent(o);
     return o;
 };
@@ -527,7 +479,7 @@ if (typeof global !== 'undefined' && global) {
 exports.default = jm;
 module.exports = exports['default'];
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./aop":1,"./class":2,"./err":3,"./event":4,"./logger":6,"./object":7,"./random":8,"./root":9,"./tag":10,"./utils":11}],6:[function(require,module,exports){
+},{"./class":1,"./err":2,"./event":3,"./logger":5,"./object":6,"./random":7,"./root":8,"./tag":9,"./utils":10}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -553,7 +505,7 @@ exports.default = function (jm) {
 };
 
 module.exports = exports['default'];
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -591,7 +543,7 @@ exports.default = function (jm) {
 };
 
 module.exports = exports['default'];
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -673,7 +625,7 @@ exports.default = function (jm) {
 };
 
 module.exports = exports['default'];
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -682,44 +634,39 @@ Object.defineProperty(exports, "__esModule", {
 var _use = function _use(_, fn, name) {
     var m = fn(_, name);
     if (m && m.name) {
-        _.root.modules[m.name] = m;
-        _.logger && _.logger.info('use ' + m.name);
+        _.modules[m.name] = m;
     }
     return m;
 };
 
-exports.default = function () {
-    return {
-        root: {
-            modules: {},
-            registries: {}
-        },
-
-        use: function use(pathOrFn, name) {
-            var fn = pathOrFn;
-            if (typeof fn === 'string') {} else if (typeof fn === 'function') {
-                _use(this, fn, name);
-            }
-            return this;
-        },
-
-        unuse: function unuse(nameOrModule) {
-            var m = nameOrModule;
-            if (typeof m === 'string') m = this.root.modules[m];
-            if (m) {
-                if (m.name) {
-                    delete this.root.modules[m.name];
-                }
-                if (m.unuse) m.unuse(this);
-            }
-            return this;
+exports.default = function (jm) {
+    jm.modules = {};
+    jm.use = function (pathOrFn, name) {
+        var fn = pathOrFn;
+        if (typeof fn === 'string') {} else if (typeof fn === 'function') {
+            _use(this, fn, name);
         }
+        return this;
+    };
+    jm.unuse = function (nameOrModule) {
+        var m = nameOrModule;
+        if (typeof m === 'string') m = this.modules[m];
+        if (m) {
+            if (m.name) {
+                delete this.modules[m.name];
+            }
+            if (m.unuse) m.unuse(this);
+        }
+        return this;
+    };
 
+    return {
+        name: 'root'
     };
 };
 
 module.exports = exports['default'];
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -969,7 +916,7 @@ exports.default = function (jm) {
 };
 
 module.exports = exports['default'];
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1007,4 +954,4 @@ exports.default = function (jm) {
 };
 
 module.exports = exports['default'];
-},{}]},{},[5])
+},{}]},{},[4])
