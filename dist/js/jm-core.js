@@ -6,7 +6,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (jm) {
-    jm.aop = {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'aop';
+
+    jm[name] = {
         _Arguments: function _Arguments(args) {
             //convert arguments object to array
             this.value = [].slice.call(args);
@@ -34,11 +36,18 @@ exports.default = function (jm) {
             };
         }
     };
+
+    return {
+        name: name,
+        unuse: function unuse(jm) {
+            delete jm[name];
+        }
+    };
 };
 
 module.exports = exports['default'];
 },{}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -48,11 +57,13 @@ var fnTest = /xyz/.test(function () {
 }) ? /\b_super\b/ : /.*/;
 
 exports.default = function (jm) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'Class';
+
     // The base Class implementation (does nothing)
-    jm.Class = function () {};
+    jm[name] = function () {};
 
     // Create a new Class that inherits from this class
-    jm.Class.extend = function (prop) {
+    jm[name].extend = function (prop) {
         var _super = this.prototype;
 
         // Instantiate a base class (but only create the instance,
@@ -60,12 +71,12 @@ exports.default = function (jm) {
         var prototype = Object.create(_super);
 
         // Copy the properties over onto the new prototype
-        for (var name in prop) {
-            if (name == 'properties') {
+        for (var _name in prop) {
+            if (_name == 'properties') {
                 continue;
             }
             // Check if we're overwriting an existing function
-            prototype[name] = typeof prop[name] == "function" && typeof _super[name] == "function" && fnTest.test(prop[name]) ? function (name, fn) {
+            prototype[_name] = typeof prop[_name] == "function" && typeof _super[_name] == "function" && fnTest.test(prop[_name]) ? function (name, fn) {
                 return function () {
                     var tmp = this._super;
 
@@ -80,7 +91,7 @@ exports.default = function (jm) {
 
                     return ret;
                 };
-            }(name, prop[name]) : prop[name];
+            }(_name, prop[_name]) : prop[_name];
         }
 
         {
@@ -114,13 +125,20 @@ exports.default = function (jm) {
         Class.prototype.constructor = Class;
 
         // And make this class extendable
-        Class.extend = jm.Class.extend;
+        Class.extend = jm[name].extend;
 
         return Class;
     };
+
+    return {
+        name: name,
+        unuse: function unuse(jm) {
+            delete jm[name];
+        }
+    };
 };
 
-module.exports = exports["default"];
+module.exports = exports['default'];
 },{}],3:[function(require,module,exports){
 'use strict';
 
@@ -129,7 +147,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (jm) {
-    jm.ERR = {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ERR';
+
+    jm[name] = {
         SUCCESS: {
             err: 0,
             msg: 'Success'
@@ -210,6 +230,12 @@ exports.default = function (jm) {
             msg: 'Service Unavailable'
         }
     };
+    return {
+        name: name,
+        unuse: function unuse(jm) {
+            delete jm[name];
+        }
+    };
 };
 
 module.exports = exports['default'];
@@ -223,6 +249,8 @@ Object.defineProperty(exports, "__esModule", {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 exports.default = function (jm) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'event';
+
     jm.EventEmitter = jm.Object.extend({
         _className: 'eventEmitter',
 
@@ -423,6 +451,16 @@ exports.default = function (jm) {
         }
         return this;
     };
+
+    return {
+        name: name,
+        unuse: function unuse(jm) {
+            delete jm.EventEmitter;
+            delete jm.eventEmitter;
+            delete jm.enableEvent;
+            delete jm.disableEvent;
+        }
+    };
 };
 
 module.exports = exports['default'];
@@ -438,13 +476,13 @@ var _root = require('./root');
 
 var _root2 = _interopRequireDefault(_root);
 
-var _err = require('./err');
-
-var _err2 = _interopRequireDefault(_err);
-
 var _logger = require('./logger');
 
 var _logger2 = _interopRequireDefault(_logger);
+
+var _err = require('./err');
+
+var _err2 = _interopRequireDefault(_err);
 
 var _aop = require('./aop');
 
@@ -477,13 +515,8 @@ var _tag2 = _interopRequireDefault(_tag);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var jm = function jm() {
-    var o = {
-        use: function use(m) {
-            m(o);
-            return o;
-        }
-    };
-    o.use(_root2.default).use(_err2.default).use(_logger2.default).use(_aop2.default).use(_utils2.default).use(_class2.default).use(_object2.default).use(_random2.default).use(_event2.default).use(_tag2.default);
+    var o = (0, _root2.default)().use(_logger2.default).use(_err2.default).use(_aop2.default).use(_utils2.default).use(_class2.default).use(_object2.default).use(_random2.default).use(_event2.default).use(_tag2.default);
+    o.enableEvent(o);
     return o;
 };
 
@@ -495,7 +528,7 @@ exports.default = jm;
 module.exports = exports['default'];
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./aop":1,"./class":2,"./err":3,"./event":4,"./logger":6,"./object":7,"./random":8,"./root":9,"./tag":10,"./utils":11}],6:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -506,11 +539,20 @@ var getLogger = function getLogger(loggerCategoryName) {
 };
 
 exports.default = function (jm) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'logger';
+
     jm.getLogger = getLogger;
     jm.logger = getLogger();
+    return {
+        name: name,
+        unuse: function unuse(jm) {
+            delete jm.logger;
+            delete jm.getLogger;
+        }
+    };
 };
 
-module.exports = exports["default"];
+module.exports = exports['default'];
 },{}],7:[function(require,module,exports){
 'use strict';
 
@@ -519,6 +561,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (jm) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'object';
+
     jm.Object = jm.Class.extend({
         _className: 'object',
 
@@ -536,6 +580,14 @@ exports.default = function (jm) {
     jm.object = function () {
         return new jm.Object();
     };
+
+    return {
+        name: name,
+        unuse: function unuse(jm) {
+            delete jm.Object;
+            delete jm.object;
+        }
+    };
 };
 
 module.exports = exports['default'];
@@ -548,6 +600,8 @@ Object.defineProperty(exports, "__esModule", {
 var iRandomMax = 200000000000; // 最大随机整数范围 0 <= randomValue <= iRandomMax;
 
 exports.default = function (jm) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'random';
+
     jm.Random = jm.Class.extend({
         _className: 'random',
 
@@ -608,24 +662,63 @@ exports.default = function (jm) {
     jm.random = function (opts) {
         return new jm.Random(opts);
     };
+
+    return {
+        name: name,
+        unuse: function unuse(jm) {
+            delete jm.Random;
+            delete jm.random;
+        }
+    };
 };
 
 module.exports = exports['default'];
 },{}],9:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-exports.default = function (jm) {
-    jm.root = {
-        registries: {}
-    };
-    return jm;
+var _use = function _use(_, fn, name) {
+    var m = fn(_, name);
+    if (m && m.name) {
+        _.root.modules[m.name] = m;
+        _.logger && _.logger.info('use ' + m.name);
+    }
+    return m;
 };
 
-module.exports = exports["default"];
+exports.default = function () {
+    return {
+        root: {
+            modules: {},
+            registries: {}
+        },
+
+        use: function use(pathOrFn, name) {
+            var fn = pathOrFn;
+            if (typeof fn === 'string') {} else if (typeof fn === 'function') {
+                _use(this, fn, name);
+            }
+            return this;
+        },
+
+        unuse: function unuse(nameOrModule) {
+            var m = nameOrModule;
+            if (typeof m === 'string') m = this.root.modules[m];
+            if (m) {
+                if (m.name) {
+                    delete this.root.modules[m.name];
+                }
+                if (m.unuse) m.unuse(this);
+            }
+            return this;
+        }
+
+    };
+};
+
+module.exports = exports['default'];
 },{}],10:[function(require,module,exports){
 'use strict';
 
@@ -634,6 +727,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (jm) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'tag';
+
     jm.TagObject = jm.EventEmitter.extend({
         _className: 'tagObject',
 
@@ -861,18 +956,30 @@ exports.default = function (jm) {
         }
         jm.disableEvent(obj);
     };
+
+    return {
+        name: name,
+        unuse: function unuse(jm) {
+            delete jm.TagObject;
+            delete jm.tagObject;
+            delete jm.enableTag;
+            delete jm.disableTag;
+        }
+    };
 };
 
 module.exports = exports['default'];
 },{}],11:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
 exports.default = function (jm) {
-    jm.utils = {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'utils';
+
+    jm[name] = {
         // 高效slice
         slice: function slice(a, start, end) {
             start = start || 0;
@@ -890,7 +997,14 @@ exports.default = function (jm) {
             return JSON.stringify(obj, null, 2);
         }
     };
+
+    return {
+        name: name,
+        unuse: function unuse(jm) {
+            delete jm[name];
+        }
+    };
 };
 
-module.exports = exports["default"];
+module.exports = exports['default'];
 },{}]},{},[5])

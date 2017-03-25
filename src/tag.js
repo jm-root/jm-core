@@ -1,4 +1,4 @@
-export default (jm) => {
+export default (jm, name = 'tag') => {
     jm.TagObject = jm.EventEmitter.extend({
         _className: 'tagObject',
 
@@ -116,4 +116,15 @@ export default (jm) => {
         }
         jm.disableEvent(obj);
     };
+
+    return {
+        name: name,
+        unuse: function (jm) {
+            delete jm.TagObject;
+            delete jm.tagObject;
+            delete jm.enableTag;
+            delete jm.disableTag;
+        }
+    };
+
 };

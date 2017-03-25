@@ -1,6 +1,6 @@
 import root from './root';
-import err from './err';
 import logger from './logger';
+import err from './err';
 import aop from './aop';
 import utils from './utils';
 import Class from './class';
@@ -10,24 +10,18 @@ import event from './event';
 import tag from './tag';
 
 let jm = () => {
-    let o = {
-        use: (m) => {
-            m(o);
-            return o;
-        },
-    };
-    o
-        .use(root)
-        .use(err)
-        .use(logger)
-        .use(aop)
-        .use(utils)
-        .use(Class)
-        .use(object)
-        .use(random)
-        .use(event)
-        .use(tag)
-    ;
+    let o = root()
+            .use(logger)
+            .use(err)
+            .use(aop)
+            .use(utils)
+            .use(Class)
+            .use(object)
+            .use(random)
+            .use(event)
+            .use(tag)
+        ;
+    o.enableEvent(o);
     return o;
 };
 

@@ -3,7 +3,14 @@ let getLogger = (loggerCategoryName) => {
     return console;
 };
 
-export default (jm) => {
+export default (jm, name = 'logger') => {
     jm.getLogger = getLogger;
     jm.logger = getLogger();
+    return {
+        name: name,
+        unuse: function (jm) {
+            delete jm.logger;
+            delete jm.getLogger;
+        }
+    };
 };

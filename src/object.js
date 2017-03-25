@@ -1,4 +1,4 @@
-export default (jm) => {
+export default (jm, name = 'object') => {
     jm.Object = jm.Class.extend({
         _className: 'object',
 
@@ -15,5 +15,13 @@ export default (jm) => {
 
     jm.object = function(){
         return new jm.Object();
+    };
+
+    return {
+        name: name,
+        unuse: function (jm) {
+            delete jm.Object;
+            delete jm.object;
+        }
     };
 };

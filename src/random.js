@@ -1,6 +1,6 @@
 let iRandomMax = 200000000000;    // 最大随机整数范围 0 <= randomValue <= iRandomMax;
 
-export default (jm) => {
+export default (jm, name = 'random') => {
     jm.Random = jm.Class.extend({
         _className: 'random',
 
@@ -60,5 +60,13 @@ export default (jm) => {
 
     jm.random = function (opts) {
         return new jm.Random(opts);
+    };
+
+    return {
+        name: name,
+        unuse: function (jm) {
+            delete jm.Random;
+            delete jm.random;
+        }
     };
 };

@@ -1,4 +1,4 @@
-export default (jm) => {
+export default (jm, name = 'event') => {
     jm.EventEmitter = jm.Object.extend({
         _className: 'eventEmitter',
 
@@ -199,4 +199,13 @@ export default (jm) => {
         return this;
     };
 
+    return {
+        name: name,
+        unuse: function (jm) {
+            delete jm.EventEmitter;
+            delete jm.eventEmitter;
+            delete jm.enableEvent;
+            delete jm.disableEvent;
+        }
+    };
 }

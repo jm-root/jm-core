@@ -2,13 +2,13 @@ let fnTest = /xyz/.test(function () {
     xyz;
 }) ? /\b_super\b/ : /.*/;
 
-export default (jm) => {
+export default (jm, name = 'Class') => {
 // The base Class implementation (does nothing)
-    jm.Class = function () {
+    jm[name] = function () {
     };
 
 // Create a new Class that inherits from this class
-    jm.Class.extend = function (prop) {
+    jm[name].extend = function (prop) {
         let _super = this.prototype;
 
         // Instantiate a base class (but only create the instance,
@@ -74,8 +74,15 @@ export default (jm) => {
         Class.prototype.constructor = Class;
 
         // And make this class extendable
-        Class.extend = jm.Class.extend;
+        Class.extend = jm[name].extend;
 
         return Class;
+    };
+
+    return {
+        name: name,
+        unuse: function (jm) {
+            delete jm[name];
+        }
     };
 };

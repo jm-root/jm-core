@@ -1,5 +1,5 @@
-export default (jm) => {
-    jm.ERR = {
+export default (jm, name = 'ERR') => {
+    jm[name] = {
         SUCCESS: {
             err: 0,
             msg: 'Success',
@@ -79,5 +79,11 @@ export default (jm) => {
             err: 503,
             msg: 'Service Unavailable',
         },
+    };
+    return {
+        name: name,
+        unuse: function (jm) {
+            delete jm[name];
+        }
     };
 };

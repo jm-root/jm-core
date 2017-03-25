@@ -1,18 +1,35 @@
 import chai from 'chai';
 let expect = chai.expect;
-import JM from '../src';
+import _ from '../src';
 
-describe('root', function() {
-    let jm = JM();
-    it('jm.root', function() {
-        expect(jm.root).to.be.an('object');
-        expect(jm.root.registries).to.be.an('object');
+describe('root', function () {
+    let jm = _();
+    it('jm.root', function () {
+        expect(jm.global).to.be.an('object');
+        expect(jm.modules).to.be.an('object');
+        expect(jm.registries).to.be.an('object');
+    });
+    it('unuse', function () {
+        jm.unuse('ERR');
+        expect(jm.ERR).to.be.equal(undefined);
+    });
+    it('event', function () {
+        jm.on('test', (v) => {
+            expect(v).to.be.equal(123);
+        });
+        jm.emit('test', 123);
     });
 });
 
-describe('global', function() {
-    it('jm.root', function() {
-        expect(jm.root).to.be.an('object');
-        expect(jm.root.registries).to.be.an('object');
+describe('global', function () {
+    it('jm.root', function () {
+        expect(jm.global).to.be.an('object');
+        expect(jm.modules).to.be.an('object');
+        expect(jm.registries).to.be.an('object');
+    });
+    it('unuse', function () {
+        jm.unuse('ERR');
+        expect(jm.ERR).to.be.equal(undefined);
     });
 });
+

@@ -1,5 +1,5 @@
-export default (jm) => {
-    jm.aop = {
+export default (jm, name = 'aop') => {
+    jm[name] = {
         _Arguments: function (args) {
             //convert arguments object to array
             this.value = [].slice.call(args);
@@ -28,6 +28,13 @@ export default (jm) => {
                     Result = undefined;
                 return (Result !== undefined ? Result : args.pop());
             }
+        }
+    };
+
+    return {
+        name: name,
+        unuse: function (jm) {
+            delete jm[name];
         }
     };
 };

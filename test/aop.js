@@ -1,9 +1,9 @@
 import chai from 'chai';
 let expect = chai.expect;
-import JM from '../src';
+import _ from '../src';
 import Aop from '../src/aop';
 
-let jm = JM();
+let jm = _();
 var logger = jm.logger;
 
 var add = (v1, v2) => v1 + v2;

@@ -1,5 +1,5 @@
-export default (jm) => {
-    jm.utils = {
+export default (jm, name = 'utils') => {
+    jm[name] = {
         // 高效slice
         slice: (a, start, end) => {
             start = start || 0;
@@ -16,5 +16,12 @@ export default (jm) => {
         formatJSON: (obj) => {
             return JSON.stringify(obj, null, 2);
         },
+    };
+
+    return {
+        name: name,
+        unuse: function (jm) {
+            delete jm[name];
+        }
     };
 };

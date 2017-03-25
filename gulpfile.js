@@ -15,7 +15,7 @@ var gulp = require('gulp'),
     version = 'v' + require('./package.json').version;
 
 gulp.task('clean', function () {
-    return gulp.src(['dist/*'])
+    return gulp.src(['dist/*', 'lib/*'])
         .pipe(clean({force: true}));
 });
 
@@ -29,7 +29,8 @@ gulp.task('jshint', function () {
 
 gulp.task('eslint', function () {
     return gulp.src([
-        'src/**/*.js'
+        'src/**/*.js',
+        'test/**/*.js'
     ])
         .pipe(eslint({configFle:"./.eslintrc"}))
         .pipe(eslint.format())
