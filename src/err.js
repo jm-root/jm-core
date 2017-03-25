@@ -1,5 +1,5 @@
-export default (jm, name = 'ERR') => {
-    jm[name] = {
+export default ($, name = 'ERR') => {
+    $[name] = {
         SUCCESS: {
             err: 0,
             msg: 'Success',
@@ -82,8 +82,8 @@ export default (jm, name = 'ERR') => {
     };
     return {
         name: name,
-        unuse: function (jm) {
-            delete jm[name];
-        }
+        unuse: function ($) {
+            delete $[name];
+        },
     };
 };

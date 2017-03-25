@@ -1,9 +1,9 @@
 import chai from 'chai';
 let expect = chai.expect;
-import _ from '../src';
+import $ from '../src';
 import {random} from '../src';
 
-let jm = _();
+let jm = $();
 let r = jm.random();
 r.seed = Date.now();
 

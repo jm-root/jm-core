@@ -1,5 +1,5 @@
-export default (jm, name = 'event') => {
-    jm.EventEmitter = jm.Object.extend({
+export default ($, name = 'eventr') => {
+    $.EventEmitter = $.Object.extend({
         _className: 'eventEmitter',
 
         ctor: function () {
@@ -46,7 +46,7 @@ export default (jm, name = 'event') => {
         once: function (name, fn, caller) {
             let listener = this.__createListener(fn, caller);
 
-            var on = (arg1, arg2, arg3, arg4, arg5) => {
+            let on = (arg1, arg2, arg3, arg4, arg5) => {
                 this.removeListener(name, on);
                 fn.call(listener.caller, arg1, arg2, arg3, arg4, arg5);
             };
@@ -74,7 +74,10 @@ export default (jm, name = 'event') => {
 
                     for (let i = 0, l = list.length; i < l; i++) {
                         let o = list[i];
-                        if (this.__equalsListener(o, listener) || (o.listener && this.__equalsListener(o.listener, listener))) {
+                        if (this.__equalsListener(o, listener)
+                            || (o.listener
+                            && this.__equalsListener(o.listener, listener))
+                        ) {
                             pos = i;
                             break;
                         }
@@ -89,7 +92,10 @@ export default (jm, name = 'event') => {
                     if (!list.length) {
                         delete this._events[name];
                     }
-                } else if (this.__equalsListener(list, listener) || (list.listener && this.__equalsListener(list.listener, listener))) {
+                } else if (this.__equalsListener(list, listener)
+                    || (list.listener
+                    && this.__equalsListener(list.listener, listener))
+                ) {
                     delete this._events[name];
                 }
             }
@@ -147,7 +153,8 @@ export default (jm, name = 'event') => {
             if (!handler) return this;
 
             if (typeof handler === 'object' && !Array.isArray(handler)) {
-                handler.fn.call(handler.caller || this, arg1, arg2, arg3, arg4, arg5);
+                handler.fn.call(handler.caller || this,
+                    arg1, arg2, arg3, arg4, arg5);
             } else if (Array.isArray(handler)) {
                 let listeners = new Array(handler.length);
                 for (let i = 0; i < handler.length; i++) {
@@ -156,18 +163,19 @@ export default (jm, name = 'event') => {
 
                 for (let i = 0, l = listeners.length; i < l; i++) {
                     let h = listeners[i];
-                    if (h.fn.call(h.caller || this, arg1, arg2, arg3, arg4, arg5) === false) break;
+                    if (h.fn.call(h.caller || this,
+                            arg1, arg2, arg3, arg4, arg5) === false) break;
                 }
             }
             return this;
-        }
+        },
     });
 
-    jm.eventEmitter = function () {
-        return new jm.EventEmitter();
-    }
+    $.eventEmitter = function () {
+        return new $.EventEmitter();
+    };
 
-    let prototype = jm.EventEmitter.prototype;
+    let prototype = $.EventEmitter.prototype;
     let EventEmitter = {
         _events: {},
 
@@ -179,11 +187,11 @@ export default (jm, name = 'event') => {
         removeListener: prototype.removeListener,
         removeAllListeners: prototype.removeAllListeners,
         listeners: prototype.listeners,
-        emit: prototype.emit
+        emit: prototype.emit,
     };
 
     let em = EventEmitter;
-    jm.enableEvent = function (obj) {
+    $.enableEvent = function (obj) {
         if (obj._events !== undefined) return;
         for (let key in em) {
             obj[key] = em[key];
@@ -192,7 +200,7 @@ export default (jm, name = 'event') => {
         return this;
     };
 
-    jm.disableEvent = function (obj) {
+    $.disableEvent = function (obj) {
         for (let key in em) {
             delete obj[key];
         }
@@ -201,11 +209,11 @@ export default (jm, name = 'event') => {
 
     return {
         name: name,
-        unuse: function (jm) {
-            delete jm.EventEmitter;
-            delete jm.eventEmitter;
-            delete jm.enableEvent;
-            delete jm.disableEvent;
-        }
+        unuse: function ($) {
+            delete $.EventEmitter;
+            delete $.eventEmitter;
+            delete $.enableEvent;
+            delete $.disableEvent;
+        },
     };
-}
+};

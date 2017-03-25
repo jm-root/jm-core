@@ -1,10 +1,10 @@
-export default (jm, name = 'object') => {
-    jm.Object = jm.Class.extend({
+export default ($, name = 'object') => {
+    $.Object = $.Class.extend({
         _className: 'object',
 
         attr: function (attrs) {
             for (let key in attrs) {
-                if(key === 'className'){
+                if (key === 'className') {
                     continue;
                 }
 
@@ -13,15 +13,15 @@ export default (jm, name = 'object') => {
         },
     });
 
-    jm.object = function(){
-        return new jm.Object();
+    $.object = function () {
+        return new $.Object();
     };
 
     return {
         name: name,
-        unuse: function (jm) {
-            delete jm.Object;
-            delete jm.object;
-        }
+        unuse: function ($) {
+            delete $.Object;
+            delete $.object;
+        },
     };
 };

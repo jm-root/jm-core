@@ -1,11 +1,11 @@
 import chai from 'chai';
 let expect = chai.expect;
-import _ from '../src';
+import $ from '../src';
 import {Class} from '../src';
 
-let jm = _();
+let jm = $();
 
-var Object = jm.Class.extend({
+let Obj = jm.Class.extend({
     // 类的名称
     _className: 'object',
 
@@ -16,7 +16,10 @@ var Object = jm.Class.extend({
 
     // 类的属性定义
     properties: {
-        name: {get: 'getName', set: 'setName'}
+        name: {
+            get: 'getName',
+            set: 'setName',
+        },
     },
 
     getName: function () {
@@ -30,10 +33,10 @@ var Object = jm.Class.extend({
     // 类的方法定义
     method1: function (opts, cb) {
         cb(null, true);
-    }
+    },
 });
 
-var Object2 = Object.extend({
+let Obj2 = Obj.extend({
     // 类的名称
     _className: 'object2',
 
@@ -46,13 +49,13 @@ var Object2 = Object.extend({
     // 类的方法定义
     method1: function (opts, cb) {
         cb(null, false);
-    }
+    },
 });
 
 // test
-var obj = new Object();
+let obj = new Obj();
 obj.name = 'obj';
-var obj2 = new Object2();
+let obj2 = new Obj2();
 obj2.name = 'obj2';
 
 describe('class', function () {

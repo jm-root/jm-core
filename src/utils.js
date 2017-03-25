@@ -1,5 +1,5 @@
-export default (jm, name = 'utils') => {
-    jm[name] = {
+export default ($, name = 'utils') => {
+    $[name] = {
         // 高效slice
         slice: (a, start, end) => {
             start = start || 0;
@@ -20,8 +20,8 @@ export default (jm, name = 'utils') => {
 
     return {
         name: name,
-        unuse: function (jm) {
-            delete jm[name];
-        }
+        unuse: function ($) {
+            delete $[name];
+        },
     };
 };

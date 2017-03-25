@@ -6,17 +6,17 @@ let _use = function (_, fn, name) {
     return m;
 };
 
-export default (jm) => {
-    jm.modules = {};
-    jm.use = function (pathOrFn, name) {
+export default ($) => {
+    $.modules = {};
+    $.use = function (pathOrFn, name) {
         let fn = pathOrFn;
         if (typeof fn === 'string') {
         } else if (typeof fn === 'function') {
-            _use (this, fn, name);
+            _use(this, fn, name);
         }
         return this;
     };
-    jm.unuse = function (nameOrModule) {
+    $.unuse = function (nameOrModule) {
         let m = nameOrModule;
         if (typeof m === 'string') m = this.modules[m];
         if (m) {
@@ -29,6 +29,6 @@ export default (jm) => {
     };
 
     return {
-        name: 'root'
+        name: 'root',
     };
 };

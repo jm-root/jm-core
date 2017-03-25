@@ -2,13 +2,13 @@ let fnTest = /xyz/.test(function () {
     xyz;
 }) ? /\b_super\b/ : /.*/;
 
-export default (jm, name = 'Class') => {
+export default ($, name = 'Class') => {
 // The base Class implementation (does nothing)
-    jm[name] = function () {
+    $[name] = function () {
     };
 
 // Create a new Class that inherits from this class
-    jm[name].extend = function (prop) {
+    $[name].extend = function (prop) {
         let _super = this.prototype;
 
         // Instantiate a base class (but only create the instance,
@@ -21,8 +21,8 @@ export default (jm, name = 'Class') => {
                 continue;
             }
             // Check if we're overwriting an existing function
-            prototype[name] = typeof prop[name] == "function" &&
-            typeof _super[name] == "function" && fnTest.test(prop[name]) ?
+            prototype[name] = typeof prop[name] == 'function' &&
+            typeof _super[name] == 'function' && fnTest.test(prop[name]) ?
                 (function (name, fn) {
                     return function () {
                         let tmp = this._super;
@@ -46,10 +46,10 @@ export default (jm, name = 'Class') => {
             let properties = prop['properties'];
             for (let key in properties) {
                 let desc = properties[key];
-                if (desc.get && typeof desc.get == "string") {
+                if (desc.get && typeof desc.get == 'string') {
                     desc.get = prototype[desc.get];
                 }
-                if (desc.set && typeof desc.set == "string") {
+                if (desc.set && typeof desc.set == 'string') {
                     desc.set = prototype[desc.set];
                 }
                 Object.defineProperty(prototype, key, desc);
@@ -57,15 +57,22 @@ export default (jm, name = 'Class') => {
         }
 
         // The dummy class constructor
-        function Class() {
+        let Class = function () {
             if (this._className) {
-                Object.defineProperty(this, "className", {value: this._className, writable: false});
+                Object.defineProperty(
+                    this,
+                    'className',
+                    {
+                        value: this._className,
+                        writable: false,
+                    }
+                );
             }
 
             // All construction is actually done in the init method
             if (this.ctor)
                 this.ctor.apply(this, arguments);
-        }
+        };
 
         // Populate our constructed prototype object
         Class.prototype = prototype;
@@ -74,15 +81,15 @@ export default (jm, name = 'Class') => {
         Class.prototype.constructor = Class;
 
         // And make this class extendable
-        Class.extend = jm[name].extend;
+        Class.extend = $[name].extend;
 
         return Class;
     };
 
     return {
         name: name,
-        unuse: function (jm) {
-            delete jm[name];
-        }
+        unuse: function ($) {
+            delete $[name];
+        },
     };
 };

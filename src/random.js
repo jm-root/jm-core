@@ -1,11 +1,14 @@
 let iRandomMax = 200000000000;    // 最大随机整数范围 0 <= randomValue <= iRandomMax;
 
-export default (jm, name = 'random') => {
-    jm.Random = jm.Class.extend({
+export default ($, name = 'random') => {
+    $.Random = $.Class.extend({
         _className: 'random',
 
         properties: {
-            seed: {get: 'getSeed', set: 'setSeed',}
+            seed: {
+                get: 'getSeed',
+                set: 'setSeed',
+            },
         },
 
         ctor: function (opts) {
@@ -58,15 +61,15 @@ export default (jm, name = 'random') => {
         },
     });
 
-    jm.random = function (opts) {
-        return new jm.Random(opts);
+    $.random = function (opts) {
+        return new $.Random(opts);
     };
 
     return {
         name: name,
-        unuse: function (jm) {
-            delete jm.Random;
-            delete jm.random;
-        }
+        unuse: function ($) {
+            delete $.Random;
+            delete $.random;
+        },
     };
 };

@@ -3,14 +3,14 @@ let getLogger = (loggerCategoryName) => {
     return console;
 };
 
-export default (jm, name = 'logger') => {
-    jm.getLogger = getLogger;
-    jm.logger = getLogger();
+export default ($, name = 'logger') => {
+    $.getLogger = getLogger;
+    $.logger = getLogger();
     return {
         name: name,
-        unuse: function (jm) {
-            delete jm.logger;
-            delete jm.getLogger;
-        }
+        unuse: function ($) {
+            delete $.logger;
+            delete $.getLogger;
+        },
     };
 };

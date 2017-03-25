@@ -1,12 +1,10 @@
 import chai from 'chai';
 let expect = chai.expect;
-import _ from '../src';
+import $ from '../src';
 import {tag} from '../src';
 
-let jm = _();
-let t = jm.tagObject();
-
-var o = {};
+let jm = $();
+let o = {};
 jm.enableTag(o);
 o.addTag('123');
 o.addTag('456');

@@ -1,5 +1,5 @@
-export default (jm, name = 'tag') => {
-    jm.TagObject = jm.EventEmitter.extend({
+export default ($, name = 'tag') => {
+    $.TagObject = $.EventEmitter.extend({
         _className: 'tagObject',
 
         ctor: function () {
@@ -79,11 +79,11 @@ export default (jm, name = 'tag') => {
 
     });
 
-    jm.tagObject = function () {
-        return new jm.TagObject();
+    $.tagObject = function () {
+        return new $.TagObject();
     };
 
-    let prototype = jm.TagObject.prototype;
+    let prototype = $.TagObject.prototype;
     let Tag = {
         _tags: [],
 
@@ -97,7 +97,7 @@ export default (jm, name = 'tag') => {
         removeAllTags: prototype.removeAllTags,
     };
 
-    jm.enableTag = function (obj) {
+    $.enableTag = function (obj) {
         if (obj._tags != undefined) return;
         for (let key in Tag) {
             obj[key] = Tag[key];
@@ -107,24 +107,23 @@ export default (jm, name = 'tag') => {
             value: obj._tags,
             writable: false,
         });
-        jm.enableEvent(obj);
+        $.enableEvent(obj);
     };
 
-    jm.disableTag = function (obj) {
+    $.disableTag = function (obj) {
         for (let key in Tag) {
             delete obj[key];
         }
-        jm.disableEvent(obj);
+        $.disableEvent(obj);
     };
 
     return {
         name: name,
-        unuse: function (jm) {
-            delete jm.TagObject;
-            delete jm.tagObject;
-            delete jm.enableTag;
-            delete jm.disableTag;
-        }
+        unuse: function ($) {
+            delete $.TagObject;
+            delete $.tagObject;
+            delete $.enableTag;
+            delete $.disableTag;
+        },
     };
-
 };

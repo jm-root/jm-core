@@ -8,14 +8,14 @@ var fnTest = /xyz/.test(function () {
     xyz;
 }) ? /\b_super\b/ : /.*/;
 
-exports.default = function (jm) {
+exports.default = function ($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'Class';
 
     // The base Class implementation (does nothing)
-    jm[name] = function () {};
+    $[name] = function () {};
 
     // Create a new Class that inherits from this class
-    jm[name].extend = function (prop) {
+    $[name].extend = function (prop) {
         var _super = this.prototype;
 
         // Instantiate a base class (but only create the instance,
@@ -28,7 +28,7 @@ exports.default = function (jm) {
                 continue;
             }
             // Check if we're overwriting an existing function
-            prototype[_name] = typeof prop[_name] == "function" && typeof _super[_name] == "function" && fnTest.test(prop[_name]) ? function (name, fn) {
+            prototype[_name] = typeof prop[_name] == 'function' && typeof _super[_name] == 'function' && fnTest.test(prop[_name]) ? function (name, fn) {
                 return function () {
                     var tmp = this._super;
 
@@ -50,10 +50,10 @@ exports.default = function (jm) {
             var properties = prop['properties'];
             for (var key in properties) {
                 var desc = properties[key];
-                if (desc.get && typeof desc.get == "string") {
+                if (desc.get && typeof desc.get == 'string') {
                     desc.get = prototype[desc.get];
                 }
-                if (desc.set && typeof desc.set == "string") {
+                if (desc.set && typeof desc.set == 'string') {
                     desc.set = prototype[desc.set];
                 }
                 Object.defineProperty(prototype, key, desc);
@@ -61,14 +61,17 @@ exports.default = function (jm) {
         }
 
         // The dummy class constructor
-        function Class() {
+        var Class = function Class() {
             if (this._className) {
-                Object.defineProperty(this, "className", { value: this._className, writable: false });
+                Object.defineProperty(this, 'className', {
+                    value: this._className,
+                    writable: false
+                });
             }
 
             // All construction is actually done in the init method
             if (this.ctor) this.ctor.apply(this, arguments);
-        }
+        };
 
         // Populate our constructed prototype object
         Class.prototype = prototype;
@@ -77,15 +80,15 @@ exports.default = function (jm) {
         Class.prototype.constructor = Class;
 
         // And make this class extendable
-        Class.extend = jm[name].extend;
+        Class.extend = $[name].extend;
 
         return Class;
     };
 
     return {
         name: name,
-        unuse: function unuse(jm) {
-            delete jm[name];
+        unuse: function unuse($) {
+            delete $[name];
         }
     };
 };
@@ -98,10 +101,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-exports.default = function (jm) {
+exports.default = function ($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ERR';
 
-    jm[name] = {
+    $[name] = {
         SUCCESS: {
             err: 0,
             msg: 'Success'
@@ -184,8 +187,8 @@ exports.default = function (jm) {
     };
     return {
         name: name,
-        unuse: function unuse(jm) {
-            delete jm[name];
+        unuse: function unuse($) {
+            delete $[name];
         }
     };
 };
@@ -200,10 +203,10 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-exports.default = function (jm) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'event';
+exports.default = function ($) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'eventr';
 
-    jm.EventEmitter = jm.Object.extend({
+    $.EventEmitter = $.Object.extend({
         _className: 'eventEmitter',
 
         ctor: function ctor() {
@@ -368,11 +371,11 @@ exports.default = function (jm) {
         }
     });
 
-    jm.eventEmitter = function () {
-        return new jm.EventEmitter();
+    $.eventEmitter = function () {
+        return new $.EventEmitter();
     };
 
-    var prototype = jm.EventEmitter.prototype;
+    var prototype = $.EventEmitter.prototype;
     var EventEmitter = {
         _events: {},
 
@@ -388,7 +391,7 @@ exports.default = function (jm) {
     };
 
     var em = EventEmitter;
-    jm.enableEvent = function (obj) {
+    $.enableEvent = function (obj) {
         if (obj._events !== undefined) return;
         for (var key in em) {
             obj[key] = em[key];
@@ -397,7 +400,7 @@ exports.default = function (jm) {
         return this;
     };
 
-    jm.disableEvent = function (obj) {
+    $.disableEvent = function (obj) {
         for (var key in em) {
             delete obj[key];
         }
@@ -406,11 +409,11 @@ exports.default = function (jm) {
 
     return {
         name: name,
-        unuse: function unuse(jm) {
-            delete jm.EventEmitter;
-            delete jm.eventEmitter;
-            delete jm.enableEvent;
-            delete jm.disableEvent;
+        unuse: function unuse($) {
+            delete $.EventEmitter;
+            delete $.eventEmitter;
+            delete $.enableEvent;
+            delete $.disableEvent;
         }
     };
 };
@@ -463,7 +466,7 @@ var _tag2 = _interopRequireDefault(_tag);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var jm = function jm() {
+var $ = function $() {
     var o = {
         global: {}
     };
@@ -474,10 +477,10 @@ var jm = function jm() {
 };
 
 if (typeof global !== 'undefined' && global) {
-    global.jm = jm();
+    global.jm = $();
 }
 
-exports.default = jm;
+exports.default = $;
 exports.root = _root2.default;
 exports.logger = _logger2.default;
 exports.err = _err2.default;
@@ -499,16 +502,16 @@ var getLogger = function getLogger(loggerCategoryName) {
     return console;
 };
 
-exports.default = function (jm) {
+exports.default = function ($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'logger';
 
-    jm.getLogger = getLogger;
-    jm.logger = getLogger();
+    $.getLogger = getLogger;
+    $.logger = getLogger();
     return {
         name: name,
-        unuse: function unuse(jm) {
-            delete jm.logger;
-            delete jm.getLogger;
+        unuse: function unuse($) {
+            delete $.logger;
+            delete $.getLogger;
         }
     };
 };
@@ -521,10 +524,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-exports.default = function (jm) {
+exports.default = function ($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'object';
 
-    jm.Object = jm.Class.extend({
+    $.Object = $.Class.extend({
         _className: 'object',
 
         attr: function attr(attrs) {
@@ -538,15 +541,15 @@ exports.default = function (jm) {
         }
     });
 
-    jm.object = function () {
-        return new jm.Object();
+    $.object = function () {
+        return new $.Object();
     };
 
     return {
         name: name,
-        unuse: function unuse(jm) {
-            delete jm.Object;
-            delete jm.object;
+        unuse: function unuse($) {
+            delete $.Object;
+            delete $.object;
         }
     };
 };
@@ -560,14 +563,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 var iRandomMax = 200000000000; // 最大随机整数范围 0 <= randomValue <= iRandomMax;
 
-exports.default = function (jm) {
+exports.default = function ($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'random';
 
-    jm.Random = jm.Class.extend({
+    $.Random = $.Class.extend({
         _className: 'random',
 
         properties: {
-            seed: { get: 'getSeed', set: 'setSeed' }
+            seed: {
+                get: 'getSeed',
+                set: 'setSeed'
+            }
         },
 
         ctor: function ctor(opts) {
@@ -620,15 +626,15 @@ exports.default = function (jm) {
         }
     });
 
-    jm.random = function (opts) {
-        return new jm.Random(opts);
+    $.random = function (opts) {
+        return new $.Random(opts);
     };
 
     return {
         name: name,
-        unuse: function unuse(jm) {
-            delete jm.Random;
-            delete jm.random;
+        unuse: function unuse($) {
+            delete $.Random;
+            delete $.random;
         }
     };
 };
@@ -648,16 +654,16 @@ var _use = function _use(_, fn, name) {
     return m;
 };
 
-exports.default = function (jm) {
-    jm.modules = {};
-    jm.use = function (pathOrFn, name) {
+exports.default = function ($) {
+    $.modules = {};
+    $.use = function (pathOrFn, name) {
         var fn = pathOrFn;
         if (typeof fn === 'string') {} else if (typeof fn === 'function') {
             _use(this, fn, name);
         }
         return this;
     };
-    jm.unuse = function (nameOrModule) {
+    $.unuse = function (nameOrModule) {
         var m = nameOrModule;
         if (typeof m === 'string') m = this.modules[m];
         if (m) {
@@ -682,10 +688,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-exports.default = function (jm) {
+exports.default = function ($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'tag';
 
-    jm.TagObject = jm.EventEmitter.extend({
+    $.TagObject = $.EventEmitter.extend({
         _className: 'tagObject',
 
         ctor: function ctor() {
@@ -875,11 +881,11 @@ exports.default = function (jm) {
 
     });
 
-    jm.tagObject = function () {
-        return new jm.TagObject();
+    $.tagObject = function () {
+        return new $.TagObject();
     };
 
-    var prototype = jm.TagObject.prototype;
+    var prototype = $.TagObject.prototype;
     var Tag = {
         _tags: [],
 
@@ -893,7 +899,7 @@ exports.default = function (jm) {
         removeAllTags: prototype.removeAllTags
     };
 
-    jm.enableTag = function (obj) {
+    $.enableTag = function (obj) {
         if (obj._tags != undefined) return;
         for (var key in Tag) {
             obj[key] = Tag[key];
@@ -903,23 +909,23 @@ exports.default = function (jm) {
             value: obj._tags,
             writable: false
         });
-        jm.enableEvent(obj);
+        $.enableEvent(obj);
     };
 
-    jm.disableTag = function (obj) {
+    $.disableTag = function (obj) {
         for (var key in Tag) {
             delete obj[key];
         }
-        jm.disableEvent(obj);
+        $.disableEvent(obj);
     };
 
     return {
         name: name,
-        unuse: function unuse(jm) {
-            delete jm.TagObject;
-            delete jm.tagObject;
-            delete jm.enableTag;
-            delete jm.disableTag;
+        unuse: function unuse($) {
+            delete $.TagObject;
+            delete $.tagObject;
+            delete $.enableTag;
+            delete $.disableTag;
         }
     };
 };
@@ -932,10 +938,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-exports.default = function (jm) {
+exports.default = function ($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'utils';
 
-    jm[name] = {
+    $[name] = {
         // 高效slice
         slice: function slice(a, start, end) {
             start = start || 0;
@@ -956,8 +962,8 @@ exports.default = function (jm) {
 
     return {
         name: name,
-        unuse: function unuse(jm) {
-            delete jm[name];
+        unuse: function unuse($) {
+            delete $[name];
         }
     };
 };

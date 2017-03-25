@@ -1,9 +1,9 @@
 import chai from 'chai';
 let expect = chai.expect;
-import _ from '../src';
+import $ from '../src';
 
 describe('root', function () {
-    let jm = _();
+    let jm = $();
     it('jm.root', function () {
         expect(jm.global).to.be.an('object');
         expect(jm.modules).to.be.an('object');

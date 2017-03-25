@@ -8,9 +8,9 @@ import random from './random';
 import event from './event';
 import tag from './tag';
 
-let jm = () => {
+let $ = () => {
     let o = {
-        global: {}
+        global: {},
     };
     root(o);
     o
@@ -28,8 +28,8 @@ let jm = () => {
 };
 
 if (typeof global !== 'undefined' && global) {
-    global.jm = jm();
+    global.jm = $();
 }
 
-export default jm;
+export default $;
 export {root, logger, err, utils, Class, object, random, event, tag};

@@ -2,7 +2,7 @@ if (typeof module !== 'undefined' && module.exports) {
     require('../');
 }
 
-(function(){
+(function () {
     console.info('******** jm.Class *********');
     console.info(jm.Class.prototype);
 
@@ -17,19 +17,19 @@ if (typeof module !== 'undefined' && module.exports) {
 
         //类的属性定义
         properties: {
-            name: { get: 'getName', set: 'setName' }
+            name: {get: 'getName', set: 'setName'}
         },
 
-        getName: function() {
+        getName: function () {
             return this._name;
         },
 
-        setName: function(name) {
+        setName: function (name) {
             this._name = name;
         },
 
         //类的方法定义
-        method1: function(opts, cb) {
+        method1: function (opts, cb) {
             cb(null, true);
         }
     });

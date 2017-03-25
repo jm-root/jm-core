@@ -1,9 +1,9 @@
 import chai from 'chai';
 let expect = chai.expect;
-import _ from '../src';
+import $ from '../src';
 import {logger as Logger} from '../src';
 
-jm = _();
+jm = $();
 
 let log = function (logger) {
     ['debug', 'info', 'warn', 'error', 'fatal'].forEach(function (level) {
@@ -24,5 +24,4 @@ describe('logger', function () {
         expect(logger).to.be.an('object');
         log(logger);
     });
-
 });

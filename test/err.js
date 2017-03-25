@@ -1,9 +1,9 @@
 import chai from 'chai';
 let expect = chai.expect;
-import _ from '../src';
+import $ from '../src';
 import {err} from '../src';
 
-let jm = _();
+let jm = $();
 describe('err', function () {
     it('jm.ERR', function () {
         expect(err).to.be.a('function');
