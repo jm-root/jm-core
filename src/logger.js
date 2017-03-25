@@ -3,9 +3,7 @@ var getLogger = loggerCategoryName => {
     return console;
 };
 
-var logger = getLogger();
-
 export default jm => {
     jm.getLogger = getLogger;
-    jm.logger = logger;
+    jm.logger = getLogger();
 };

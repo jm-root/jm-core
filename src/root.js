@@ -1,8 +1,6 @@
-let root = {
-    registries: {}
-};
-
 export default jm => {
-    jm.root = root;
+    jm.root = {
+        registries: {}
+    };
     return jm;
 };

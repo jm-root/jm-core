@@ -11,6 +11,7 @@ var gulp = require('gulp'),
     babel = require('gulp-babel'),
     webpack = require('gulp-webpack'),
     browserify = require('gulp-browserify'),
+    eslint = require('gulp-eslint'),
     version = 'v' + require('./package.json').version;
 
 gulp.task('clean', function () {
@@ -24,6 +25,15 @@ gulp.task('jshint', function () {
     ])
         .pipe(jshint())
         .pipe(jshint.reporter());
+});
+
+gulp.task('eslint', function () {
+    return gulp.src([
+        'src/**/*.js'
+    ])
+        .pipe(eslint({configFle:"./.eslintrc"}))
+        .pipe(eslint.format())
+        ;
 });
 
 gulp.task('es6to5', function() {
