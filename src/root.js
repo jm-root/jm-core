@@ -1,6 +1,6 @@
-export default jm => {
+export default (jm) => {
     jm.root = {
-        registries: {}
+        registries: {},
     };
     return jm;
 };

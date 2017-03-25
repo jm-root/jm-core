@@ -1,83 +1,83 @@
-export default jm => {
+export default (jm) => {
     jm.ERR = {
         SUCCESS: {
             err: 0,
-            msg: 'Success'
+            msg: 'Success',
         },
 
         FAIL: {
             err: 1,
-            msg: 'Fail'
+            msg: 'Fail',
         },
 
         FA_SYS: {
             err: 2,
-            msg: 'System Error'
+            msg: 'System Error',
         },
 
         FA_NETWORK: {
             err: 3,
-            msg: 'Network Error'
+            msg: 'Network Error',
         },
 
         FA_PARAMS: {
             err: 4,
-            msg: 'Parameter Error'
+            msg: 'Parameter Error',
         },
 
         FA_BUSY: {
             err: 5,
-            msg: 'Busy'
+            msg: 'Busy',
         },
 
         FA_TIMEOUT: {
             err: 6,
-            msg: 'Time Out'
+            msg: 'Time Out',
         },
 
         FA_ABORT: {
             err: 7,
-            msg: 'Abort'
+            msg: 'Abort',
         },
 
         FA_NOTREADY: {
             err: 8,
-            msg: 'Not Ready'
+            msg: 'Not Ready',
         },
 
         OK: {
             err: 200,
-            msg: 'OK'
+            msg: 'OK',
         },
 
         FA_BADREQUEST: {
             err: 400,
-            msg: 'Bad Request'
+            msg: 'Bad Request',
         },
 
         FA_NOAUTH: {
             err: 401,
-            msg: 'Unauthorized'
+            msg: 'Unauthorized',
         },
 
         FA_NOPERMISSION: {
             err: 403,
-            msg: 'Forbidden'
+            msg: 'Forbidden',
         },
 
         FA_NOTFOUND: {
             err: 404,
-            msg: 'Not Found'
+            msg: 'Not Found',
         },
 
         FA_INTERNALERROR: {
             err: 500,
-            msg: 'Internal Server Error'
+            msg: 'Internal Server Error',
         },
 
         FA_UNAVAILABLE: {
             err: 503,
-            msg: 'Service Unavailable'
-        }
+            msg: 'Service Unavailable',
+        },
     };
 };

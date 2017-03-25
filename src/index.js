@@ -9,12 +9,12 @@ import random from './random';
 import event from './event';
 import tag from './tag';
 
-var jm = () => {
-    var o = {
-        use: function (m) {
-            m(this);
-            return this;
-        }
+let jm = () => {
+    let o = {
+        use: (m) => {
+            m(o);
+            return o;
+        },
     };
     o
         .use(root)
