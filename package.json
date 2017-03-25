@@ -2,7 +2,7 @@
   "name": "jm-core",
   "version": "1.0.0",
   "description": "core lib for jm-* projects",
-  "main": "./index",
+  "main": "./lib/index",
   "scripts": {
     "test": "node node_modules/babel-cli/bin/babel-node ./node_modules/mocha/bin/_mocha test"
   },
