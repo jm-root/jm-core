@@ -1,7 +1,7 @@
 import chai from 'chai';
 let expect = chai.expect;
 import _ from '../src';
-import Logger from '../src/logger';
+import {logger as Logger} from '../src';
 
 jm = _();
 

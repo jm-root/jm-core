@@ -2,7 +2,7 @@ if (typeof module !== 'undefined' && module.exports) {
     require('../');
 }
 
-(function(){
+(function () {
     var logger = jm.logger;
     var random = jm.random();
     logger.info('******** jm.random *********');

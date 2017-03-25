@@ -423,6 +423,7 @@ module.exports = exports['default'];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.tag = exports.event = exports.random = exports.object = exports.Class = exports.utils = exports.err = exports.logger = exports.root = undefined;
 
 var _root = require('./root');
 
@@ -477,7 +478,15 @@ if (typeof global !== 'undefined' && global) {
 }
 
 exports.default = jm;
-module.exports = exports['default'];
+exports.root = _root2.default;
+exports.logger = _logger2.default;
+exports.err = _err2.default;
+exports.utils = _utils2.default;
+exports.Class = _class2.default;
+exports.object = _object2.default;
+exports.random = _random2.default;
+exports.event = _event2.default;
+exports.tag = _tag2.default;
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./class":1,"./err":2,"./event":3,"./logger":5,"./object":6,"./random":7,"./root":8,"./tag":9,"./utils":10}],5:[function(require,module,exports){
 'use strict';
