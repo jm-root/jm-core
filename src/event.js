@@ -1,4 +1,4 @@
-export default jm => {
+export default (jm) => {
     jm.EventEmitter = jm.Object.extend({
         _className: 'eventEmitter',
 
@@ -11,12 +11,12 @@ export default jm => {
             caller = caller;
             return {
                 fn: fn,
-                caller: caller
+                caller: caller,
             };
         },
 
-        __equalsListener: function (listener1, listener2) {
-            return listener1.fn === listener2.fn && listener1.caller === listener2.caller;
+        __equalsListener: function (l1, l2) {
+            return l1.fn === l2.fn && l1.caller === l2.caller;
         },
 
         /**
@@ -26,7 +26,7 @@ export default jm => {
          */
 
         on: function (name, fn, caller) {
-            var listener = this.__createListener(fn, caller);
+            let listener = this.__createListener(fn, caller);
             if (!this._events[name]) {
                 this._events[name] = listener;
             } else if (Array.isArray(this._events[name])) {
@@ -44,11 +44,10 @@ export default jm => {
          */
 
         once: function (name, fn, caller) {
-            var self = this;
-            var listener = this.__createListener(fn, caller);
+            let listener = this.__createListener(fn, caller);
 
-            function on(arg1, arg2, arg3, arg4, arg5) {
-                self.removeListener(name, on);
+            var on = (arg1, arg2, arg3, arg4, arg5) => {
+                this.removeListener(name, on);
                 fn.call(listener.caller, arg1, arg2, arg3, arg4, arg5);
             };
 
@@ -66,15 +65,15 @@ export default jm => {
          */
 
         removeListener: function (name, fn, caller) {
-            var listener = this.__createListener(fn, caller);
+            let listener = this.__createListener(fn, caller);
             if (this._events && this._events[name]) {
-                var list = this._events[name];
+                let list = this._events[name];
 
                 if (Array.isArray(list)) {
-                    var pos = -1;
+                    let pos = -1;
 
-                    for (var i = 0, l = list.length; i < l; i++) {
-                        var o = list[i];
+                    for (let i = 0, l = list.length; i < l; i++) {
+                        let o = list[i];
                         if (this.__equalsListener(o, listener) || (o.listener && this.__equalsListener(o.listener, listener))) {
                             pos = i;
                             break;
@@ -144,19 +143,19 @@ export default jm => {
          */
 
         emit: function (name, arg1, arg2, arg3, arg4, arg5) {
-            var handler = this._events[name];
+            let handler = this._events[name];
             if (!handler) return this;
 
             if (typeof handler === 'object' && !Array.isArray(handler)) {
                 handler.fn.call(handler.caller || this, arg1, arg2, arg3, arg4, arg5);
             } else if (Array.isArray(handler)) {
-                var listeners = new Array(handler.length);
-                for (var i = 0; i < handler.length; i++) {
+                let listeners = new Array(handler.length);
+                for (let i = 0; i < handler.length; i++) {
                     listeners[i] = handler[i];
                 }
 
-                for (var i = 0, l = listeners.length; i < l; i++) {
-                    var h = listeners[i];
+                for (let i = 0, l = listeners.length; i < l; i++) {
+                    let h = listeners[i];
                     if (h.fn.call(h.caller || this, arg1, arg2, arg3, arg4, arg5) === false) break;
                 }
             }
@@ -168,8 +167,8 @@ export default jm => {
         return new jm.EventEmitter();
     }
 
-    var prototype = jm.EventEmitter.prototype;
-    var EventEmitter = {
+    let prototype = jm.EventEmitter.prototype;
+    let EventEmitter = {
         _events: {},
 
         __createListener: prototype.__createListener,
@@ -183,10 +182,10 @@ export default jm => {
         emit: prototype.emit
     };
 
-    var em = EventEmitter;
+    let em = EventEmitter;
     jm.enableEvent = function (obj) {
         if (obj._events !== undefined) return;
-        for (var key in em) {
+        for (let key in em) {
             obj[key] = em[key];
         }
         obj._events = {};
@@ -194,7 +193,7 @@ export default jm => {
     };
 
     jm.disableEvent = function (obj) {
-        for (var key in em) {
+        for (let key in em) {
             delete obj[key];
         }
         return this;

@@ -1,4 +1,4 @@
-export default jm => {
+export default (jm) => {
     jm.aop = {
         _Arguments: function (args) {
             //convert arguments object to array
