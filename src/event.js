@@ -1,22 +1,21 @@
-export default ($, name = 'eventr') => {
+let __createListener = (fn, caller) => {
+    return {
+        fn: fn,
+        caller: caller || null,
+    };
+};
+
+let __equalsListener = (l1, l2) => {
+    return l1.fn === l2.fn && l1.caller === l2.caller;
+};
+
+export default ($, name = 'event') => {
     $.EventEmitter = $.Object.extend({
         _className: 'eventEmitter',
 
         ctor: function () {
             this._events = {};
             this.addListener = this.on;
-        },
-
-        __createListener: function (fn, caller) {
-            caller = caller;
-            return {
-                fn: fn,
-                caller: caller,
-            };
-        },
-
-        __equalsListener: function (l1, l2) {
-            return l1.fn === l2.fn && l1.caller === l2.caller;
         },
 
         /**
@@ -26,7 +25,7 @@ export default ($, name = 'eventr') => {
          */
 
         on: function (name, fn, caller) {
-            let listener = this.__createListener(fn, caller);
+            let listener = __createListener(fn, caller);
             if (!this._events[name]) {
                 this._events[name] = listener;
             } else if (Array.isArray(this._events[name])) {
@@ -44,11 +43,11 @@ export default ($, name = 'eventr') => {
          */
 
         once: function (name, fn, caller) {
-            let listener = this.__createListener(fn, caller);
+            let listener = __createListener(fn, caller);
 
             let on = (arg1, arg2, arg3, arg4, arg5) => {
                 this.removeListener(name, on);
-                fn.call(listener.caller, arg1, arg2, arg3, arg4, arg5);
+                fn.call(listener.caller || this, arg1, arg2, arg3, arg4, arg5);
             };
 
             on.listener = listener;
@@ -65,7 +64,7 @@ export default ($, name = 'eventr') => {
          */
 
         removeListener: function (name, fn, caller) {
-            let listener = this.__createListener(fn, caller);
+            let listener = __createListener(fn, caller);
             if (this._events && this._events[name]) {
                 let list = this._events[name];
 
@@ -74,9 +73,9 @@ export default ($, name = 'eventr') => {
 
                     for (let i = 0, l = list.length; i < l; i++) {
                         let o = list[i];
-                        if (this.__equalsListener(o, listener)
+                        if (__equalsListener(o, listener)
                             || (o.listener
-                            && this.__equalsListener(o.listener, listener))
+                            && __equalsListener(o.listener, listener))
                         ) {
                             pos = i;
                             break;
@@ -92,9 +91,9 @@ export default ($, name = 'eventr') => {
                     if (!list.length) {
                         delete this._events[name];
                     }
-                } else if (this.__equalsListener(list, listener)
+                } else if (__equalsListener(list, listener)
                     || (list.listener
-                    && this.__equalsListener(list.listener, listener))
+                    && __equalsListener(list.listener, listener))
                 ) {
                     delete this._events[name];
                 }
@@ -178,8 +177,6 @@ export default ($, name = 'eventr') => {
     let prototype = $.EventEmitter.prototype;
     let EventEmitter = {
         _events: {},
-        __createListener: prototype.__createListener,
-        __equalsListener: prototype.__equalsListener,
         on: prototype.on,
         once: prototype.once,
         addListener: prototype.on,

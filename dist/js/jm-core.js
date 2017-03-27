@@ -226,8 +226,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+var __createListener = function __createListener(fn, caller) {
+    return {
+        fn: fn,
+        caller: caller || null
+    };
+};
+
+var __equalsListener = function __equalsListener(l1, l2) {
+    return l1.fn === l2.fn && l1.caller === l2.caller;
+};
+
 exports.default = function ($) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'eventr';
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'event';
 
     $.EventEmitter = $.Object.extend({
         _className: 'eventEmitter',
@@ -237,18 +248,6 @@ exports.default = function ($) {
             this.addListener = this.on;
         },
 
-        __createListener: function __createListener(fn, caller) {
-            caller = caller;
-            return {
-                fn: fn,
-                caller: caller
-            };
-        },
-
-        __equalsListener: function __equalsListener(l1, l2) {
-            return l1.fn === l2.fn && l1.caller === l2.caller;
-        },
-
         /**
          * Adds a listener
          *
@@ -256,7 +255,7 @@ exports.default = function ($) {
          */
 
         on: function on(name, fn, caller) {
-            var listener = this.__createListener(fn, caller);
+            var listener = __createListener(fn, caller);
             if (!this._events[name]) {
                 this._events[name] = listener;
             } else if (Array.isArray(this._events[name])) {
@@ -276,11 +275,11 @@ exports.default = function ($) {
         once: function once(name, fn, caller) {
             var _this = this;
 
-            var listener = this.__createListener(fn, caller);
+            var listener = __createListener(fn, caller);
 
             var on = function on(arg1, arg2, arg3, arg4, arg5) {
                 _this.removeListener(name, on);
-                fn.call(listener.caller, arg1, arg2, arg3, arg4, arg5);
+                fn.call(listener.caller || _this, arg1, arg2, arg3, arg4, arg5);
             };
 
             on.listener = listener;
@@ -296,7 +295,7 @@ exports.default = function ($) {
          */
 
         removeListener: function removeListener(name, fn, caller) {
-            var listener = this.__createListener(fn, caller);
+            var listener = __createListener(fn, caller);
             if (this._events && this._events[name]) {
                 var list = this._events[name];
 
@@ -305,7 +304,7 @@ exports.default = function ($) {
 
                     for (var i = 0, l = list.length; i < l; i++) {
                         var o = list[i];
-                        if (this.__equalsListener(o, listener) || o.listener && this.__equalsListener(o.listener, listener)) {
+                        if (__equalsListener(o, listener) || o.listener && __equalsListener(o.listener, listener)) {
                             pos = i;
                             break;
                         }
@@ -320,7 +319,7 @@ exports.default = function ($) {
                     if (!list.length) {
                         delete this._events[name];
                     }
-                } else if (this.__equalsListener(list, listener) || list.listener && this.__equalsListener(list.listener, listener)) {
+                } else if (__equalsListener(list, listener) || list.listener && __equalsListener(list.listener, listener)) {
                     delete this._events[name];
                 }
             }
@@ -401,8 +400,6 @@ exports.default = function ($) {
     var prototype = $.EventEmitter.prototype;
     var EventEmitter = {
         _events: {},
-        __createListener: prototype.__createListener,
-        __equalsListener: prototype.__equalsListener,
         on: prototype.on,
         once: prototype.once,
         addListener: prototype.on,
