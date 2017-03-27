@@ -29,4 +29,3 @@ if (typeof global !== 'undefined' && global) {
 }
 
 export default $;
-export {root, logger, err, utils, Class, object, random, event, tag};
