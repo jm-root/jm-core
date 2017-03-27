@@ -123,10 +123,17 @@ module.exports = exports['default'];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-exports.default = function ($) {
+/**
+ * 为对象添加ERR变量
+ * @method enableErr
+ * @param {Object} $ 目标对象
+ * @param {String} [name] 绑定名字
+ * @return {Boolean} true 成功 false 失败
+ */
+var enableErr = function enableErr($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ERR';
 
+    if ($[name]) return false;
     $[name] = {
         SUCCESS: {
             err: 0,
@@ -208,6 +215,15 @@ exports.default = function ($) {
             msg: 'Service Unavailable'
         }
     };
+
+    return true;
+};
+
+exports.default = function ($) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ERR';
+
+    enableErr($, name);
+
     return {
         name: name,
         unuse: function unuse($) {
@@ -216,7 +232,7 @@ exports.default = function ($) {
     };
 };
 
-module.exports = exports['default'];
+exports.enableErr = enableErr;
 },{}],3:[function(require,module,exports){
 'use strict';
 
@@ -530,11 +546,9 @@ var _tag2 = _interopRequireDefault(_tag);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var $ = function $() {
-    var o = {
-        global: {}
-    };
-    (0, _root2.default)(o);
-    o.use(_logger2.default).use(_err2.default).use(_utils2.default).use(_class2.default).use(_object2.default).use(_random2.default).use(_event2.default).use(_tag2.default);
+    var o = (0, _root2.default)();
+    o.global = {};
+    o.use(_logger2.default).use(_utils2.default).use(_class2.default).use(_object2.default).use(_random2.default).use(_event2.default).use(_tag2.default);
     o.enableEvent(o);
     return o;
 };
@@ -709,42 +723,68 @@ module.exports = exports['default'];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var _use = function _use($, fn, name) {
-    var m = fn($, name);
+exports.enableModule = undefined;
+
+var _err = require('./err');
+
+var _use = function _use($, modules, fn, opts, cb) {
+    var m = fn($, opts, cb);
     if (m && m.name) {
-        $.modules[m.name] = m;
+        modules[m.name] = m;
     }
     return m;
 };
 
-exports.default = function ($) {
-    $.modules = {};
-    $.use = function (pathOrFn, name) {
-        var fn = pathOrFn;
-        if (typeof fn === 'string') {} else if (typeof fn === 'function') {
-            _use(this, fn, name);
+/**
+ * 为对象添加模块支持
+ * @method enableModule
+ * @param {Object} $ 目标对象
+ * @return {Boolean} true 成功 false 失败
+ */
+var enableModule = function enableModule($) {
+    if ($.use !== undefined) return false;
+    var _modules = {};
+
+    Object.defineProperty($, 'modules', {
+        value: _modules,
+        writable: false
+    });
+
+    $.use = function (fn, opts, cb) {
+        if (typeof fn === 'function') {
+            _use(this, _modules, fn, opts, cb);
+        } else {
+            var err = new Error(this.ERR.FA_PARAMS.msg);
+            if (cb) cb(err, this.ERR.FA_PARAMS);else throw new Error($.ERR.FA_PARAMS.msg);
         }
         return this;
     };
+
     $.unuse = function (nameOrModule) {
         var m = nameOrModule;
-        if (typeof m === 'string') m = this.modules[m];
+        if (typeof m === 'string') m = _modules[m];
         if (m && m.unuse) {
             if (m.name) {
-                delete this.modules[m.name];
+                delete _modules[m.name];
             }
             m.unuse(this);
         }
         return this;
     };
 
-    return {
-        name: 'root'
-    };
+    return true;
 };
 
-module.exports = exports['default'];
-},{}],9:[function(require,module,exports){
+exports.default = function () {
+    var $ = {};
+    (0, _err.enableErr)($);
+    enableModule($);
+    $.enableModule = enableModule;
+    return $;
+};
+
+exports.enableModule = enableModule;
+},{"./err":2}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

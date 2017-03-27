@@ -9,8 +9,8 @@ describe('root', function () {
         expect(jm.modules).to.be.an('object');
     });
     it('unuse', function () {
-        jm.unuse('ERR');
-        expect(jm.ERR).to.be.equal(undefined);
+        jm.unuse('tag');
+        expect(jm.TagObject).to.be.equal(undefined);
     });
     it('event', function () {
         jm.on('test', (v) => {
@@ -21,13 +21,13 @@ describe('root', function () {
 });
 
 describe('global', function () {
-    it('jm.root', function () {
+    it('jm', function () {
+        console.log(jm.utils.formatJSON(jm.modules));
         expect(jm.global).to.be.an('object');
         expect(jm.modules).to.be.an('object');
     });
     it('unuse', function () {
-        jm.unuse('ERR');
-        expect(jm.ERR).to.be.equal(undefined);
+        jm.unuse('tag');
+        expect(jm.TagObject).to.be.equal(undefined);
     });
 });
-

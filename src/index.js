@@ -9,13 +9,10 @@ import event from './event';
 import tag from './tag';
 
 let $ = () => {
-    let o = {
-        global: {},
-    };
-    root(o);
+    let o = root();
+    o.global = {};
     o
         .use(logger)
-        .use(err)
         .use(utils)
         .use(Class)
         .use(object)

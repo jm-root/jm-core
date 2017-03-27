@@ -1,4 +1,12 @@
-export default ($, name = 'ERR') => {
+/**
+ * 为对象添加ERR变量
+ * @method enableErr
+ * @param {Object} $ 目标对象
+ * @param {String} [name] 绑定名字
+ * @return {Boolean} true 成功 false 失败
+ */
+let enableErr = ($, name = 'ERR') => {
+    if ($[name]) return false;
     $[name] = {
         SUCCESS: {
             err: 0,
@@ -80,6 +88,13 @@ export default ($, name = 'ERR') => {
             msg: 'Service Unavailable',
         },
     };
+
+    return true;
+};
+
+export default ($, name = 'ERR') => {
+    enableErr($, name);
+
     return {
         name: name,
         unuse: function ($) {
@@ -87,3 +102,5 @@ export default ($, name = 'ERR') => {
         },
     };
 };
+
+export {enableErr};
