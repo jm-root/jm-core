@@ -1,7 +1,7 @@
-let _use = function (_, fn, name) {
-    let m = fn(_, name);
+let _use = function ($, fn, name) {
+    let m = fn($, name);
     if (m && m.name) {
-        _.modules[m.name] = m;
+        $.modules[m.name] = m;
     }
     return m;
 };
@@ -19,11 +19,11 @@ export default ($) => {
     $.unuse = function (nameOrModule) {
         let m = nameOrModule;
         if (typeof m === 'string') m = this.modules[m];
-        if (m) {
+        if (m && m.unuse) {
             if (m.name) {
                 delete this.modules[m.name];
             }
-            if (m.unuse) m.unuse(this);
+            m.unuse(this);
         }
         return this;
     };
