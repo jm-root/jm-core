@@ -1,24 +1,16 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-exports.default = function ($) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'object';
-
+export default ($, name = 'object') => {
     $.Object = $.Class.extend({
         _className: 'object',
 
-        attr: function attr(attrs) {
-            for (var key in attrs) {
+        attr: function (attrs) {
+            for (let key in attrs) {
                 if (key === 'className') {
                     continue;
                 }
 
                 this[key] = attrs[key];
             }
-        }
+        },
     });
 
     $.object = function () {
@@ -27,11 +19,9 @@ exports.default = function ($) {
 
     return {
         name: name,
-        unuse: function unuse($) {
+        unuse: function ($) {
             delete $.Object;
             delete $.object;
-        }
+        },
     };
 };
-
-module.exports = exports['default'];

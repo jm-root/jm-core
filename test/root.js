@@ -1,0 +1,33 @@
+import chai from 'chai';
+let expect = chai.expect;
+import $ from '../src';
+
+describe('root', function () {
+    let jm = $();
+    it('jm.root', function () {
+        expect(jm.global).to.be.an('object');
+        expect(jm.modules).to.be.an('object');
+    });
+    it('unuse', function () {
+        jm.unuse('tag');
+        expect(jm.TagObject).to.be.equal(undefined);
+    });
+    it('event', function () {
+        jm.on('test', (v) => {
+            expect(v).to.be.equal(123);
+        });
+        jm.emit('test', 123);
+    });
+});
+
+describe('global', function () {
+    it('jm', function () {
+        console.log(jm.utils.formatJSON(jm.modules));
+        expect(jm.global).to.be.an('object');
+        expect(jm.modules).to.be.an('object');
+    });
+    it('unuse', function () {
+        jm.unuse('tag');
+        expect(jm.TagObject).to.be.equal(undefined);
+    });
+});

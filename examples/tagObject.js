@@ -1,23 +1,22 @@
-var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
-    jm = require('../');
+    require('../');
 }
 
-(function(){
+(function () {
     console.info('******** jm.TagObject *********');
 
     console.info('jm.TagObject.prototype\n' + JSON.stringify(jm.TagObject.prototype));
 
-    var eventHandle = function(opts){
+    var eventHandle = function (opts) {
         var self = this;
-        console.info('1. ' + self.className + ' '  + opts);
+        console.info('1. ' + self.className + ' ' + opts);
     };
-    var eventHandle2 = function(opts){
+    var eventHandle2 = function (opts) {
         var self = this;
-        console.info('2. ' + self.className + ' '  + opts);
+        console.info('2. ' + self.className + ' ' + opts);
     };
 
-    var bindEvent = function(o){
+    var bindEvent = function (o) {
         o.on('addTag', eventHandle);
         o.addListener('addTag', eventHandle2);
     };
@@ -37,5 +36,3 @@ if (typeof module !== 'undefined' && module.exports) {
     o.removeTag('123');
     console.info('tags ' + JSON.stringify(o.tags));
 })();
-
-
