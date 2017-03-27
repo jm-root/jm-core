@@ -3,7 +3,7 @@ let expect = chai.expect;
 import $ from '../src';
 
 describe('root', function () {
-    let jm = $();
+    let jm = new $();
     it('jm.root', function () {
         expect(jm.global).to.be.an('object');
         expect(jm.modules).to.be.an('object');
@@ -11,12 +11,6 @@ describe('root', function () {
     it('unuse', function () {
         jm.unuse('tag');
         expect(jm.TagObject).to.be.equal(undefined);
-    });
-    it('event', function () {
-        jm.on('test', (v) => {
-            expect(v).to.be.equal(123);
-        });
-        jm.emit('test', 123);
     });
 });
 

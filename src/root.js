@@ -55,12 +55,14 @@ let enableModule = ($) => {
     return true;
 };
 
-export default () => {
-    let $ = {};
-    enableErr($);
-    enableModule($);
-    $.enableModule = enableModule;
-    return $;
-};
+class $ {
+    constructor() {
+        enableErr(this);
+        enableModule(this);
+        this.enableModule = enableModule;
+    }
+}
+
+export default $;
 
 export {enableModule};

@@ -4,125 +4,6 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var fnTest = /xyz/.test(function () {
-    xyz;
-}) ? /\b_super\b/ : /.*/;
-
-exports.default = function ($) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'Class';
-
-    // The base Class implementation (does nothing)
-    $[name] = function () {};
-
-    // Create a new Class that inherits from this class
-    $[name].extend = function (prop) {
-        var _super = this.prototype;
-
-        // Instantiate a base class (but only create the instance,
-        // don't run the init constructor)
-        var prototype = Object.create(_super);
-
-        // Copy the properties over onto the new prototype
-        for (var _name in prop) {
-            if (_name == 'properties') {
-                continue;
-            }
-            // Check if we're overwriting an existing function
-            prototype[_name] = typeof prop[_name] == 'function' && typeof _super[_name] == 'function' && fnTest.test(prop[_name]) ? function (name, fn) {
-                return function () {
-                    var tmp = this._super;
-
-                    // Add a new ._super() method that is the same method
-                    // but on the super-class
-                    this._super = _super[name];
-
-                    // The method only need to be bound temporarily, so we
-                    // remove it when we're done executing
-                    var ret = fn.apply(this, arguments);
-                    this._super = tmp;
-
-                    return ret;
-                };
-            }(_name, prop[_name]) : prop[_name];
-        }
-
-        {
-            var properties = prop['properties'];
-            if (properties) {
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
-
-                try {
-                    for (var _iterator = Object.keys(properties)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var key = _step.value;
-
-                        var desc = properties[key];
-                        if (desc.get && typeof desc.get == 'string') {
-                            desc.get = prototype[desc.get];
-                        }
-                        if (desc.set && typeof desc.set == 'string') {
-                            desc.set = prototype[desc.set];
-                        }
-                        Object.defineProperty(prototype, key, desc);
-                    }
-                } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion && _iterator.return) {
-                            _iterator.return();
-                        }
-                    } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
-                        }
-                    }
-                }
-            }
-        }
-
-        // The dummy class constructor
-        var Class = function Class() {
-            if (this._className) {
-                Object.defineProperty(this, 'className', {
-                    value: this._className,
-                    writable: false
-                });
-            }
-
-            // All construction is actually done in the init method
-            if (this.ctor) this.ctor.apply(this, arguments);
-        };
-
-        // Populate our constructed prototype object
-        Class.prototype = prototype;
-
-        // Enforce the constructor to be what we expect
-        Class.prototype.constructor = Class;
-
-        // And make this class extendable
-        Class.extend = $[name].extend;
-
-        return Class;
-    };
-
-    return {
-        name: name,
-        unuse: function unuse($) {
-            delete $[name];
-        }
-    };
-};
-
-module.exports = exports['default'];
-},{}],2:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 /**
  * 为对象添加ERR变量
  * @method enableErr
@@ -233,7 +114,7 @@ exports.default = function ($) {
 };
 
 exports.enableErr = enableErr;
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -241,6 +122,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var __createListener = function __createListener(fn, caller) {
     return {
@@ -253,24 +138,36 @@ var __equalsListener = function __equalsListener(l1, l2) {
     return l1.fn === l2.fn && l1.caller === l2.caller;
 };
 
-exports.default = function ($) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'event';
+/**
+ * Creates a new EventEmitter
+ *
+ * @class
+ */
 
-    $.EventEmitter = $.Object.extend({
-        _className: 'eventEmitter',
+var $$ = function () {
 
-        ctor: function ctor() {
-            this._events = {};
-            this.addListener = this.on;
-        },
+    /**
+     * @constructs
+     */
+    function $$() {
+        _classCallCheck(this, $$);
 
-        /**
-         * Adds a listener
-         *
-         * @api public
-         */
+        this._events = {};
+        this.addListener = this.on;
+    }
 
-        on: function on(name, fn, caller) {
+    /**
+     * Adds a listener
+     * @param {String} name
+     * @param {Function} fn
+     * @param {Object} [caller]
+     * @return {$$}
+     */
+
+
+    _createClass($$, [{
+        key: 'on',
+        value: function on(name, fn, caller) {
             var listener = __createListener(fn, caller);
             if (!this._events[name]) {
                 this._events[name] = listener;
@@ -280,15 +177,19 @@ exports.default = function ($) {
                 this._events[name] = [this._events[name], listener];
             }
             return this;
-        },
+        }
 
         /**
          * Adds a volatile listener.
-         *
-         * @api public
+         * @param {String} name
+         * @param {Function} fn
+         * @param {Object} [caller]
+         * @return {$$}
          */
 
-        once: function once(name, fn, caller) {
+    }, {
+        key: 'once',
+        value: function once(name, fn, caller) {
             var _this = this;
 
             var listener = __createListener(fn, caller);
@@ -302,15 +203,19 @@ exports.default = function ($) {
             this.on(name, on);
 
             return this;
-        },
+        }
 
         /**
          * Removes a listener.
-         *
-         * @api public
+         * @param {String} name
+         * @param {Function} fn
+         * @param {Object} [caller]
+         * @return {$$}
          */
 
-        removeListener: function removeListener(name, fn, caller) {
+    }, {
+        key: 'removeListener',
+        value: function removeListener(name, fn, caller) {
             var listener = __createListener(fn, caller);
             if (this._events && this._events[name]) {
                 var list = this._events[name];
@@ -341,15 +246,17 @@ exports.default = function ($) {
             }
 
             return this;
-        },
+        }
 
         /**
          * Removes all listeners for an event.
-         *
-         * @api public
+         * @param {String} [name]
+         * @return {$$}
          */
 
-        removeAllListeners: function removeAllListeners(name) {
+    }, {
+        key: 'removeAllListeners',
+        value: function removeAllListeners(name) {
             if (name === undefined) {
                 this._events = {};
                 return this;
@@ -360,15 +267,17 @@ exports.default = function ($) {
             }
 
             return this;
-        },
+        }
 
         /**
          * Gets all listeners for a certain event.
-         *
-         * @api publci
+         * @param {String} name
+         * @return {*}
          */
 
-        listeners: function listeners(name) {
+    }, {
+        key: 'listeners',
+        value: function listeners(name) {
             if (!this._events[name]) {
                 this._events[name] = [];
             }
@@ -378,17 +287,23 @@ exports.default = function ($) {
             }
 
             return this._events[name];
-        },
+        }
 
         /**
          * Emits an event.
-         *
          * tip: use arg1...arg5 instead of arguments for performance consider.
-         *
-         * @api public
+         * @param {String} name
+         * @param {*} arg1
+         * @param {*} arg2
+         * @param {*} arg3
+         * @param {*} arg4
+         * @param {*} arg5
+         * @return {$$}
          */
 
-        emit: function emit(name, arg1, arg2, arg3, arg4, arg5) {
+    }, {
+        key: 'emit',
+        value: function emit(name, arg1, arg2, arg3, arg4, arg5) {
             var handler = this._events[name];
             if (!handler) return this;
 
@@ -407,98 +322,101 @@ exports.default = function ($) {
             }
             return this;
         }
-    });
+    }]);
 
-    $.eventEmitter = function () {
-        return new $.EventEmitter();
-    };
+    return $$;
+}();
 
-    var prototype = $.EventEmitter.prototype;
-    var EventEmitter = {
-        _events: {},
-        on: prototype.on,
-        once: prototype.once,
-        addListener: prototype.on,
-        removeListener: prototype.removeListener,
-        removeAllListeners: prototype.removeAllListeners,
-        listeners: prototype.listeners,
-        emit: prototype.emit
-    };
+var prototype = $$.prototype;
+var EM = {
+    _events: {},
+    on: prototype.on,
+    once: prototype.once,
+    addListener: prototype.on,
+    removeListener: prototype.removeListener,
+    removeAllListeners: prototype.removeAllListeners,
+    listeners: prototype.listeners,
+    emit: prototype.emit
+};
 
-    var em = EventEmitter;
-    $.enableEvent = function (obj) {
-        if (obj._events !== undefined) return;
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+var enableEvent = function enableEvent(obj) {
+    if (obj.emit !== undefined) return;
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
 
+    try {
+        for (var _iterator = Object.keys(EM)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var key = _step.value;
+
+            obj[key] = EM[key];
+        }
+    } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+    } finally {
         try {
-            for (var _iterator = Object.keys(em)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var key = _step.value;
-
-                obj[key] = em[key];
+            if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
             }
-        } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
         } finally {
-            try {
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                    _iterator.return();
-                }
-            } finally {
-                if (_didIteratorError) {
-                    throw _iteratorError;
-                }
+            if (_didIteratorError) {
+                throw _iteratorError;
             }
         }
+    }
 
-        obj._events = {};
-        return this;
-    };
+    obj._events = {};
+};
 
-    $.disableEvent = function (obj) {
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
+var disableEvent = function disableEvent(obj) {
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
 
+    try {
+        for (var _iterator2 = Object.keys(EM)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var key = _step2.value;
+
+            delete obj[key];
+        }
+    } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+    } finally {
         try {
-            for (var _iterator2 = Object.keys(em)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                var key = _step2.value;
-
-                delete obj[key];
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
             }
-        } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
         } finally {
-            try {
-                if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                    _iterator2.return();
-                }
-            } finally {
-                if (_didIteratorError2) {
-                    throw _iteratorError2;
-                }
+            if (_didIteratorError2) {
+                throw _iteratorError2;
             }
         }
+    }
+};
 
-        return this;
-    };
+var _module = function _module($) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'event';
+
+    $.enableEvent = enableEvent;
+    $.disableEvent = disableEvent;
 
     return {
         name: name,
         unuse: function unuse($) {
-            delete $.EventEmitter;
-            delete $.eventEmitter;
             delete $.enableEvent;
             delete $.disableEvent;
         }
     };
 };
 
-module.exports = exports['default'];
-},{}],4:[function(require,module,exports){
+exports.default = $$;
+exports.EventEmitter = $$;
+exports.enableEvent = enableEvent;
+exports.disableEvent = disableEvent;
+exports.module = _module;
+},{}],3:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -514,52 +432,54 @@ var _logger = require('./logger');
 
 var _logger2 = _interopRequireDefault(_logger);
 
-var _err = require('./err');
-
-var _err2 = _interopRequireDefault(_err);
-
 var _utils = require('./utils');
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _class = require('./class');
-
-var _class2 = _interopRequireDefault(_class);
-
-var _object = require('./object');
-
-var _object2 = _interopRequireDefault(_object);
-
 var _random = require('./random');
-
-var _random2 = _interopRequireDefault(_random);
 
 var _event = require('./event');
 
-var _event2 = _interopRequireDefault(_event);
-
 var _tag = require('./tag');
-
-var _tag2 = _interopRequireDefault(_tag);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var $ = function $() {
-    var o = (0, _root2.default)();
-    o.global = {};
-    o.use(_logger2.default).use(_utils2.default).use(_class2.default).use(_object2.default).use(_random2.default).use(_event2.default).use(_tag2.default);
-    o.enableEvent(o);
-    return o;
-};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * @class
+ */
+var $ = function (_Root) {
+    _inherits($, _Root);
+
+    /**
+     * @constructor
+     */
+    function $() {
+        _classCallCheck(this, $);
+
+        var _this = _possibleConstructorReturn(this, ($.__proto__ || Object.getPrototypeOf($)).call(this));
+
+        _this.global = {};
+        _this.use(_logger2.default).use(_utils2.default).use(_random.module).use(_event.module).use(_tag.module);
+        return _this;
+    }
+
+    return $;
+}(_root2.default);
 
 if (typeof global !== 'undefined' && global) {
-    global.jm = $();
+    global.jm = new $();
 }
 
 exports.default = $;
 module.exports = exports['default'];
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./class":1,"./err":2,"./event":3,"./logger":5,"./object":6,"./random":7,"./root":8,"./tag":9,"./utils":10}],5:[function(require,module,exports){
+},{"./event":2,"./logger":4,"./random":5,"./root":6,"./tag":7,"./utils":8}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -585,96 +505,80 @@ exports.default = function ($) {
 };
 
 module.exports = exports['default'];
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-exports.default = function ($) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'object';
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-    $.Object = $.Class.extend({
-        _className: 'object',
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-        attr: function attr(attrs) {
-            for (var key in attrs) {
-                if (key === 'className') {
-                    continue;
-                }
-
-                this[key] = attrs[key];
-            }
-        }
-    });
-
-    $.object = function () {
-        return new $.Object();
-    };
-
-    return {
-        name: name,
-        unuse: function unuse($) {
-            delete $.Object;
-            delete $.object;
-        }
-    };
-};
-
-module.exports = exports['default'];
-},{}],7:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 var iRandomMax = 200000000000; // 最大随机整数范围 0 <= randomValue <= iRandomMax;
 
-exports.default = function ($) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'random';
+/**
+ * create new Random
+ * @class
+ */
 
-    $.Random = $.Class.extend({
-        _className: 'random',
+var $$ = function () {
 
-        properties: {
-            seed: {
-                get: 'getSeed',
-                set: 'setSeed'
-            }
-        },
+    /**
+     * constructor
+     * @param {Object} [opts]
+     */
+    function $$() {
+        var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-        ctor: function ctor(opts) {
-            opts = opts || {};
-            this.g_seed = 0;
-            this.randomMax = opts.randomMax || iRandomMax;
-        },
+        _classCallCheck(this, $$);
 
-        setSeed: function setSeed(seed) {
-            this.g_seed = seed;
-        },
+        this.seed = opts.seed || Date.now();
+        this.randomMax = opts.randomMax || iRandomMax;
+    }
 
-        getSeed: function getSeed() {
-            return this.g_seed;
-        },
+    /**
+     *
+     * @return {number}
+     */
 
-        random: function random() {
-            this.g_seed = (this.g_seed * 9301 + 49297) % 233280;
-            return this.g_seed / 233280.0;
-        },
 
-        // min<=result<=max
-        randomInt: function randomInt(min, max) {
+    _createClass($$, [{
+        key: 'random',
+        value: function random() {
+            this.seed = (this.seed * 9301 + 49297) % 233280;
+            return this.seed / 233280.0;
+        }
+
+        /**
+         * min<=result<=max
+         * @param {number} min
+         * @param {number} max
+         * @return {number}
+         */
+
+    }, {
+        key: 'randomInt',
+        value: function randomInt(min, max) {
             if (max === undefined) {
                 max = min;
                 min = 0;
             }
             var range = min + this.random() * (max - min);
             return Math.round(range);
-        },
+        }
 
-        // min<=result<=max
-        randomDouble: function randomDouble(min, max) {
+        /**
+         * min<=result<=max
+         * @param {number} min
+         * @param {number} max
+         * @return {number}
+         */
+
+    }, {
+        key: 'randomDouble',
+        value: function randomDouble(min, max) {
             if (max === undefined) {
                 max = min;
                 min = 0.0;
@@ -682,33 +586,57 @@ exports.default = function ($) {
 
             var range = min + this.random() * (max - min);
             return range;
-        },
+        }
 
-        randomRange: function randomRange(range) {
+        /**
+         *
+         * @param {number} range
+         * @return {number}
+         */
+
+    }, {
+        key: 'randomRange',
+        value: function randomRange(range) {
             return this.randomInt(0, this.randomMax) % range;
-        },
+        }
 
-        randomOdds: function randomOdds(range, odds) {
+        /**
+         *
+         * @param {number} range
+         * @param {number} odds
+         * @return {number}
+         */
+
+    }, {
+        key: 'randomOdds',
+        value: function randomOdds(range, odds) {
             if (this.randomRange(range) < odds) return 1;
             return 0;
         }
-    });
+    }]);
+
+    return $$;
+}();
+
+var _module = function _module($) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'random';
 
     $.random = function (opts) {
-        return new $.Random(opts);
+        return new $$(opts);
     };
 
     return {
         name: name,
         unuse: function unuse($) {
-            delete $.Random;
             delete $.random;
         }
     };
 };
 
-module.exports = exports['default'];
-},{}],8:[function(require,module,exports){
+exports.default = $$;
+exports.Random = $$;
+exports.module = _module;
+},{}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -717,6 +645,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.enableModule = undefined;
 
 var _err = require('./err');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _use = function _use($, modules, fn, opts, cb) {
     var m = fn($, opts, cb);
@@ -766,48 +696,65 @@ var enableModule = function enableModule($) {
     return true;
 };
 
-exports.default = function () {
-    var $ = {};
-    (0, _err.enableErr)($);
-    enableModule($);
-    $.enableModule = enableModule;
-    return $;
+var $ = function $() {
+    _classCallCheck(this, $);
+
+    (0, _err.enableErr)(this);
+    enableModule(this);
+    this.enableModule = enableModule;
 };
 
+exports.default = $;
 exports.enableModule = enableModule;
-},{"./err":2}],9:[function(require,module,exports){
+},{"./err":1}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.module = exports.disableTag = exports.enableTag = exports.TagObject = undefined;
 
-exports.default = function ($) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'tag';
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-    $.TagObject = $.EventEmitter.extend({
-        _className: 'tagObject',
+var _event = require('./event');
 
-        ctor: function ctor() {
-            this._super();
-            this._tags = [];
-            Object.defineProperty(this, 'tags', {
-                value: this._tags,
-                writable: false
-            });
-        },
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-        destroy: function destroy() {
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var $$ = function (_EventEmitter) {
+    _inherits($$, _EventEmitter);
+
+    function $$() {
+        _classCallCheck(this, $$);
+
+        var _this = _possibleConstructorReturn(this, ($$.__proto__ || Object.getPrototypeOf($$)).call(this));
+
+        _this._tags = [];
+        Object.defineProperty(_this, 'tags', {
+            value: _this._tags,
+            writable: false
+        });
+        return _this;
+    }
+
+    _createClass($$, [{
+        key: 'destroy',
+        value: function destroy() {
             this.emit('destroy', this);
             this.removeAllTags();
-        },
-
-        hasTag: function hasTag(tag) {
+        }
+    }, {
+        key: 'hasTag',
+        value: function hasTag(tag) {
             var tags = this._tags;
             return tags.indexOf(tag) != -1;
-        },
-
-        hasTagAny: function hasTagAny(tags) {
+        }
+    }, {
+        key: 'hasTagAny',
+        value: function hasTagAny(tags) {
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
@@ -834,9 +781,10 @@ exports.default = function ($) {
             }
 
             return false;
-        },
-
-        hasTagAll: function hasTagAll(tags) {
+        }
+    }, {
+        key: 'hasTagAll',
+        value: function hasTagAll(tags) {
             var _iteratorNormalCompletion2 = true;
             var _didIteratorError2 = false;
             var _iteratorError2 = undefined;
@@ -863,17 +811,19 @@ exports.default = function ($) {
             }
 
             return true;
-        },
-
-        addTag: function addTag(tag) {
+        }
+    }, {
+        key: 'addTag',
+        value: function addTag(tag) {
             var tags = this._tags;
             if (this.hasTag(tag)) return this;
             tags.push(tag);
             this.emit('addTag', tag);
             return this;
-        },
-
-        addTags: function addTags(tags) {
+        }
+    }, {
+        key: 'addTags',
+        value: function addTags(tags) {
             var _iteratorNormalCompletion3 = true;
             var _didIteratorError3 = false;
             var _iteratorError3 = undefined;
@@ -900,9 +850,10 @@ exports.default = function ($) {
             }
 
             return this;
-        },
-
-        removeTag: function removeTag(tag) {
+        }
+    }, {
+        key: 'removeTag',
+        value: function removeTag(tag) {
             var tags = this._tags;
             var idx = tags.indexOf(tag);
             if (idx >= 0) {
@@ -910,9 +861,10 @@ exports.default = function ($) {
             }
             this.emit('removeTag', tag);
             return this;
-        },
-
-        removeTags: function removeTags(tags) {
+        }
+    }, {
+        key: 'removeTags',
+        value: function removeTags(tags) {
             var _iteratorNormalCompletion4 = true;
             var _didIteratorError4 = false;
             var _iteratorError4 = undefined;
@@ -939,9 +891,10 @@ exports.default = function ($) {
             }
 
             return this;
-        },
-
-        removeAllTags: function removeAllTags() {
+        }
+    }, {
+        key: 'removeAllTags',
+        value: function removeAllTags() {
             var v = this._tags;
             var _iteratorNormalCompletion5 = true;
             var _didIteratorError5 = false;
@@ -972,103 +925,109 @@ exports.default = function ($) {
             this.emit('removeAllTags');
             return this;
         }
+    }]);
 
+    return $$;
+}(_event.EventEmitter);
+
+var prototype = $$.prototype;
+var Tag = {
+    _tags: [],
+    hasTag: prototype.hasTag,
+    hasTagAny: prototype.hasTagAny,
+    hasTagAll: prototype.hasTagAll,
+    addTag: prototype.addTag,
+    addTags: prototype.addTags,
+    removeTag: prototype.removeTag,
+    removeTags: prototype.removeTags,
+    removeAllTags: prototype.removeAllTags
+};
+
+var enableTag = function enableTag(obj) {
+    if (obj._tags != undefined) return;
+    var _iteratorNormalCompletion6 = true;
+    var _didIteratorError6 = false;
+    var _iteratorError6 = undefined;
+
+    try {
+        for (var _iterator6 = Object.keys(Tag)[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+            var key = _step6.value;
+
+            obj[key] = Tag[key];
+        }
+    } catch (err) {
+        _didIteratorError6 = true;
+        _iteratorError6 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                _iterator6.return();
+            }
+        } finally {
+            if (_didIteratorError6) {
+                throw _iteratorError6;
+            }
+        }
+    }
+
+    obj._tags = [];
+    Object.defineProperty(obj, 'tags', {
+        value: obj._tags,
+        writable: false
     });
+    (0, _event.enableEvent)(obj);
+};
 
-    $.tagObject = function () {
-        return new $.TagObject();
-    };
+var disableTag = function disableTag(obj) {
+    var _iteratorNormalCompletion7 = true;
+    var _didIteratorError7 = false;
+    var _iteratorError7 = undefined;
 
-    var prototype = $.TagObject.prototype;
-    var Tag = {
-        _tags: [],
-        hasTag: prototype.hasTag,
-        hasTagAny: prototype.hasTagAny,
-        hasTagAll: prototype.hasTagAll,
-        addTag: prototype.addTag,
-        addTags: prototype.addTags,
-        removeTag: prototype.removeTag,
-        removeTags: prototype.removeTags,
-        removeAllTags: prototype.removeAllTags
-    };
+    try {
+        for (var _iterator7 = Object.keys(Tag)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+            var key = _step7.value;
 
-    $.enableTag = function (obj) {
-        if (obj._tags != undefined) return;
-        var _iteratorNormalCompletion6 = true;
-        var _didIteratorError6 = false;
-        var _iteratorError6 = undefined;
-
+            delete obj[key];
+        }
+    } catch (err) {
+        _didIteratorError7 = true;
+        _iteratorError7 = err;
+    } finally {
         try {
-            for (var _iterator6 = Object.keys(Tag)[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                var key = _step6.value;
-
-                obj[key] = Tag[key];
+            if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                _iterator7.return();
             }
-        } catch (err) {
-            _didIteratorError6 = true;
-            _iteratorError6 = err;
         } finally {
-            try {
-                if (!_iteratorNormalCompletion6 && _iterator6.return) {
-                    _iterator6.return();
-                }
-            } finally {
-                if (_didIteratorError6) {
-                    throw _iteratorError6;
-                }
+            if (_didIteratorError7) {
+                throw _iteratorError7;
             }
         }
+    }
 
-        obj._tags = [];
-        Object.defineProperty(obj, 'tags', {
-            value: obj._tags,
-            writable: false
-        });
-        $.enableEvent(obj);
-    };
+    (0, _event.disableEvent)(obj);
+};
 
-    $.disableTag = function (obj) {
-        var _iteratorNormalCompletion7 = true;
-        var _didIteratorError7 = false;
-        var _iteratorError7 = undefined;
+var _module = function _module($) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'tag';
 
-        try {
-            for (var _iterator7 = Object.keys(Tag)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-                var key = _step7.value;
-
-                delete obj[key];
-            }
-        } catch (err) {
-            _didIteratorError7 = true;
-            _iteratorError7 = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion7 && _iterator7.return) {
-                    _iterator7.return();
-                }
-            } finally {
-                if (_didIteratorError7) {
-                    throw _iteratorError7;
-                }
-            }
-        }
-
-        $.disableEvent(obj);
-    };
+    $.enableTag = enableTag;
+    $.disableTag = disableTag;
 
     return {
         name: name,
         unuse: function unuse($) {
-            delete $.TagObject;
-            delete $.tagObject;
             delete $.enableTag;
             delete $.disableTag;
         }
     };
 };
 
-module.exports = exports['default'];
-},{}],10:[function(require,module,exports){
+exports.default = $$;
+exports.TagObject = $$;
+exports.enableTag = enableTag;
+exports.disableTag = disableTag;
+exports.module = _module;
+},{"./event":2}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1106,4 +1065,4 @@ exports.default = function ($) {
 };
 
 module.exports = exports['default'];
-},{}]},{},[4])
+},{}]},{},[3])

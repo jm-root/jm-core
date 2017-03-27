@@ -1,31 +1,33 @@
-import root from './root';
+import Root from './root';
 import logger from './logger';
-import err from './err';
 import utils from './utils';
-import Class from './class';
-import object from './object';
-import random from './random';
-import event from './event';
-import tag from './tag';
+import {module as random} from './random';
+import {module as event} from './event';
+import {module as tag} from './tag';
 
-let $ = () => {
-    let o = root();
-    o.global = {};
-    o
-        .use(logger)
-        .use(utils)
-        .use(Class)
-        .use(object)
-        .use(random)
-        .use(event)
-        .use(tag)
-    ;
-    o.enableEvent(o);
-    return o;
-};
+/**
+ * @class
+ */
+class $ extends Root {
+
+    /**
+     * @constructor
+     */
+    constructor () {
+        super();
+        this.global = {};
+        this
+            .use(logger)
+            .use(utils)
+            .use(random)
+            .use(event)
+            .use(tag)
+        ;
+    }
+}
 
 if (typeof global !== 'undefined' && global) {
-    global.jm = $();
+    global.jm = new $();
 }
 
 export default $;

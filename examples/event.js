@@ -35,9 +35,6 @@ if (typeof module !== 'undefined' && module.exports) {
     jm.enableEvent(o);
     bindEvent(o);
 
-    o = jm.eventEmitter();
-    bindEvent(o);
-
 })();
 
 

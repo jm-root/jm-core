@@ -1,75 +1,93 @@
 let iRandomMax = 200000000000;    // 最大随机整数范围 0 <= randomValue <= iRandomMax;
 
-export default ($, name = 'random') => {
-    $.Random = $.Class.extend({
-        _className: 'random',
+/**
+ * create new Random
+ * @class
+ */
+class $$ {
 
-        properties: {
-            seed: {
-                get: 'getSeed',
-                set: 'setSeed',
-            },
-        },
+    /**
+     * constructor
+     * @param {Object} [opts]
+     */
+    constructor(opts = {}) {
+        this.seed = opts.seed || Date.now();
+        this.randomMax = opts.randomMax || iRandomMax;
+    }
 
-        ctor: function (opts) {
-            opts = opts || {};
-            this.g_seed = 0;
-            this.randomMax = opts.randomMax || iRandomMax;
-        },
+    /**
+     *
+     * @return {number}
+     */
+    random() {
+        this.seed = ( this.seed * 9301 + 49297 ) % 233280;
+        return this.seed / ( 233280.0 );
+    }
 
-        setSeed: function (seed) {
-            this.g_seed = seed;
-        },
+    /**
+     * min<=result<=max
+     * @param {number} min
+     * @param {number} max
+     * @return {number}
+     */
+    randomInt(min, max) {
+        if (max === undefined) {
+            max = min;
+            min = 0;
+        }
+        let range = min + (this.random() * (max - min));
+        return Math.round(range);
+    }
 
-        getSeed: function () {
-            return this.g_seed;
-        },
+    /**
+     * min<=result<=max
+     * @param {number} min
+     * @param {number} max
+     * @return {number}
+     */
+    randomDouble(min, max) {
+        if (max === undefined) {
+            max = min;
+            min = 0.0;
+        }
 
-        random: function () {
-            this.g_seed = ( this.g_seed * 9301 + 49297 ) % 233280;
-            return this.g_seed / ( 233280.0 );
-        },
+        let range = min + (this.random() * (max - min));
+        return range;
+    }
 
-        // min<=result<=max
-        randomInt: function (min, max) {
-            if (max === undefined) {
-                max = min;
-                min = 0;
-            }
-            let range = min + (this.random() * (max - min));
-            return Math.round(range);
-        },
+    /**
+     *
+     * @param {number} range
+     * @return {number}
+     */
+    randomRange(range) {
+        return this.randomInt(0, this.randomMax) % range;
+    }
 
-        // min<=result<=max
-        randomDouble: function (min, max) {
-            if (max === undefined) {
-                max = min;
-                min = 0.0;
-            }
+    /**
+     *
+     * @param {number} range
+     * @param {number} odds
+     * @return {number}
+     */
+    randomOdds(range, odds) {
+        if (this.randomRange(range) < odds) return 1;
+        return 0;
+    }
+}
 
-            let range = min + (this.random() * (max - min));
-            return range;
-        },
-
-        randomRange: function (range) {
-            return this.randomInt(0, this.randomMax) % range;
-        },
-
-        randomOdds: function (range, odds) {
-            if (this.randomRange(range) < odds) return 1;
-            return 0;
-        },
-    });
-
+let module = ($, name = 'random') => {
     $.random = function (opts) {
-        return new $.Random(opts);
+        return new $$(opts);
     };
 
     return {
         name: name,
         unuse: function ($) {
-            delete $.Random;
             delete $.random;
         },
     };
 };
+
+export default $$;
+export {$$ as Random, module};

@@ -1,9 +1,9 @@
 import chai from 'chai';
 let expect = chai.expect;
 import $ from '../src';
-import {logger as Logger} from '../src';
+import Logger from '../src/logger';
 
-jm = $();
+jm = new $();
 
 let log = function (logger) {
     ['debug', 'info', 'warn', 'error', 'fatal'].forEach(function (level) {

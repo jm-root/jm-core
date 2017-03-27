@@ -5,8 +5,6 @@ if (typeof module !== 'undefined' && module.exports) {
 (function () {
     console.info('******** jm.TagObject *********');
 
-    console.info('jm.TagObject.prototype\n' + JSON.stringify(jm.TagObject.prototype));
-
     var eventHandle = function (opts) {
         var self = this;
         console.info('1. ' + self.className + ' ' + opts);
@@ -29,10 +27,4 @@ if (typeof module !== 'undefined' && module.exports) {
     o.removeTag('123');
     console.info('tags ' + JSON.stringify(o.tags));
 
-    o = jm.tagObject();
-    bindEvent(o);
-    o.addTag('123');
-    console.info('tags ' + JSON.stringify(o.tags));
-    o.removeTag('123');
-    console.info('tags ' + JSON.stringify(o.tags));
 })();

@@ -9,7 +9,6 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     uglify = require('gulp-uglify'),
     babel = require('gulp-babel'),
-    webpack = require('gulp-webpack'),
     browserify = require('gulp-browserify'),
     eslint = require('gulp-eslint'),
     version = 'v' + require('./package.json').version;
