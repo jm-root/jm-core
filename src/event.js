@@ -14,7 +14,7 @@ let __equalsListener = (l1, l2) => {
  *
  * @class
  */
-class $$ {
+class EventEmitter {
 
     /**
      * @constructs
@@ -29,7 +29,7 @@ class $$ {
      * @param {String} name
      * @param {Function} fn
      * @param {Object} [caller]
-     * @return {$$}
+     * @return {EventEmitter}
      */
     on (name, fn, caller) {
         let listener = __createListener(fn, caller);
@@ -48,7 +48,7 @@ class $$ {
      * @param {String} name
      * @param {Function} fn
      * @param {Object} [caller]
-     * @return {$$}
+     * @return {EventEmitter}
      */
     once (name, fn, caller) {
         let listener = __createListener(fn, caller);
@@ -69,7 +69,7 @@ class $$ {
      * @param {String} name
      * @param {Function} fn
      * @param {Object} [caller]
-     * @return {$$}
+     * @return {EventEmitter}
      */
     removeListener (name, fn, caller) {
         let listener = __createListener(fn, caller);
@@ -113,7 +113,7 @@ class $$ {
     /**
      * Removes all listeners for an event.
      * @param {String} [name]
-     * @return {$$}
+     * @return {EventEmitter}
      */
     removeAllListeners (name) {
         if (name === undefined) {
@@ -154,7 +154,7 @@ class $$ {
      * @param {*} arg3
      * @param {*} arg4
      * @param {*} arg5
-     * @return {$$}
+     * @return {EventEmitter}
      */
     emit (name, arg1, arg2, arg3, arg4, arg5) {
         let handler = this._events[name];
@@ -179,7 +179,7 @@ class $$ {
     }
 }
 
-let prototype = $$.prototype;
+let prototype = EventEmitter.prototype;
 let EM = {
     _events: {},
     on: prototype.on,
@@ -218,5 +218,5 @@ let module = ($, name = 'event') => {
     };
 };
 
-export default $$;
-export {$$ as EventEmitter, enableEvent, disableEvent, module};
+export default EventEmitter;
+export {EventEmitter, enableEvent, disableEvent, module};

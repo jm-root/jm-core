@@ -55,14 +55,20 @@ let enableModule = ($) => {
     return true;
 };
 
-class $ {
-    constructor() {
+/**
+ * root
+ */
+class Root {
+
+    /**
+     * create a root
+     */
+    constructor () {
         enableErr(this);
         enableModule(this);
         this.enableModule = enableModule;
     }
 }
 
-export default $;
-
-export {enableModule};
+export default Root;
+export {Root, enableModule};

@@ -4,13 +4,13 @@ let iRandomMax = 200000000000;    // 最大随机整数范围 0 <= randomValue <
  * create new Random
  * @class
  */
-class $$ {
+class Random {
 
     /**
      * constructor
      * @param {Object} [opts]
      */
-    constructor(opts = {}) {
+    constructor (opts = {}) {
         this.seed = opts.seed || Date.now();
         this.randomMax = opts.randomMax || iRandomMax;
     }
@@ -19,7 +19,7 @@ class $$ {
      *
      * @return {number}
      */
-    random() {
+    random () {
         this.seed = ( this.seed * 9301 + 49297 ) % 233280;
         return this.seed / ( 233280.0 );
     }
@@ -30,7 +30,7 @@ class $$ {
      * @param {number} max
      * @return {number}
      */
-    randomInt(min, max) {
+    randomInt (min, max) {
         if (max === undefined) {
             max = min;
             min = 0;
@@ -45,7 +45,7 @@ class $$ {
      * @param {number} max
      * @return {number}
      */
-    randomDouble(min, max) {
+    randomDouble (min, max) {
         if (max === undefined) {
             max = min;
             min = 0.0;
@@ -60,7 +60,7 @@ class $$ {
      * @param {number} range
      * @return {number}
      */
-    randomRange(range) {
+    randomRange (range) {
         return this.randomInt(0, this.randomMax) % range;
     }
 
@@ -70,7 +70,7 @@ class $$ {
      * @param {number} odds
      * @return {number}
      */
-    randomOdds(range, odds) {
+    randomOdds (range, odds) {
         if (this.randomRange(range) < odds) return 1;
         return 0;
     }
@@ -78,7 +78,7 @@ class $$ {
 
 let module = ($, name = 'random') => {
     $.random = function (opts) {
-        return new $$(opts);
+        return new Random(opts);
     };
 
     return {
@@ -89,5 +89,5 @@ let module = ($, name = 'random') => {
     };
 };
 
-export default $$;
-export {$$ as Random, module};
+export default Random;
+export {Random, module};

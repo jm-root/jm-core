@@ -100,7 +100,7 @@ var enableErr = function enableErr($) {
     return true;
 };
 
-exports.default = function ($) {
+var _module = function _module($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ERR';
 
     enableErr($, name);
@@ -113,7 +113,9 @@ exports.default = function ($) {
     };
 };
 
+exports.default = enableErr;
 exports.enableErr = enableErr;
+exports.module = _module;
 },{}],2:[function(require,module,exports){
 'use strict';
 
@@ -144,13 +146,13 @@ var __equalsListener = function __equalsListener(l1, l2) {
  * @class
  */
 
-var $$ = function () {
+var EventEmitter = function () {
 
     /**
      * @constructs
      */
-    function $$() {
-        _classCallCheck(this, $$);
+    function EventEmitter() {
+        _classCallCheck(this, EventEmitter);
 
         this._events = {};
         this.addListener = this.on;
@@ -161,11 +163,11 @@ var $$ = function () {
      * @param {String} name
      * @param {Function} fn
      * @param {Object} [caller]
-     * @return {$$}
+     * @return {EventEmitter}
      */
 
 
-    _createClass($$, [{
+    _createClass(EventEmitter, [{
         key: 'on',
         value: function on(name, fn, caller) {
             var listener = __createListener(fn, caller);
@@ -184,7 +186,7 @@ var $$ = function () {
          * @param {String} name
          * @param {Function} fn
          * @param {Object} [caller]
-         * @return {$$}
+         * @return {EventEmitter}
          */
 
     }, {
@@ -210,7 +212,7 @@ var $$ = function () {
          * @param {String} name
          * @param {Function} fn
          * @param {Object} [caller]
-         * @return {$$}
+         * @return {EventEmitter}
          */
 
     }, {
@@ -251,7 +253,7 @@ var $$ = function () {
         /**
          * Removes all listeners for an event.
          * @param {String} [name]
-         * @return {$$}
+         * @return {EventEmitter}
          */
 
     }, {
@@ -298,7 +300,7 @@ var $$ = function () {
          * @param {*} arg3
          * @param {*} arg4
          * @param {*} arg5
-         * @return {$$}
+         * @return {EventEmitter}
          */
 
     }, {
@@ -324,10 +326,10 @@ var $$ = function () {
         }
     }]);
 
-    return $$;
+    return EventEmitter;
 }();
 
-var prototype = $$.prototype;
+var prototype = EventEmitter.prototype;
 var EM = {
     _events: {},
     on: prototype.on,
@@ -411,8 +413,8 @@ var _module = function _module($) {
     };
 };
 
-exports.default = $$;
-exports.EventEmitter = $$;
+exports.default = EventEmitter;
+exports.EventEmitter = EventEmitter;
 exports.enableEvent = enableEvent;
 exports.disableEvent = disableEvent;
 exports.module = _module;
@@ -430,11 +432,7 @@ var _root2 = _interopRequireDefault(_root);
 
 var _logger = require('./logger');
 
-var _logger2 = _interopRequireDefault(_logger);
-
 var _utils = require('./utils');
-
-var _utils2 = _interopRequireDefault(_utils);
 
 var _random = require('./random');
 
@@ -465,7 +463,7 @@ var $ = function (_Root) {
         var _this = _possibleConstructorReturn(this, ($.__proto__ || Object.getPrototypeOf($)).call(this));
 
         _this.global = {};
-        _this.use(_logger2.default).use(_utils2.default).use(_random.module).use(_event.module).use(_tag.module);
+        _this.use(_logger.module).use(_utils.module).use(_random.module).use(_event.module).use(_tag.module);
         return _this;
     }
 
@@ -490,7 +488,7 @@ var getLogger = function getLogger(loggerCategoryName) {
     return console;
 };
 
-exports.default = function ($) {
+var _module = function _module($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'logger';
 
     $.getLogger = getLogger;
@@ -504,7 +502,9 @@ exports.default = function ($) {
     };
 };
 
-module.exports = exports['default'];
+exports.default = getLogger;
+exports.getLogger = getLogger;
+exports.module = _module;
 },{}],5:[function(require,module,exports){
 'use strict';
 
@@ -523,16 +523,16 @@ var iRandomMax = 200000000000; // 最大随机整数范围 0 <= randomValue <= i
  * @class
  */
 
-var $$ = function () {
+var Random = function () {
 
     /**
      * constructor
      * @param {Object} [opts]
      */
-    function $$() {
+    function Random() {
         var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-        _classCallCheck(this, $$);
+        _classCallCheck(this, Random);
 
         this.seed = opts.seed || Date.now();
         this.randomMax = opts.randomMax || iRandomMax;
@@ -544,7 +544,7 @@ var $$ = function () {
      */
 
 
-    _createClass($$, [{
+    _createClass(Random, [{
         key: 'random',
         value: function random() {
             this.seed = (this.seed * 9301 + 49297) % 233280;
@@ -615,14 +615,14 @@ var $$ = function () {
         }
     }]);
 
-    return $$;
+    return Random;
 }();
 
 var _module = function _module($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'random';
 
     $.random = function (opts) {
-        return new $$(opts);
+        return new Random(opts);
     };
 
     return {
@@ -633,8 +633,8 @@ var _module = function _module($) {
     };
 };
 
-exports.default = $$;
-exports.Random = $$;
+exports.default = Random;
+exports.Random = Random;
 exports.module = _module;
 },{}],6:[function(require,module,exports){
 'use strict';
@@ -642,7 +642,7 @@ exports.module = _module;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.enableModule = undefined;
+exports.enableModule = exports.Root = undefined;
 
 var _err = require('./err');
 
@@ -696,15 +696,25 @@ var enableModule = function enableModule($) {
     return true;
 };
 
-var $ = function $() {
-    _classCallCheck(this, $);
+/**
+ * root
+ */
+
+var Root =
+
+/**
+ * create a root
+ */
+function Root() {
+    _classCallCheck(this, Root);
 
     (0, _err.enableErr)(this);
     enableModule(this);
     this.enableModule = enableModule;
 };
 
-exports.default = $;
+exports.default = Root;
+exports.Root = Root;
 exports.enableModule = enableModule;
 },{"./err":1}],7:[function(require,module,exports){
 'use strict';
@@ -724,13 +734,19 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var $$ = function (_EventEmitter) {
-    _inherits($$, _EventEmitter);
+/**
+ * Object with tag enabled
+ */
+var TagObject = function (_EventEmitter) {
+    _inherits(TagObject, _EventEmitter);
 
-    function $$() {
-        _classCallCheck(this, $$);
+    /**
+     * create a tagObject
+     */
+    function TagObject() {
+        _classCallCheck(this, TagObject);
 
-        var _this = _possibleConstructorReturn(this, ($$.__proto__ || Object.getPrototypeOf($$)).call(this));
+        var _this = _possibleConstructorReturn(this, (TagObject.__proto__ || Object.getPrototypeOf(TagObject)).call(this));
 
         _this._tags = [];
         Object.defineProperty(_this, 'tags', {
@@ -740,18 +756,37 @@ var $$ = function (_EventEmitter) {
         return _this;
     }
 
-    _createClass($$, [{
+    /**
+     * destroy, remove all tags
+     */
+
+
+    _createClass(TagObject, [{
         key: 'destroy',
         value: function destroy() {
             this.emit('destroy', this);
             this.removeAllTags();
         }
+
+        /**
+         * check if has a tag
+         * @param {String} tag
+         * @return {boolean}
+         */
+
     }, {
         key: 'hasTag',
         value: function hasTag(tag) {
             var tags = this._tags;
             return tags.indexOf(tag) != -1;
         }
+
+        /**
+         * check if has any one of tags
+         * @param  {String[]} tags
+         * @return {boolean}
+         */
+
     }, {
         key: 'hasTagAny',
         value: function hasTagAny(tags) {
@@ -782,6 +817,13 @@ var $$ = function (_EventEmitter) {
 
             return false;
         }
+
+        /**
+         * check if has any all of tags
+         * @param {String[]} tags
+         * @return {boolean}
+         */
+
     }, {
         key: 'hasTagAll',
         value: function hasTagAll(tags) {
@@ -812,6 +854,13 @@ var $$ = function (_EventEmitter) {
 
             return true;
         }
+
+        /**
+         * add a tag
+         * @param {String} tag
+         * @return {TagObject}
+         */
+
     }, {
         key: 'addTag',
         value: function addTag(tag) {
@@ -821,6 +870,13 @@ var $$ = function (_EventEmitter) {
             this.emit('addTag', tag);
             return this;
         }
+
+        /**
+         * add tags
+         * @param {String[]} tags
+         * @return {TagObject}
+         */
+
     }, {
         key: 'addTags',
         value: function addTags(tags) {
@@ -851,6 +907,13 @@ var $$ = function (_EventEmitter) {
 
             return this;
         }
+
+        /**
+         * remove a tag
+         * @param {String} tag
+         * @return {TagObject}
+         */
+
     }, {
         key: 'removeTag',
         value: function removeTag(tag) {
@@ -862,6 +925,13 @@ var $$ = function (_EventEmitter) {
             this.emit('removeTag', tag);
             return this;
         }
+
+        /**
+         * remove tags
+         * @param {String[]} tags
+         * @return {TagObject}
+         */
+
     }, {
         key: 'removeTags',
         value: function removeTags(tags) {
@@ -892,6 +962,12 @@ var $$ = function (_EventEmitter) {
 
             return this;
         }
+
+        /**
+         * remove all tags
+         * @return {TagObject}
+         */
+
     }, {
         key: 'removeAllTags',
         value: function removeAllTags() {
@@ -927,10 +1003,10 @@ var $$ = function (_EventEmitter) {
         }
     }]);
 
-    return $$;
+    return TagObject;
 }(_event.EventEmitter);
 
-var prototype = $$.prototype;
+var prototype = TagObject.prototype;
 var Tag = {
     _tags: [],
     hasTag: prototype.hasTag,
@@ -1022,8 +1098,8 @@ var _module = function _module($) {
     };
 };
 
-exports.default = $$;
-exports.TagObject = $$;
+exports.default = TagObject;
+exports.TagObject = TagObject;
 exports.enableTag = enableTag;
 exports.disableTag = disableTag;
 exports.module = _module;
@@ -1033,28 +1109,29 @@ exports.module = _module;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+var utils = {
+    // 高效slice
+    slice: function slice(a, start, end) {
+        start = start || 0;
+        end = end || a.length;
+        if (start < 0) start += a.length;
+        if (end < 0) end += a.length;
+        var r = new Array(end - start);
+        for (var i = start; i < end; i++) {
+            r[i - start] = a[i];
+        }
+        return r;
+    },
 
-exports.default = function ($) {
+    formatJSON: function formatJSON(obj) {
+        return JSON.stringify(obj, null, 2);
+    }
+};
+
+var _module = function _module($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'utils';
 
-    $[name] = {
-        // 高效slice
-        slice: function slice(a, start, end) {
-            start = start || 0;
-            end = end || a.length;
-            if (start < 0) start += a.length;
-            if (end < 0) end += a.length;
-            var r = new Array(end - start);
-            for (var i = start; i < end; i++) {
-                r[i - start] = a[i];
-            }
-            return r;
-        },
-
-        formatJSON: function formatJSON(obj) {
-            return JSON.stringify(obj, null, 2);
-        }
-    };
+    $[name] = utils;
 
     return {
         name: name,
@@ -1064,5 +1141,7 @@ exports.default = function ($) {
     };
 };
 
-module.exports = exports['default'];
+exports.default = utils;
+exports.utils = utils;
+exports.module = _module;
 },{}]},{},[3])

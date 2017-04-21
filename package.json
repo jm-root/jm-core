@@ -1,6 +1,6 @@
 {
   "name": "jm-core",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "core lib for jm-* projects",
   "main": "./lib/index",
   "scripts": {

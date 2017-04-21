@@ -3,7 +3,7 @@ let getLogger = (loggerCategoryName) => {
     return console;
 };
 
-export default ($, name = 'logger') => {
+let module = ($, name = 'logger') => {
     $.getLogger = getLogger;
     $.logger = getLogger();
     return {
@@ -14,3 +14,6 @@ export default ($, name = 'logger') => {
         },
     };
 };
+
+export default getLogger;
+export {getLogger, module};

@@ -1,7 +1,14 @@
 import {EventEmitter, enableEvent, disableEvent} from './event';
 
-class $$ extends EventEmitter {
-    constructor() {
+/**
+ * Object with tag enabled
+ */
+class TagObject extends EventEmitter {
+
+    /**
+     * create a tagObject
+     */
+    constructor () {
         super();
         this._tags = [];
         Object.defineProperty(this, 'tags', {
@@ -10,31 +17,54 @@ class $$ extends EventEmitter {
         });
     }
 
-    destroy() {
+    /**
+     * destroy, remove all tags
+     */
+    destroy () {
         this.emit('destroy', this);
         this.removeAllTags();
     }
 
-    hasTag(tag) {
+    /**
+     * check if has a tag
+     * @param {String} tag
+     * @return {boolean}
+     */
+    hasTag (tag) {
         let tags = this._tags;
         return tags.indexOf(tag) != -1;
     }
 
-    hasTagAny(tags) {
+    /**
+     * check if has any one of tags
+     * @param  {String[]} tags
+     * @return {boolean}
+     */
+    hasTagAny (tags) {
         for (let t of tags) {
             if (this.hasTag(t)) return true;
         }
         return false;
     }
 
-    hasTagAll(tags) {
+    /**
+     * check if has any all of tags
+     * @param {String[]} tags
+     * @return {boolean}
+     */
+    hasTagAll (tags) {
         for (let t of tags) {
             if (!this.hasTag(t)) return false;
         }
         return true;
     }
 
-    addTag(tag) {
+    /**
+     * add a tag
+     * @param {String} tag
+     * @return {TagObject}
+     */
+    addTag (tag) {
         let tags = this._tags;
         if (this.hasTag(tag)) return this;
         tags.push(tag);
@@ -42,14 +72,24 @@ class $$ extends EventEmitter {
         return this;
     }
 
-    addTags(tags) {
+    /**
+     * add tags
+     * @param {String[]} tags
+     * @return {TagObject}
+     */
+    addTags (tags) {
         for (let t of tags) {
             this.addTag(t);
         }
         return this;
     }
 
-    removeTag(tag) {
+    /**
+     * remove a tag
+     * @param {String} tag
+     * @return {TagObject}
+     */
+    removeTag (tag) {
         let tags = this._tags;
         let idx = tags.indexOf(tag);
         if (idx >= 0) {
@@ -59,14 +99,23 @@ class $$ extends EventEmitter {
         return this;
     }
 
-    removeTags(tags) {
+    /**
+     * remove tags
+     * @param {String[]} tags
+     * @return {TagObject}
+     */
+    removeTags (tags) {
         for (let t of tags) {
             this.removeTag(t);
         }
         return this;
     }
 
-    removeAllTags() {
+    /**
+     * remove all tags
+     * @return {TagObject}
+     */
+    removeAllTags () {
         let v = this._tags;
         for (let t of v) {
             this.emit('removeTag', t);
@@ -78,7 +127,7 @@ class $$ extends EventEmitter {
 
 }
 
-let prototype = $$.prototype;
+let prototype = TagObject.prototype;
 let Tag = {
     _tags: [],
     hasTag: prototype.hasTag,
@@ -124,5 +173,5 @@ let module = ($, name = 'tag') => {
     };
 };
 
-export default $$;
-export {$$ as TagObject, enableTag, disableTag, module};
+export default TagObject;
+export {TagObject, enableTag, disableTag, module};

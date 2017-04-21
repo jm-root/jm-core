@@ -1,6 +1,6 @@
 import Root from './root';
-import logger from './logger';
-import utils from './utils';
+import {module as logger} from './logger';
+import {module as utils} from './utils';
 import {module as random} from './random';
 import {module as event} from './event';
 import {module as tag} from './tag';
