@@ -76,7 +76,7 @@ class Random {
     }
 }
 
-let module = ($, name = 'random') => {
+let moduleRandom = ($, name = 'random') => {
     $.random = function (opts) {
         return new Random(opts);
     };
@@ -90,4 +90,4 @@ let module = ($, name = 'random') => {
 };
 
 export default Random;
-export {Random, module};
+export {Random, moduleRandom};

@@ -17,7 +17,7 @@ let utils = {
     },
 };
 
- let module = ($, name = 'utils') => {
+ let moduleUtils = ($, name = 'utils') => {
     $[name] = utils;
 
     return {
@@ -29,4 +29,4 @@ let utils = {
 };
 
 export default utils;
-export {utils, module};
+export {utils, moduleUtils};

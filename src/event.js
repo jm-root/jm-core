@@ -205,7 +205,7 @@ let disableEvent = (obj) => {
     }
 };
 
-let module = ($, name = 'event') => {
+let moduleEvent = ($, name = 'event') => {
     $.enableEvent = enableEvent;
     $.disableEvent = disableEvent;
 
@@ -219,4 +219,4 @@ let module = ($, name = 'event') => {
 };
 
 export default EventEmitter;
-export {EventEmitter, enableEvent, disableEvent, module};
+export {EventEmitter, enableEvent, disableEvent, moduleEvent};

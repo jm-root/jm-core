@@ -160,7 +160,7 @@ let disableTag = (obj) => {
     disableEvent(obj);
 };
 
-let module = ($, name = 'tag') => {
+let moduleTag = ($, name = 'tag') => {
     $.enableTag = enableTag;
     $.disableTag = disableTag;
 
@@ -174,4 +174,4 @@ let module = ($, name = 'tag') => {
 };
 
 export default TagObject;
-export {TagObject, enableTag, disableTag, module};
+export {TagObject, enableTag, disableTag, moduleTag};
