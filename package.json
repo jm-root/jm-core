@@ -1,10 +1,10 @@
 {
   "name": "jm-core",
-  "version": "0.0.7",
+  "version": "1.0.3",
   "description": "core lib for jm-* projects",
   "main": "./lib/index",
   "scripts": {
-    "test": "node test"
+    "test": "node node_modules/babel-cli/bin/babel-node ./node_modules/mocha/bin/_mocha test"
   },
   "repository": {
     "type": "git",
@@ -22,19 +22,28 @@
     "url": "https://github.com/jm-root/jm-core/issues"
   },
   "homepage": "https://github.com/jm-root/jm-core",
-  "dependencies": {
-	"lodash": "*",
-    "log4js": "*"
-  },
+  "dependencies": {},
   "devDependencies": {
-      "jshint": "*",
-      "gulp": ">=3.5.6",
-      "gulp-clean": ">=0.3.1",
-      "gulp-concat": ">=2.2.0",
-      "gulp-jshint": ">=1.5.1",
-      "gulp-rename": ">=1.2.0",
-      "gulp-sequence": ">=0.3.0",
-      "gulp-uglify": ">=0.3.1",
-      "gulp-util": ">=2.2.14"
+    "babel-cli": "^6.24.0",
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-env": "^1.2.2",
+    "chai": "^3.5.0",
+    "eslint": "^3.18.0",
+    "eslint-config-google": "^0.7.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-browserify": "^0.5.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-jshint": ">=1.5.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sequence": "^0.4.6",
+    "gulp-uglify": "^2.1.2",
+    "gulp-util": "^3.0.8",
+    "jshint": "^2.9.4",
+    "mocha": "^3.2.0"
   }
 }

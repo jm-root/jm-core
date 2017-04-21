@@ -1,9 +1,8 @@
-var jm = jm || {};
 if (typeof module !== 'undefined' && module.exports) {
-    jm = require('../');
+    require('../');
 }
 
-(function(){
+(function () {
     var logger = jm.logger;
     var random = jm.random();
     logger.info('******** jm.random *********');
@@ -12,6 +11,4 @@ if (typeof module !== 'undefined' && module.exports) {
     logger.info(random.randomInt(1, 2));
     logger.info(random.randomDouble(2));
     logger.info(random.randomDouble(1, 2));
-
 })();
-
