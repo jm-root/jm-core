@@ -92,7 +92,7 @@ let enableErr = ($, name = 'ERR') => {
     return true;
 };
 
-let module = ($, name = 'ERR') => {
+let moduleErr = ($, name = 'ERR') => {
     enableErr($, name);
 
     return {
@@ -104,4 +104,4 @@ let module = ($, name = 'ERR') => {
 };
 
 export default enableErr;
-export {enableErr, module};
+export {enableErr, moduleErr};

@@ -100,7 +100,7 @@ var enableErr = function enableErr($) {
     return true;
 };
 
-var _module = function _module($) {
+var moduleErr = function moduleErr($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ERR';
 
     enableErr($, name);
@@ -115,7 +115,7 @@ var _module = function _module($) {
 
 exports.default = enableErr;
 exports.enableErr = enableErr;
-exports.module = _module;
+exports.moduleErr = moduleErr;
 },{}],2:[function(require,module,exports){
 'use strict';
 
@@ -398,7 +398,7 @@ var disableEvent = function disableEvent(obj) {
     }
 };
 
-var _module = function _module($) {
+var moduleEvent = function moduleEvent($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'event';
 
     $.enableEvent = enableEvent;
@@ -417,7 +417,7 @@ exports.default = EventEmitter;
 exports.EventEmitter = EventEmitter;
 exports.enableEvent = enableEvent;
 exports.disableEvent = disableEvent;
-exports.module = _module;
+exports.moduleEvent = moduleEvent;
 },{}],3:[function(require,module,exports){
 (function (global){
 'use strict';
@@ -463,7 +463,7 @@ var $ = function (_Root) {
         var _this = _possibleConstructorReturn(this, ($.__proto__ || Object.getPrototypeOf($)).call(this));
 
         _this.global = {};
-        _this.use(_logger.module).use(_utils.module).use(_random.module).use(_event.module).use(_tag.module);
+        _this.use(_logger.moduleLogger).use(_utils.moduleUtils).use(_random.moduleRandom).use(_event.moduleEvent).use(_tag.moduleTag);
         return _this;
     }
 
@@ -488,7 +488,7 @@ var getLogger = function getLogger(loggerCategoryName) {
     return console;
 };
 
-var _module = function _module($) {
+var moduleLogger = function moduleLogger($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'logger';
 
     $.getLogger = getLogger;
@@ -504,7 +504,7 @@ var _module = function _module($) {
 
 exports.default = getLogger;
 exports.getLogger = getLogger;
-exports.module = _module;
+exports.moduleLogger = moduleLogger;
 },{}],5:[function(require,module,exports){
 'use strict';
 
@@ -618,7 +618,7 @@ var Random = function () {
     return Random;
 }();
 
-var _module = function _module($) {
+var moduleRandom = function moduleRandom($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'random';
 
     $.random = function (opts) {
@@ -635,7 +635,7 @@ var _module = function _module($) {
 
 exports.default = Random;
 exports.Random = Random;
-exports.module = _module;
+exports.moduleRandom = moduleRandom;
 },{}],6:[function(require,module,exports){
 'use strict';
 
@@ -722,7 +722,7 @@ exports.enableModule = enableModule;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.module = exports.disableTag = exports.enableTag = exports.TagObject = undefined;
+exports.moduleTag = exports.disableTag = exports.enableTag = exports.TagObject = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -1083,7 +1083,7 @@ var disableTag = function disableTag(obj) {
     (0, _event.disableEvent)(obj);
 };
 
-var _module = function _module($) {
+var moduleTag = function moduleTag($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'tag';
 
     $.enableTag = enableTag;
@@ -1102,7 +1102,7 @@ exports.default = TagObject;
 exports.TagObject = TagObject;
 exports.enableTag = enableTag;
 exports.disableTag = disableTag;
-exports.module = _module;
+exports.moduleTag = moduleTag;
 },{"./event":2}],8:[function(require,module,exports){
 'use strict';
 
@@ -1128,7 +1128,7 @@ var utils = {
     }
 };
 
-var _module = function _module($) {
+var moduleUtils = function moduleUtils($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'utils';
 
     $[name] = utils;
@@ -1143,5 +1143,5 @@ var _module = function _module($) {
 
 exports.default = utils;
 exports.utils = utils;
-exports.module = _module;
+exports.moduleUtils = moduleUtils;
 },{}]},{},[3])
