@@ -15,7 +15,7 @@ var enableErr = function enableErr($) {
     var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ERR';
 
     if ($[name]) return false;
-    $[name] = {
+    var Err = {
         SUCCESS: {
             err: 0,
             msg: 'Success'
@@ -97,6 +97,44 @@ var enableErr = function enableErr($) {
         }
     };
 
+    var err = function err(name, opts) {
+        var E = Err[name];
+        var msg = E.msg;
+        if (opts) {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = Object.keys(opts)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var key = _step.value;
+
+                    msg = msg.split('${' + key + '}').join(opts[key]);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+        }
+        var e = new Error(msg);
+        e.code = E.err;
+        e.name = name;
+        return e;
+    };
+
+    $[name] = Err;
+    $.err = err;
+
     return true;
 };
 
@@ -109,6 +147,7 @@ var moduleErr = function moduleErr($) {
         name: name,
         unuse: function unuse($) {
             delete $[name];
+            delete $.err;
         }
     };
 };

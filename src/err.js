@@ -7,7 +7,7 @@
  */
 let enableErr = ($, name = 'ERR') => {
     if ($[name]) return false;
-    $[name] = {
+    let Err = {
         SUCCESS: {
             err: 0,
             msg: 'Success',
@@ -89,6 +89,23 @@ let enableErr = ($, name = 'ERR') => {
         },
     };
 
+    let err = (name, opts) => {
+        let E = Err[name];
+        let msg = E.msg;
+        if (opts) {
+            for (let key of Object.keys(opts)) {
+                msg = msg.split('${' + key + '}').join(opts[key]);
+            }
+        }
+        let e = new Error(msg);
+        e.code = E.err;
+        e.name = name;
+        return e;
+    };
+
+    $[name] = Err;
+    $.err = err;
+
     return true;
 };
 
@@ -99,6 +116,7 @@ let moduleErr = ($, name = 'ERR') => {
         name: name,
         unuse: function ($) {
             delete $[name];
+            delete $.err;
         },
     };
 };
