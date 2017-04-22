@@ -89,8 +89,13 @@ let enableErr = ($, name = 'ERR') => {
         },
     };
 
-    let err = (name, opts) => {
-        let E = Err[name];
+    let err = (E, opts) => {
+        if(typeof E === 'string') {
+            E = {
+                msg: E
+            };
+        }
+
         let msg = E.msg;
         if (opts) {
             for (let key of Object.keys(opts)) {
@@ -98,8 +103,7 @@ let enableErr = ($, name = 'ERR') => {
             }
         }
         let e = new Error(msg);
-        e.code = E.err;
-        e.name = name;
+        E.err && (e.code = E.err);
         return e;
     };
 

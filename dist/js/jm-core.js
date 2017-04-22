@@ -97,8 +97,13 @@ var enableErr = function enableErr($) {
         }
     };
 
-    var err = function err(name, opts) {
-        var E = Err[name];
+    var err = function err(E, opts) {
+        if (typeof E === 'string') {
+            E = {
+                msg: E
+            };
+        }
+
         var msg = E.msg;
         if (opts) {
             var _iteratorNormalCompletion = true;
@@ -127,8 +132,7 @@ var enableErr = function enableErr($) {
             }
         }
         var e = new Error(msg);
-        e.code = E.err;
-        e.name = name;
+        E.err && (e.code = E.err);
         return e;
     };
 

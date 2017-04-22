@@ -16,7 +16,7 @@ describe('root', function () {
 
 describe('global', function () {
     it('jm', function () {
-        console.log(jm.utils.formatJSON(jm.modules));
+        jm.logger.info('modules: %s', jm.utils.formatJSON(jm.modules));
         expect(jm.global).to.be.an('object');
         expect(jm.modules).to.be.an('object');
     });
