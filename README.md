@@ -38,3 +38,20 @@ jm.logger.debug('works.');
     jm.logger.debug('works.');
 </script>
 ```
+
+### define a module
+
+```
+// es6
+let moduleErr = ($, name = 'ERR') => {
+    enableErr($, name);
+
+    return {
+        name: name,
+        unuse: function ($) {
+            delete $[name];
+        },
+    };
+};
+export {moduleErr};
+```
