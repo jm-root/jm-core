@@ -33,13 +33,8 @@ class EventEmitter {
      */
     on (name, fn, caller) {
         let listener = __createListener(fn, caller);
-        if (!this._events[name]) {
-            this._events[name] = listener;
-        } else if (Array.isArray(this._events[name])) {
-            this._events[name].push(listener);
-        } else {
-            this._events[name] = [this._events[name], listener];
-        }
+        this._events[name] || (this._events[name]=[]);
+        this._events[name].push(listener);
         return this;
     }
 
@@ -54,7 +49,7 @@ class EventEmitter {
         let listener = __createListener(fn, caller);
 
         let on = (arg1, arg2, arg3, arg4, arg5) => {
-            this.removeListener(name, on);
+            this.off(name, on);
             fn.call(listener.caller || this, arg1, arg2, arg3, arg4, arg5);
         };
 
@@ -76,7 +71,7 @@ class EventEmitter {
         if (this._events && this._events[name]) {
             let list = this._events[name];
 
-            if (Array.isArray(list)) {
+            if (list) {
                 let pos = -1;
 
                 for (let i = 0, l = list.length; i < l; i++) {
@@ -99,11 +94,6 @@ class EventEmitter {
                 if (!list.length) {
                     delete this._events[name];
                 }
-            } else if (__equalsListener(list, listener)
-                || (list.listener
-                && __equalsListener(list.listener, listener))
-            ) {
-                delete this._events[name];
             }
         }
 
@@ -122,10 +112,15 @@ class EventEmitter {
         }
 
         if (this._events && this._events[name]) {
-            this._events[name] = null;
+            delete this._events[name];
         }
 
         return this;
+    }
+
+    off(name, fn, caller) {
+        if(!fn) return this.removeAllListeners(name);
+        return this.removeListener(name, fn, caller);
     }
 
     /**
@@ -134,14 +129,7 @@ class EventEmitter {
      * @return {*}
      */
     listeners (name) {
-        if (!this._events[name]) {
-            this._events[name] = [];
-        }
-
-        if (!Array.isArray(this._events[name])) {
-            this._events[name] = [this._events[name]];
-        }
-
+        this._events[name] || (this._events[name]=[]);
         return this._events[name];
     }
 
@@ -160,20 +148,15 @@ class EventEmitter {
         let handler = this._events[name];
         if (!handler) return this;
 
-        if (typeof handler === 'object' && !Array.isArray(handler)) {
-            handler.fn.call(handler.caller || this,
-                arg1, arg2, arg3, arg4, arg5);
-        } else if (Array.isArray(handler)) {
-            let listeners = new Array(handler.length);
-            for (let i = 0; i < handler.length; i++) {
-                listeners[i] = handler[i];
-            }
-
-            for (let i = 0, l = listeners.length; i < l; i++) {
-                let h = listeners[i];
-                if (h.fn.call(h.caller || this,
-                        arg1, arg2, arg3, arg4, arg5) === false) break;
-            }
+        //make a copy to avoid error of change handle
+        let listeners = new Array(handler.length);
+        for (let i = 0; i < handler.length; i++) {
+            listeners[i] = handler[i];
+        }
+        for (let i = 0, l = listeners.length; i < l; i++) {
+            let h = listeners[i];
+            if (h.fn.call(h.caller || this,
+                    arg1, arg2, arg3, arg4, arg5) === false) break;
         }
         return this;
     }
@@ -187,6 +170,7 @@ let EM = {
     addListener: prototype.on,
     removeListener: prototype.removeListener,
     removeAllListeners: prototype.removeAllListeners,
+    off: prototype.off,
     listeners: prototype.listeners,
     emit: prototype.emit,
 };
