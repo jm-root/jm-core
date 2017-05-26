@@ -1,165 +1,173 @@
-let __createListener = (fn, caller) => {
-    return {
-        fn: fn,
-        caller: caller || null,
-    };
-};
-
-let __equalsListener = (l1, l2) => {
-    return l1.fn === l2.fn && l1.caller === l2.caller;
-};
+/**
+ * event module.
+ * @module event
+ */
 
 /**
- * Creates a new EventEmitter
+ * Class representing an eventEmitter.
  *
- * @class
+ * ```javascript
+ * // es6
+ * let eventEmitter = new EventEmitter();
+ * eventEmitter.on('test', (info) => {
+ *      console.log(info);
+ * });
+ * eventEmitter.once('test', (info) => {
+ *      // this will be called only one time
+ *      console.log(info);
+ * });
+ * eventEmitter.one('test', (info) => {
+ *      // this will be called first
+ *      console.log(info);
+ * }, true);
+ *
+ * eventEmitter.emit('test', 'hello eventEmitter');
+ * eventEmitter.off('test');
+ * ```
  */
 class EventEmitter {
 
     /**
-     * @constructs
+     * Create an eventEmitter.
      */
     constructor () {
         this._events = {};
-        this.addListener = this.on;
     }
 
     /**
-     * Adds a listener
-     * @param {String} name
-     * @param {Function} fn
-     * @param {Object} [caller]
-     * @return {EventEmitter}
+     * Adds the listener function to the end of the listeners array for the event named eventName.
+     * No checks are made to see if the listener has already been added.
+     * Multiple calls passing the same combination of eventName and listener will result in the listener being added, and called, multiple times.
+     *
+     * @param {*} eventName - event name
+     * @param {Function} fn - listener function
+     * @param {boolean} [prepend] - Adds to the beginning of the listeners array if true
+     * @return {EventEmitter} - for chaining
      */
-    on (name, fn, caller) {
-        let listener = __createListener(fn, caller);
-        this._events[name] || (this._events[name]=[]);
-        this._events[name].push(listener);
+    on (eventName, fn, prepend) {
+        this._events[eventName] || (this._events[eventName] = []);
+        if (prepend) {
+            this._events[eventName].unshift(fn);
+        } else {
+            this._events[eventName].push(fn);
+        }
         return this;
     }
 
     /**
-     * Adds a volatile listener.
-     * @param {String} name
-     * @param {Function} fn
-     * @param {Object} [caller]
-     * @return {EventEmitter}
+     * Adds a one time listener function for the event named eventName.
+     * The next time eventName is triggered, this listener is removed and then invoked.
+     *
+     * @param {*} eventName - event name
+     * @param {Function} fn - listener function
+     * @param {boolean} [prepend] - Adds to the beginning of the listeners array if true
+     * @return {EventEmitter} - for chaining
      */
-    once (name, fn, caller) {
-        let listener = __createListener(fn, caller);
-
+    once (eventName, fn, prepend) {
         let on = (arg1, arg2, arg3, arg4, arg5) => {
-            this.off(name, on);
-            fn.call(listener.caller || this, arg1, arg2, arg3, arg4, arg5);
+            this.off(eventName, on);
+            fn(arg1, arg2, arg3, arg4, arg5);
         };
-
-        on.listener = listener;
-        this.on(name, on);
-
-        return this;
+        return this.on(eventName, on, prepend);
     }
 
     /**
-     * Removes a listener.
-     * @param {String} name
-     * @param {Function} fn
-     * @param {Object} [caller]
-     * @return {EventEmitter}
+     * Removes a listener for the event named eventName.
+     * Removes all listeners from the listener array for event named eventName if fn is null
+     * Removes all listeners from the listener array if eventName is null
+     *
+     * @param {*} [eventName] - event name
+     * @param {Function} [fn] - listener function
+     * @return {EventEmitter} - for chaining
      */
-    removeListener (name, fn, caller) {
-        let listener = __createListener(fn, caller);
-        if (this._events && this._events[name]) {
-            let list = this._events[name];
-
-            if (list) {
-                let pos = -1;
-
-                for (let i = 0, l = list.length; i < l; i++) {
-                    let o = list[i];
-                    if (__equalsListener(o, listener)
-                        || (o.listener
-                        && __equalsListener(o.listener, listener))
-                    ) {
-                        pos = i;
-                        break;
+    off (eventName, fn) {
+        if (!fn) {
+            if (eventName === undefined) {
+                this._events = {};
+            } else if (this._events && this._events[eventName]) {
+                delete this._events[eventName];
+            }
+        } else if (this._events && this._events[eventName]) {
+            let list = this._events[eventName];
+            for (let i = 0; i < list.length; i++) {
+                if (fn === list[i]) {
+                    list.splice(i, 1);
+                    if (!list.length) {
+                        delete this._events[eventName];
                     }
-                }
-
-                if (pos < 0) {
-                    return this;
-                }
-
-                list.splice(pos, 1);
-
-                if (!list.length) {
-                    delete this._events[name];
+                    break;
                 }
             }
         }
-
         return this;
     }
 
     /**
-     * Removes all listeners for an event.
-     * @param {String} [name]
-     * @return {EventEmitter}
-     */
-    removeAllListeners (name) {
-        if (name === undefined) {
-            this._events = {};
-            return this;
-        }
-
-        if (this._events && this._events[name]) {
-            delete this._events[name];
-        }
-
-        return this;
-    }
-
-    off(name, fn, caller) {
-        if(!fn) return this.removeAllListeners(name);
-        return this.removeListener(name, fn, caller);
-    }
-
-    /**
-     * Gets all listeners for a certain event.
-     * @param {String} name
-     * @return {*}
-     */
-    listeners (name) {
-        this._events[name] || (this._events[name]=[]);
-        return this._events[name];
-    }
-
-    /**
-     * Emits an event.
+     * Synchronously calls each of the listeners registered for the event named eventName,
+     * in the order they were registered, passing the supplied arguments to each.
+     *
+     * to break the calls, just return false on listener function.
+     * ```javascript
+     * // es6
+     * let eventEmitter = new EventEmitter();
+     * eventEmitter.on('test', (info) => {
+     *      // this will be called
+     *      console.log(info);
+     * });
+     * eventEmitter.on('test', (info) => {
+     *      // this will be called
+     *      return false;  // this break the calls
+     * });
+     * eventEmitter.on('test', (info) => {
+     *      // this will not be called.
+     *      console.log(info);
+     * });
+     * eventEmitter.emit('test', 'hello eventEmitter');
+     * ```
      * tip: use arg1...arg5 instead of arguments for performance consider.
-     * @param {String} name
+     *
+     * @param {*} eventName - event name
      * @param {*} arg1
      * @param {*} arg2
      * @param {*} arg3
      * @param {*} arg4
      * @param {*} arg5
-     * @return {EventEmitter}
+     * @return {EventEmitter} - for chaining
      */
-    emit (name, arg1, arg2, arg3, arg4, arg5) {
-        let handler = this._events[name];
-        if (!handler) return this;
-
-        //make a copy to avoid error of change handle
-        let listeners = new Array(handler.length);
-        for (let i = 0; i < handler.length; i++) {
-            listeners[i] = handler[i];
-        }
-        for (let i = 0, l = listeners.length; i < l; i++) {
-            let h = listeners[i];
-            if (h.fn.call(h.caller || this,
-                    arg1, arg2, arg3, arg4, arg5) === false) break;
+    emit (eventName, arg1, arg2, arg3, arg4, arg5) {
+        // using a copy to avoid error when listener array changed
+        let listeners = this.listeners(eventName);
+        for (let i = 0; i < listeners.length; i++) {
+            let fn = listeners[i];
+            if (fn(arg1, arg2, arg3, arg4, arg5) === false) break;
         }
         return this;
     }
+
+    /**
+     * Returns an array listing the events for which the emitter has registered listeners.
+     * The values in the array will be strings or Symbols.
+     * @return {Array}
+     */
+    eventNames () {
+        return Object.keys(this._events);
+    }
+
+    /**
+     * Returns a copy of the array of listeners for the event named eventName.
+     * @param {*} eventName - event name
+     * @return {Array} - listener array
+     */
+    listeners (eventName) {
+        let v = this._events[eventName];
+        if (!v) return [];
+        let listeners = new Array(v.length);
+        for (let i = 0; i < v.length; i++) {
+            listeners[i] = v[i];
+        }
+        return listeners;
+    }
+
 }
 
 let prototype = EventEmitter.prototype;
@@ -167,12 +175,10 @@ let EM = {
     _events: {},
     on: prototype.on,
     once: prototype.once,
-    addListener: prototype.on,
-    removeListener: prototype.removeListener,
-    removeAllListeners: prototype.removeAllListeners,
     off: prototype.off,
-    listeners: prototype.listeners,
     emit: prototype.emit,
+    eventNames: prototype.eventNames,
+    listeners: prototype.listeners,
 };
 
 let enableEvent = (obj) => {

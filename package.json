@@ -1,6 +1,6 @@
 {
   "name": "jm-core",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "core lib for jm-* projects",
   "main": "./lib/index",
   "scripts": {
@@ -29,6 +29,7 @@
     "babel-loader": "^6.4.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-env": "^1.2.2",
+    "benchmark": "^2.1.4",
     "chai": "^3.5.0",
     "eslint": "^3.18.0",
     "eslint-config-google": "^0.7.1",
@@ -38,6 +39,7 @@
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^3.0.1",
+    "gulp-jsdoc3": "^1.0.1",
     "gulp-jshint": ">=1.5.1",
     "gulp-rename": "^1.2.2",
     "gulp-sequence": "^0.4.6",
