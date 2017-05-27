@@ -27,7 +27,8 @@ class $ extends Root {
 }
 
 if (typeof global !== 'undefined' && global) {
-    global.jm = new $();
+    !global.jm && (global.jm = new $());
+    !global.JM && (global.JM = $);
 }
 
 export default $;

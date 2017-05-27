@@ -1,4 +1,4 @@
-import {enableErr} from './err';
+import err from 'jm-err';
 
 let _use = function ($, modules, fn, opts, cb) {
     let m = fn($, opts, cb);
@@ -64,7 +64,7 @@ class Root {
      * create a root
      */
     constructor () {
-        enableErr(this);
+        err.enableErr(this);
         enableModule(this);
         this.enableModule = enableModule;
     }

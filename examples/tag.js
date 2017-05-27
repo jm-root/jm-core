@@ -16,7 +16,7 @@ var eventHandle2 = function (opts) {
 
 var bindEvent = function (o) {
     o.on('addTag', eventHandle);
-    o.addListener('addTag', eventHandle2);
+    o.on('addTag', eventHandle2);
 };
 
 var o = {};

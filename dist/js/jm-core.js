@@ -4,368 +4,202 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-/**
- * 为对象添加ERR变量
- * @method enableErr
- * @param {Object} $ 目标对象
- * @param {String} [name] 绑定名字
- * @return {Boolean} true 成功 false 失败
- */
-var enableErr = function enableErr($) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ERR';
-
-    if ($[name]) return false;
-    var Err = {
-        SUCCESS: {
-            err: 0,
-            msg: 'Success'
-        },
-
-        FAIL: {
-            err: 1,
-            msg: 'Fail'
-        },
-
-        FA_SYS: {
-            err: 2,
-            msg: 'System Error'
-        },
-
-        FA_NETWORK: {
-            err: 3,
-            msg: 'Network Error'
-        },
-
-        FA_PARAMS: {
-            err: 4,
-            msg: 'Parameter Error'
-        },
-
-        FA_BUSY: {
-            err: 5,
-            msg: 'Busy'
-        },
-
-        FA_TIMEOUT: {
-            err: 6,
-            msg: 'Time Out'
-        },
-
-        FA_ABORT: {
-            err: 7,
-            msg: 'Abort'
-        },
-
-        FA_NOTREADY: {
-            err: 8,
-            msg: 'Not Ready'
-        },
-
-        OK: {
-            err: 200,
-            msg: 'OK'
-        },
-
-        FA_BADREQUEST: {
-            err: 400,
-            msg: 'Bad Request'
-        },
-
-        FA_NOAUTH: {
-            err: 401,
-            msg: 'Unauthorized'
-        },
-
-        FA_NOPERMISSION: {
-            err: 403,
-            msg: 'Forbidden'
-        },
-
-        FA_NOTFOUND: {
-            err: 404,
-            msg: 'Not Found'
-        },
-
-        FA_INTERNALERROR: {
-            err: 500,
-            msg: 'Internal Server Error'
-        },
-
-        FA_UNAVAILABLE: {
-            err: 503,
-            msg: 'Service Unavailable'
-        }
-    };
-
-    var err = function err(E, opts) {
-        if (typeof E === 'string') {
-            E = {
-                msg: E
-            };
-        }
-
-        var msg = E.msg;
-        if (opts) {
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = Object.keys(opts)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var key = _step.value;
-
-                    msg = msg.split('${' + key + '}').join(opts[key]);
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-        }
-        var e = new Error(msg);
-        E.err && (e.code = E.err);
-        return e;
-    };
-
-    $[name] = Err;
-    $.err = err;
-
-    return true;
-};
-
-var moduleErr = function moduleErr($) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ERR';
-
-    enableErr($, name);
-
-    return {
-        name: name,
-        unuse: function unuse($) {
-            delete $[name];
-            delete $.err;
-        }
-    };
-};
-
-exports.default = enableErr;
-exports.enableErr = enableErr;
-exports.moduleErr = moduleErr;
-},{}],2:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var __createListener = function __createListener(fn, caller) {
-    return {
-        fn: fn,
-        caller: caller || null
-    };
-};
-
-var __equalsListener = function __equalsListener(l1, l2) {
-    return l1.fn === l2.fn && l1.caller === l2.caller;
-};
-
 /**
- * Creates a new EventEmitter
- *
- * @class
+ * event module.
+ * @module event
  */
 
+/**
+ * Class representing an eventEmitter.
+ *
+ * ```javascript
+ * // es6
+ * let eventEmitter = new EventEmitter();
+ * eventEmitter.on('test', (info) => {
+ *      console.log(info);
+ * });
+ * eventEmitter.once('test', (info) => {
+ *      // this will be called only one time
+ *      console.log(info);
+ * });
+ * eventEmitter.one('test', (info) => {
+ *      // this will be called first
+ *      console.log(info);
+ * }, true);
+ *
+ * eventEmitter.emit('test', 'hello eventEmitter');
+ * eventEmitter.off('test');
+ * ```
+ */
 var EventEmitter = function () {
 
     /**
-     * @constructs
+     * Create an eventEmitter.
      */
     function EventEmitter() {
         _classCallCheck(this, EventEmitter);
 
         this._events = {};
-        this.addListener = this.on;
     }
 
     /**
-     * Adds a listener
-     * @param {String} name
-     * @param {Function} fn
-     * @param {Object} [caller]
-     * @return {EventEmitter}
+     * Adds the listener function to the end of the listeners array for the event named eventName.
+     * No checks are made to see if the listener has already been added.
+     * Multiple calls passing the same combination of eventName and listener will result in the listener being added, and called, multiple times.
+     *
+     * @param {*} eventName - event name
+     * @param {Function} fn - listener function
+     * @param {boolean} [prepend] - Adds to the beginning of the listeners array if true
+     * @return {EventEmitter} - for chaining
      */
 
 
     _createClass(EventEmitter, [{
         key: 'on',
-        value: function on(name, fn, caller) {
-            var listener = __createListener(fn, caller);
-            if (!this._events[name]) {
-                this._events[name] = listener;
-            } else if (Array.isArray(this._events[name])) {
-                this._events[name].push(listener);
+        value: function on(eventName, fn, prepend) {
+            this._events[eventName] || (this._events[eventName] = []);
+            if (prepend) {
+                this._events[eventName].unshift(fn);
             } else {
-                this._events[name] = [this._events[name], listener];
+                this._events[eventName].push(fn);
             }
             return this;
         }
 
         /**
-         * Adds a volatile listener.
-         * @param {String} name
-         * @param {Function} fn
-         * @param {Object} [caller]
-         * @return {EventEmitter}
+         * Adds a one time listener function for the event named eventName.
+         * The next time eventName is triggered, this listener is removed and then invoked.
+         *
+         * @param {*} eventName - event name
+         * @param {Function} fn - listener function
+         * @param {boolean} [prepend] - Adds to the beginning of the listeners array if true
+         * @return {EventEmitter} - for chaining
          */
 
     }, {
         key: 'once',
-        value: function once(name, fn, caller) {
+        value: function once(eventName, fn, prepend) {
             var _this = this;
 
-            var listener = __createListener(fn, caller);
-
             var on = function on(arg1, arg2, arg3, arg4, arg5) {
-                _this.removeListener(name, on);
-                fn.call(listener.caller || _this, arg1, arg2, arg3, arg4, arg5);
+                _this.off(eventName, on);
+                fn(arg1, arg2, arg3, arg4, arg5);
             };
-
-            on.listener = listener;
-            this.on(name, on);
-
-            return this;
+            return this.on(eventName, on, prepend);
         }
 
         /**
-         * Removes a listener.
-         * @param {String} name
-         * @param {Function} fn
-         * @param {Object} [caller]
-         * @return {EventEmitter}
+         * Removes a listener for the event named eventName.
+         * Removes all listeners from the listener array for event named eventName if fn is null
+         * Removes all listeners from the listener array if eventName is null
+         *
+         * @param {*} [eventName] - event name
+         * @param {Function} [fn] - listener function
+         * @return {EventEmitter} - for chaining
          */
 
     }, {
-        key: 'removeListener',
-        value: function removeListener(name, fn, caller) {
-            var listener = __createListener(fn, caller);
-            if (this._events && this._events[name]) {
-                var list = this._events[name];
-
-                if (Array.isArray(list)) {
-                    var pos = -1;
-
-                    for (var i = 0, l = list.length; i < l; i++) {
-                        var o = list[i];
-                        if (__equalsListener(o, listener) || o.listener && __equalsListener(o.listener, listener)) {
-                            pos = i;
-                            break;
+        key: 'off',
+        value: function off(eventName, fn) {
+            if (!fn) {
+                if (eventName === undefined) {
+                    this._events = {};
+                } else if (this._events && this._events[eventName]) {
+                    delete this._events[eventName];
+                }
+            } else if (this._events && this._events[eventName]) {
+                var list = this._events[eventName];
+                for (var i = 0; i < list.length; i++) {
+                    if (fn === list[i]) {
+                        list.splice(i, 1);
+                        if (!list.length) {
+                            delete this._events[eventName];
                         }
+                        break;
                     }
-
-                    if (pos < 0) {
-                        return this;
-                    }
-
-                    list.splice(pos, 1);
-
-                    if (!list.length) {
-                        delete this._events[name];
-                    }
-                } else if (__equalsListener(list, listener) || list.listener && __equalsListener(list.listener, listener)) {
-                    delete this._events[name];
                 }
             }
-
             return this;
         }
 
         /**
-         * Removes all listeners for an event.
-         * @param {String} [name]
-         * @return {EventEmitter}
-         */
-
-    }, {
-        key: 'removeAllListeners',
-        value: function removeAllListeners(name) {
-            if (name === undefined) {
-                this._events = {};
-                return this;
-            }
-
-            if (this._events && this._events[name]) {
-                this._events[name] = null;
-            }
-
-            return this;
-        }
-
-        /**
-         * Gets all listeners for a certain event.
-         * @param {String} name
-         * @return {*}
-         */
-
-    }, {
-        key: 'listeners',
-        value: function listeners(name) {
-            if (!this._events[name]) {
-                this._events[name] = [];
-            }
-
-            if (!Array.isArray(this._events[name])) {
-                this._events[name] = [this._events[name]];
-            }
-
-            return this._events[name];
-        }
-
-        /**
-         * Emits an event.
+         * Synchronously calls each of the listeners registered for the event named eventName,
+         * in the order they were registered, passing the supplied arguments to each.
+         *
+         * to break the calls, just return false on listener function.
+         * ```javascript
+         * // es6
+         * let eventEmitter = new EventEmitter();
+         * eventEmitter.on('test', (info) => {
+         *      // this will be called
+         *      console.log(info);
+         * });
+         * eventEmitter.on('test', (info) => {
+         *      // this will be called
+         *      return false;  // this break the calls
+         * });
+         * eventEmitter.on('test', (info) => {
+         *      // this will not be called.
+         *      console.log(info);
+         * });
+         * eventEmitter.emit('test', 'hello eventEmitter');
+         * ```
          * tip: use arg1...arg5 instead of arguments for performance consider.
-         * @param {String} name
+         *
+         * @param {*} eventName - event name
          * @param {*} arg1
          * @param {*} arg2
          * @param {*} arg3
          * @param {*} arg4
          * @param {*} arg5
-         * @return {EventEmitter}
+         * @return {EventEmitter} - for chaining
          */
 
     }, {
         key: 'emit',
-        value: function emit(name, arg1, arg2, arg3, arg4, arg5) {
-            var handler = this._events[name];
-            if (!handler) return this;
-
-            if ((typeof handler === 'undefined' ? 'undefined' : _typeof(handler)) === 'object' && !Array.isArray(handler)) {
-                handler.fn.call(handler.caller || this, arg1, arg2, arg3, arg4, arg5);
-            } else if (Array.isArray(handler)) {
-                var listeners = new Array(handler.length);
-                for (var i = 0; i < handler.length; i++) {
-                    listeners[i] = handler[i];
-                }
-
-                for (var _i = 0, l = listeners.length; _i < l; _i++) {
-                    var h = listeners[_i];
-                    if (h.fn.call(h.caller || this, arg1, arg2, arg3, arg4, arg5) === false) break;
-                }
+        value: function emit(eventName, arg1, arg2, arg3, arg4, arg5) {
+            // using a copy to avoid error when listener array changed
+            var listeners = this.listeners(eventName);
+            for (var i = 0; i < listeners.length; i++) {
+                var fn = listeners[i];
+                if (fn(arg1, arg2, arg3, arg4, arg5) === false) break;
             }
             return this;
+        }
+
+        /**
+         * Returns an array listing the events for which the emitter has registered listeners.
+         * The values in the array will be strings or Symbols.
+         * @return {Array}
+         */
+
+    }, {
+        key: 'eventNames',
+        value: function eventNames() {
+            return Object.keys(this._events);
+        }
+
+        /**
+         * Returns a copy of the array of listeners for the event named eventName.
+         * @param {*} eventName - event name
+         * @return {Array} - listener array
+         */
+
+    }, {
+        key: 'listeners',
+        value: function listeners(eventName) {
+            var v = this._events[eventName];
+            if (!v) return [];
+            var listeners = new Array(v.length);
+            for (var i = 0; i < v.length; i++) {
+                listeners[i] = v[i];
+            }
+            return listeners;
         }
     }]);
 
@@ -377,11 +211,10 @@ var EM = {
     _events: {},
     on: prototype.on,
     once: prototype.once,
-    addListener: prototype.on,
-    removeListener: prototype.removeListener,
-    removeAllListeners: prototype.removeAllListeners,
-    listeners: prototype.listeners,
-    emit: prototype.emit
+    off: prototype.off,
+    emit: prototype.emit,
+    eventNames: prototype.eventNames,
+    listeners: prototype.listeners
 };
 
 var enableEvent = function enableEvent(obj) {
@@ -461,7 +294,7 @@ exports.EventEmitter = EventEmitter;
 exports.enableEvent = enableEvent;
 exports.disableEvent = disableEvent;
 exports.moduleEvent = moduleEvent;
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -514,13 +347,14 @@ var $ = function (_Root) {
 }(_root2.default);
 
 if (typeof global !== 'undefined' && global) {
-    global.jm = new $();
+    !global.jm && (global.jm = new $());
+    !global.JM && (global.JM = $);
 }
 
 exports.default = $;
 module.exports = exports['default'];
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./event":2,"./logger":4,"./random":5,"./root":6,"./tag":7,"./utils":8}],4:[function(require,module,exports){
+},{"./event":1,"./logger":3,"./random":4,"./root":5,"./tag":6,"./utils":7}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -548,7 +382,7 @@ var moduleLogger = function moduleLogger($) {
 exports.default = getLogger;
 exports.getLogger = getLogger;
 exports.moduleLogger = moduleLogger;
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -679,7 +513,7 @@ var moduleRandom = function moduleRandom($) {
 exports.default = Random;
 exports.Random = Random;
 exports.moduleRandom = moduleRandom;
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -687,7 +521,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.enableModule = exports.Root = undefined;
 
-var _err = require('./err');
+var _jmErr = require('jm-err');
+
+var _jmErr2 = _interopRequireDefault(_jmErr);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -718,8 +556,8 @@ var enableModule = function enableModule($) {
         if (typeof fn === 'function') {
             _use(this, _modules, fn, opts, cb);
         } else {
-            var err = new Error(this.ERR.FA_PARAMS.msg);
-            if (cb) cb(err, this.ERR.FA_PARAMS);else throw new Error($.ERR.FA_PARAMS.msg);
+            var _err = new Error(this.ERR.FA_PARAMS.msg);
+            if (cb) cb(_err, this.ERR.FA_PARAMS);else throw new Error($.ERR.FA_PARAMS.msg);
         }
         return this;
     };
@@ -751,7 +589,7 @@ var Root =
 function Root() {
     _classCallCheck(this, Root);
 
-    (0, _err.enableErr)(this);
+    _jmErr2.default.enableErr(this);
     enableModule(this);
     this.enableModule = enableModule;
 };
@@ -759,7 +597,7 @@ function Root() {
 exports.default = Root;
 exports.Root = Root;
 exports.enableModule = enableModule;
-},{"./err":1}],7:[function(require,module,exports){
+},{"jm-err":9}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1146,7 +984,7 @@ exports.TagObject = TagObject;
 exports.enableTag = enableTag;
 exports.disableTag = disableTag;
 exports.moduleTag = moduleTag;
-},{"./event":2}],8:[function(require,module,exports){
+},{"./event":1}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1187,4 +1025,234 @@ var moduleUtils = function moduleUtils($) {
 exports.default = utils;
 exports.utils = utils;
 exports.moduleUtils = moduleUtils;
-},{}]},{},[3])
+},{}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+/**
+ * err module.
+ * @module err
+ */
+
+/**
+ * common error defines
+ *
+ */
+var Err = {
+    SUCCESS: {
+        err: 0,
+        msg: 'Success'
+    },
+
+    FAIL: {
+        err: 1,
+        msg: 'Fail'
+    },
+
+    FA_SYS: {
+        err: 2,
+        msg: 'System Error'
+    },
+
+    FA_NETWORK: {
+        err: 3,
+        msg: 'Network Error'
+    },
+
+    FA_PARAMS: {
+        err: 4,
+        msg: 'Parameter Error'
+    },
+
+    FA_BUSY: {
+        err: 5,
+        msg: 'Busy'
+    },
+
+    FA_TIMEOUT: {
+        err: 6,
+        msg: 'Time Out'
+    },
+
+    FA_ABORT: {
+        err: 7,
+        msg: 'Abort'
+    },
+
+    FA_NOTREADY: {
+        err: 8,
+        msg: 'Not Ready'
+    },
+
+    OK: {
+        err: 200,
+        msg: 'OK'
+    },
+
+    FA_BADREQUEST: {
+        err: 400,
+        msg: 'Bad Request'
+    },
+
+    FA_NOAUTH: {
+        err: 401,
+        msg: 'Unauthorized'
+    },
+
+    FA_NOPERMISSION: {
+        err: 403,
+        msg: 'Forbidden'
+    },
+
+    FA_NOTFOUND: {
+        err: 404,
+        msg: 'Not Found'
+    },
+
+    FA_INTERNALERROR: {
+        err: 500,
+        msg: 'Internal Server Error'
+    },
+
+    FA_UNAVAILABLE: {
+        err: 503,
+        msg: 'Service Unavailable'
+    }
+};
+
+/**
+ * return message from template
+ *
+ * ```javascript
+ * errMsg('sampe ${name} ${value}', {name: 'jeff', value: 123});
+ * // return 'sample jeff 123'
+ * ```
+ *
+ * @param {String} msg message template
+ * @param {Object} opts params
+ * @return {String} final message
+ */
+var errMsg = function errMsg(msg, opts) {
+    if (opts) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = Object.keys(opts)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var key = _step.value;
+
+                msg = msg.split('${' + key + '}').join(opts[key]);
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
+    }
+    return msg;
+};
+
+/**
+ * return an Error Object
+ * @param {Object|String} E Err object or a message template
+ * @param {Object} [opts] params
+ * @return {Error}
+ */
+var err = function err(E, opts) {
+    if (typeof E === 'string') {
+        E = {
+            msg: E
+        };
+    }
+    var msg = errMsg(E.msg, opts);
+    var e = new Error(msg);
+    E.err && (e.code = E.err);
+    return e;
+};
+
+/**
+ * enable Err Object, errMsg and err function for obj
+ * @param {Object} obj target object
+ * @param {String} [name] name to bind
+ * @return {boolean}
+ */
+var enableErr = function enableErr(obj) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'Err';
+
+    if (obj[name]) return false;
+    obj[name] = Err;
+    obj.err = err;
+    obj.errMsg = errMsg;
+    return true;
+};
+
+/**
+ * disable Err Object, errMsg and err function for obj
+ * @param {Object} obj target object
+ * @param {String} [name] name to bind
+ */
+var disableErr = function disableErr(obj) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'Err';
+
+    if (!obj[name]) return;
+    delete obj[name];
+    delete obj.err;
+    delete obj.errMsg;
+};
+
+/**
+ * module usable
+ * @param {Object} obj target object
+ * @param {String} [name] name to bind
+ * @return {{name: string, unuse: unuse}}
+ */
+var moduleErr = function moduleErr(obj) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'Err';
+
+    enableErr(obj, name);
+
+    return {
+        name: name,
+        unuse: function unuse(obj) {
+            disableErr(obj, name);
+        }
+    };
+};
+
+exports.default = {
+    Err: Err,
+    errMsg: errMsg,
+    err: err,
+    enableErr: enableErr,
+    disableErr: disableErr,
+    moduleErr: moduleErr
+};
+module.exports = exports['default'];
+},{}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _err = require('./err');
+
+var _err2 = _interopRequireDefault(_err);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _err2.default;
+module.exports = exports['default'];
+},{"./err":8}]},{},[2])
