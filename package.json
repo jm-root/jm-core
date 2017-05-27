@@ -27,9 +27,7 @@
     "jm-event": "^0.0.1",
     "jm-logger": "^0.0.1",
     "jm-module": "^0.0.1",
-    "jm-utils": "^0.0.1",
-    "jm-random": "^0.0.1",
-    "jm-tag": "^0.0.1"
+    "jm-utils": "^0.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
