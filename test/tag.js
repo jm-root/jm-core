@@ -11,7 +11,7 @@ o.addTag('456');
 
 describe('tag', function () {
     it('jm.TagObject', function () {
-        expect(tag).to.be.a('function');
+        expect(tag.enableTag).to.be.a('function');
         expect(o.hasTag('123')).to.be.ok;
         expect(o.hasTag('456')).to.be.ok;
         expect(o.hasTag('1234')).to.not.be.ok;

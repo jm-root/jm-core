@@ -144,7 +144,7 @@ let Tag = {
 };
 
 let enableTag = (obj) => {
-    if (obj._tags != undefined) return;
+    if (obj._tags != undefined) return false;
     for (let key of Object.keys(Tag)) {
         obj[key] = Tag[key];
     }
@@ -154,6 +154,7 @@ let enableTag = (obj) => {
         writable: false,
     });
     enableEvent(obj);
+    return true;
 };
 
 let disableTag = (obj) => {
@@ -176,5 +177,9 @@ let moduleTag = ($, name = 'tag') => {
     };
 };
 
-export default TagObject;
-export {TagObject, enableTag, disableTag, moduleTag};
+export default {
+    TagObject: TagObject,
+    enableTag: enableTag,
+    disableTag: disableTag,
+    moduleTag: moduleTag,
+};

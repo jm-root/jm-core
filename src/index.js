@@ -3,7 +3,7 @@ import event from 'jm-event';
 import {moduleLogger} from './logger';
 import {moduleUtils} from './utils';
 import {moduleRandom} from './random';
-import {moduleTag} from './tag';
+import tag from './tag';
 
 /**
  * @class
@@ -21,7 +21,7 @@ class $ extends Root {
             .use(moduleLogger)
             .use(moduleUtils)
             .use(moduleRandom)
-            .use(moduleTag)
+            .use(tag.moduleTag)
         ;
     }
 }

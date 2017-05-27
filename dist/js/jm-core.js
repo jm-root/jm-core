@@ -22,6 +22,8 @@ var _random = require('./random');
 
 var _tag = require('./tag');
 
+var _tag2 = _interopRequireDefault(_tag);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -45,7 +47,7 @@ var $ = function (_Root) {
         var _this = _possibleConstructorReturn(this, ($.__proto__ || Object.getPrototypeOf($)).call(this));
 
         _this.global = {};
-        _this.use(_jmEvent2.default.moduleEvent).use(_logger.moduleLogger).use(_utils.moduleUtils).use(_random.moduleRandom).use(_tag.moduleTag);
+        _this.use(_jmEvent2.default.moduleEvent).use(_logger.moduleLogger).use(_utils.moduleUtils).use(_random.moduleRandom).use(_tag2.default.moduleTag);
         return _this;
     }
 
@@ -263,7 +265,6 @@ module.exports = exports['default'];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.moduleTag = exports.disableTag = exports.enableTag = exports.TagObject = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -570,7 +571,7 @@ var Tag = {
 };
 
 var enableTag = function enableTag(obj) {
-    if (obj._tags != undefined) return;
+    if (obj._tags != undefined) return false;
     var _iteratorNormalCompletion6 = true;
     var _didIteratorError6 = false;
     var _iteratorError6 = undefined;
@@ -602,6 +603,7 @@ var enableTag = function enableTag(obj) {
         writable: false
     });
     enableEvent(obj);
+    return true;
 };
 
 var disableTag = function disableTag(obj) {
@@ -648,11 +650,13 @@ var moduleTag = function moduleTag($) {
     };
 };
 
-exports.default = TagObject;
-exports.TagObject = TagObject;
-exports.enableTag = enableTag;
-exports.disableTag = disableTag;
-exports.moduleTag = moduleTag;
+exports.default = {
+    TagObject: TagObject,
+    enableTag: enableTag,
+    disableTag: disableTag,
+    moduleTag: moduleTag
+};
+module.exports = exports['default'];
 },{"jm-event":9}],6:[function(require,module,exports){
 'use strict';
 
