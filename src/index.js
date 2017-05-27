@@ -1,9 +1,9 @@
 import Root from './root';
 import event from 'jm-event';
-import {moduleLogger} from './logger';
-import {moduleUtils} from './utils';
-import {moduleRandom} from './random';
-import tag from './tag';
+import logger from 'jm-logger';
+import utils from 'jm-utils';
+import rnd from 'jm-random';
+import tag from 'jm-tag';
 
 /**
  * @class
@@ -18,9 +18,9 @@ class $ extends Root {
         this.global = {};
         this
             .use(event.moduleEvent)
-            .use(moduleLogger)
-            .use(moduleUtils)
-            .use(moduleRandom)
+            .use(logger.moduleLogger)
+            .use(utils.moduleUtils)
+            .use(rnd.moduleRandom)
             .use(tag.moduleTag)
         ;
     }
