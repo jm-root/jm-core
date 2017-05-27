@@ -1,4 +1,7 @@
-import {EventEmitter, enableEvent, disableEvent} from './event';
+import event from 'jm-event';
+let EventEmitter = event.EventEmitter;
+let enableEvent = event.enableEvent;
+let disableEvent = event.disableEvent;
 
 /**
  * Object with tag enabled
@@ -166,7 +169,7 @@ let moduleTag = ($, name = 'tag') => {
 
     return {
         name: name,
-        unuse ($) {
+        unuse () {
             delete $.enableTag;
             delete $.disableTag;
         },

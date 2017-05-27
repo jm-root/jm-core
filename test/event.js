@@ -1,7 +1,8 @@
 import chai from 'chai';
 let expect = chai.expect;
 import $ from '../src';
-import EventEmitter from '../src/event';
+import event from 'jm-event';
+let EventEmitter = event.EventEmitter;
 
 let jm = new $();
 

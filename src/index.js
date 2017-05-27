@@ -1,8 +1,8 @@
 import Root from './root';
+import event from 'jm-event';
 import {moduleLogger} from './logger';
 import {moduleUtils} from './utils';
 import {moduleRandom} from './random';
-import {moduleEvent} from './event';
 import {moduleTag} from './tag';
 
 /**
@@ -17,10 +17,10 @@ class $ extends Root {
         super();
         this.global = {};
         this
+            .use(event.moduleEvent)
             .use(moduleLogger)
             .use(moduleUtils)
             .use(moduleRandom)
-            .use(moduleEvent)
             .use(moduleTag)
         ;
     }
