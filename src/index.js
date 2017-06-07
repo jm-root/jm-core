@@ -1,19 +1,23 @@
-import Root from './root';
 import event from 'jm-event';
 import logger from 'jm-logger';
 import utils from 'jm-utils';
+import err from 'jm-err';
+import mdl from 'jm-module';
 
 /**
  * @class
  */
-class $ extends Root {
+class JM {
 
     /**
      * @constructor
      */
     constructor () {
-        super();
         this.global = {};
+        err.enableErr(this);
+        mdl.enableModule(this);
+        this.enableModule = mdl.enableModule;
+        this.disableModule = mdl.disableModule;
         this
             .use(event.moduleEvent)
             .use(logger.moduleLogger)
@@ -23,8 +27,7 @@ class $ extends Root {
 }
 
 if (typeof global !== 'undefined' && global) {
-    !global.jm && (global.jm = new $());
-    !global.JM && (global.JM = $);
+    !global.JM && (global.JM = JM);
 }
 
-export default $;
+export default JM;

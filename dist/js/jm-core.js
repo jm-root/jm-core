@@ -6,10 +6,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _root = require('./root');
-
-var _root2 = _interopRequireDefault(_root);
-
 var _jmEvent = require('jm-event');
 
 var _jmEvent2 = _interopRequireDefault(_jmEvent);
@@ -21,51 +17,6 @@ var _jmLogger2 = _interopRequireDefault(_jmLogger);
 var _jmUtils = require('jm-utils');
 
 var _jmUtils2 = _interopRequireDefault(_jmUtils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/**
- * @class
- */
-var $ = function (_Root) {
-    _inherits($, _Root);
-
-    /**
-     * @constructor
-     */
-    function $() {
-        _classCallCheck(this, $);
-
-        var _this = _possibleConstructorReturn(this, ($.__proto__ || Object.getPrototypeOf($)).call(this));
-
-        _this.global = {};
-        _this.use(_jmEvent2.default.moduleEvent).use(_jmLogger2.default.moduleLogger).use(_jmUtils2.default.moduleUtils);
-        return _this;
-    }
-
-    return $;
-}(_root2.default);
-
-if (typeof global !== 'undefined' && global) {
-    !global.jm && (global.jm = new $());
-    !global.JM && (global.JM = $);
-}
-
-exports.default = $;
-module.exports = exports['default'];
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./root":2,"jm-event":5,"jm-logger":6,"jm-utils":8}],2:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 
 var _jmErr = require('jm-err');
 
@@ -80,25 +31,33 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * Class representing a root.
+ * @class
  */
-var Root =
+var JM =
 
 /**
- * create a root
+ * @constructor
  */
-function Root() {
-    _classCallCheck(this, Root);
+function JM() {
+    _classCallCheck(this, JM);
 
+    this.global = {};
     _jmErr2.default.enableErr(this);
     _jmModule2.default.enableModule(this);
     this.enableModule = _jmModule2.default.enableModule;
     this.disableModule = _jmModule2.default.disableModule;
+    this.use(_jmEvent2.default.moduleEvent).use(_jmLogger2.default.moduleLogger).use(_jmUtils2.default.moduleUtils);
 };
 
-exports.default = Root;
+if (typeof global !== 'undefined' && global) {
+    !global.JM && (global.JM = JM);
+}
+
+exports.default = JM;
 module.exports = exports['default'];
-},{"jm-err":4,"jm-module":7}],3:[function(require,module,exports){
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"jm-err":2,"jm-event":3,"jm-logger":4,"jm-module":5,"jm-utils":6}],2:[function(require,module,exports){
+(function (global){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -304,7 +263,7 @@ var moduleErr = function moduleErr(obj) {
     };
 };
 
-exports.default = {
+var $ = {
     Err: Err,
     errMsg: errMsg,
     err: err,
@@ -312,23 +271,22 @@ exports.default = {
     disableErr: disableErr,
     moduleErr: moduleErr
 };
+
+if (typeof global !== 'undefined' && global) {
+    global.jm || (global.jm = {});
+    var jm = global.jm;
+    if (!jm.enableErr) {
+        for (var key in $) {
+            jm[key] = $[key];
+        }
+    }
+}
+
+exports.default = $;
 module.exports = exports['default'];
-},{}],4:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _err = require('./err');
-
-var _err2 = _interopRequireDefault(_err);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _err2.default;
-module.exports = exports['default'];
-},{"./err":3}],5:[function(require,module,exports){
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],3:[function(require,module,exports){
+(function (global){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -621,19 +579,38 @@ var moduleEvent = function moduleEvent(obj) {
     };
 };
 
-exports.default = {
+var $ = {
     EventEmitter: EventEmitter,
     enableEvent: enableEvent,
     disableEvent: disableEvent,
     moduleEvent: moduleEvent
 };
+
+if (typeof global !== 'undefined' && global) {
+    global.jm || (global.jm = {});
+    var jm = global.jm;
+    if (!jm.EventEmitter) {
+        for (var key in $) {
+            jm[key] = $[key];
+        }
+    }
+}
+
+exports.default = $;
 module.exports = exports['default'];
-},{}],6:[function(require,module,exports){
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],4:[function(require,module,exports){
+(function (global){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+/**
+ * logger module.
+ * @module logger
+ */
+
 var getLogger = function getLogger(loggerCategoryName) {
     console.debug || (console.debug = console.log);
     return console;
@@ -653,13 +630,27 @@ var moduleLogger = function moduleLogger(obj) {
     };
 };
 
-exports.default = {
+var $ = {
     logger: getLogger(),
     getLogger: getLogger,
     moduleLogger: moduleLogger
 };
+
+if (typeof global !== 'undefined' && global) {
+    global.jm || (global.jm = {});
+    var jm = global.jm;
+    if (!jm.logger) {
+        for (var key in $) {
+            jm[key] = $[key];
+        }
+    }
+}
+
+exports.default = $;
 module.exports = exports['default'];
-},{}],7:[function(require,module,exports){
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],5:[function(require,module,exports){
+(function (global){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -825,13 +816,27 @@ var disableModule = function disableModule(obj) {
     }
 };
 
-exports.default = {
+var $ = {
     Modulable: Modulable,
     enableModule: enableModule,
     disableModule: disableModule
 };
+
+if (typeof global !== 'undefined' && global) {
+    global.jm || (global.jm = {});
+    var jm = global.jm;
+    if (!jm.enableModule) {
+        for (var key in $) {
+            jm[key] = $[key];
+        }
+    }
+}
+
+exports.default = $;
 module.exports = exports['default'];
-},{}],8:[function(require,module,exports){
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],6:[function(require,module,exports){
+(function (global){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -869,9 +874,22 @@ var moduleUtils = function moduleUtils($) {
     };
 };
 
-exports.default = {
+var $ = {
     utils: utils,
     moduleUtils: moduleUtils
 };
+
+if (typeof global !== 'undefined' && global) {
+    global.jm || (global.jm = {});
+    var jm = global.jm;
+    if (!jm.utils) {
+        for (var key in $) {
+            jm[key] = $[key];
+        }
+    }
+}
+
+exports.default = $;
 module.exports = exports['default'];
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[1])
