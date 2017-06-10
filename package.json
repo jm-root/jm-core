@@ -1,6 +1,6 @@
 {
   "name": "jm-core",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "core lib for jm-* projects",
   "main": "./lib/index",
   "scripts": {
@@ -23,11 +23,11 @@
   },
   "homepage": "https://github.com/jm-root/jm-core",
   "dependencies": {
-    "jm-err": "^0.0.3",
-    "jm-event": "^0.0.2",
-    "jm-logger": "^0.0.2",
-    "jm-module": "^0.0.2",
-    "jm-utils": "^0.0.2"
+    "jm-err": "^1.0.0",
+    "jm-event": "^1.0.1",
+    "jm-logger": "^1.0.1",
+    "jm-module": "^1.0.0",
+    "jm-utils": "^1.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

@@ -244,38 +244,19 @@ var disableErr = function disableErr(obj) {
     delete obj.errMsg;
 };
 
-/**
- * module usable
- * @param {Object} obj target object
- * @param {String} [name] name to bind
- * @return {{name: string, unuse: unuse}}
- */
-var moduleErr = function moduleErr(obj) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'Err';
-
-    enableErr(obj, name);
-
-    return {
-        name: name,
-        unuse: function unuse(obj) {
-            disableErr(obj, name);
-        }
-    };
-};
-
 var $ = {
     Err: Err,
     errMsg: errMsg,
     err: err,
     enableErr: enableErr,
-    disableErr: disableErr,
-    moduleErr: moduleErr
+    disableErr: disableErr
 };
 
 if (typeof global !== 'undefined' && global) {
     global.jm || (global.jm = {});
     var jm = global.jm;
     if (!jm.enableErr) {
+        enableErr(jm);
         for (var key in $) {
             jm[key] = $[key];
         }
@@ -564,9 +545,10 @@ var disableEvent = function disableEvent(obj) {
     }
 };
 
-var moduleEvent = function moduleEvent(obj) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'event';
+var moduleEvent = function moduleEvent() {
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'event';
 
+    var obj = this;
     obj.enableEvent = enableEvent;
     obj.disableEvent = disableEvent;
 
@@ -616,9 +598,10 @@ var getLogger = function getLogger(loggerCategoryName) {
     return console;
 };
 
-var moduleLogger = function moduleLogger(obj) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'logger';
+var moduleLogger = function moduleLogger() {
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'logger';
 
+    var obj = this;
     obj.getLogger = getLogger;
     obj.logger = getLogger();
     return {
@@ -698,8 +681,12 @@ var Modulable = function () {
          * @param {Function} [cb] callback function
          * @return {Modulable} for chaining
          */
-        value: function use(fn, opts, cb) {
-            var m = fn(this, opts, cb);
+        value: function use(fn) {
+            for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                args[_key - 1] = arguments[_key];
+            }
+
+            var m = fn.apply(this, args);
             if (m && m.name) {
                 this._modules[m.name] = m;
             }
@@ -828,7 +815,7 @@ if (typeof global !== 'undefined' && global) {
     if (!jm.enableModule) {
         for (var key in $) {
             jm[key] = $[key];
-        }
+        }enableModule(jm);
     }
 }
 
@@ -858,18 +845,36 @@ var utils = {
 
     formatJSON: function formatJSON(obj) {
         return JSON.stringify(obj, null, 2);
+    },
+
+    getUriProtocol: function getUriProtocol(uri) {
+        if (!uri) return null;
+        return uri.substring(0, uri.indexOf(':'));
+    },
+
+    getUriPath: function getUriPath(uri) {
+        var idx = uri.indexOf('//');
+        if (idx == -1) return '';
+        idx = uri.indexOf('/', idx + 2);
+        if (idx == -1) return '';
+        uri = uri.substr(idx);
+        idx = uri.indexOf('#');
+        if (idx == -1) idx = uri.indexOf('?');
+        if (idx != -1) uri = uri.substr(0, idx);
+        return uri;
     }
 };
 
-var moduleUtils = function moduleUtils($) {
-    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'utils';
+var moduleUtils = function moduleUtils() {
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'utils';
 
-    $[name] = utils;
+    var app = this;
+    app[name] = utils;
 
     return {
         name: name,
-        unuse: function unuse($) {
-            delete $[name];
+        unuse: function unuse() {
+            delete app[name];
         }
     };
 };
