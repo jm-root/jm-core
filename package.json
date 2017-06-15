@@ -1,6 +1,6 @@
 {
   "name": "jm-core",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "description": "core lib for jm-* projects",
   "main": "./lib/index",
   "scripts": {
@@ -22,15 +22,19 @@
     "url": "https://github.com/jm-root/jm-core/issues"
   },
   "homepage": "https://github.com/jm-root/jm-core",
-  "dependencies": {},
+  "dependencies": {
+    "jm-err": "^1.0.0",
+    "jm-event": "^1.0.1",
+    "jm-logger": "^1.0.1",
+    "jm-module": "^1.0.0",
+    "jm-utils": "^1.0.1"
+  },
   "devDependencies": {
-    "babel-cli": "^6.24.0",
-    "babel-core": "^6.24.0",
-    "babel-loader": "^6.4.1",
+    "babel-cli": "^6.24.1",
     "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-preset-env": "^1.2.2",
-    "chai": "^3.5.0",
-    "eslint": "^3.18.0",
+    "babel-preset-env": "^1.5.1",
+    "benchmark": "^2.1.4",
+    "chai": "^4.0.0",
     "eslint-config-google": "^0.7.1",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
@@ -38,12 +42,13 @@
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^3.0.1",
-    "gulp-jshint": ">=1.5.1",
+    "gulp-jsdoc3": "^1.0.1",
+    "gulp-jshint": "^2.0.4",
     "gulp-rename": "^1.2.2",
     "gulp-sequence": "^0.4.6",
-    "gulp-uglify": "^2.1.2",
+    "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.8",
     "jshint": "^2.9.4",
-    "mocha": "^3.2.0"
+    "mocha": "^3.4.2"
   }
 }

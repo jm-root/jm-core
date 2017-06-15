@@ -11,7 +11,9 @@ var gulp = require('gulp'),
     babel = require('gulp-babel'),
     browserify = require('gulp-browserify'),
     eslint = require('gulp-eslint'),
-    version = 'v' + require('./package.json').version;
+    jsdoc = require('gulp-jsdoc3'),
+    version = 'v' + require('./package.json').version
+    ;
 
 gulp.task('clean', function () {
     return gulp.src(['dist/*', 'lib/*'])
@@ -51,6 +53,11 @@ gulp.task('pack', ['es6to5'], function() {
         .pipe(uglify())
         .pipe(gulp.dest('')
         );
+});
+
+gulp.task('doc', function (cb) {
+    gulp.src(['README.md', './src/**/*.js'], {read: false})
+        .pipe(jsdoc(cb));
 });
 
 gulp.task('default', gulpSequence('clean', ['pack']));

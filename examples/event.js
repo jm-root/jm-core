@@ -21,7 +21,7 @@ var eventHandle3 = function (opts, intro) {
 
 var bindEvent = function (o) {
     o.on('addTag', eventHandle);
-    o.addListener('addTag', eventHandle2);
+    o.on('addTag', eventHandle2);
     o.on('addTag', eventHandle3);
     o.once('addTag', function (opts, intro) {
         logger.info('once addTag %j %j', opts, intro);

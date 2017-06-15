@@ -14,4 +14,3 @@ var log = function (logger) {
 
 log(jm.logger);
 log(jm.getLogger('main'));
-
